@@ -25,7 +25,8 @@ from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 
 from api import schemas
-from api.models import Location
+from api.models import Location, MajorChemistry, MinorandTraceChemistry, WaterLevels, WaterLevelsContinuous_Pressure, \
+    WaterLevelsContinuous_Acoustic
 from api.session import engine, SessionLocal
 
 tags_metadata = [
@@ -72,20 +73,62 @@ def get_db():
 
 
 @app.get("/locations", response_model=List[schemas.Location])
-def read_locations(limit: int= 1000, db: Session = Depends(get_db)):
-    return _read(db, Location, limit=limit)
+def read_locations(pointid:str=None, limit: int= 1000, db: Session = Depends(get_db)):
+    filters =  []
+    if pointid:
+        filters = [Location.PointID==pointid]
+    return _read(db, Location, limit=limit, filters=filters)
 
 
+@app.get("/majorchemistry", response_model=List[schemas.MajorChemistry])
+def read_majorchemistry(pointid:str=None, limit: int= 1000, db: Session = Depends(get_db)):
+    filters =  []
+    if pointid:
+        pass
+        # filters = [MajorChemistry.PointID==pointid]
+
+    return _read(db, MajorChemistry, limit=limit, filters=filters)
+
+@app.get("/minorchemistry", response_model=List[schemas.MinorandTraceChemistry])
+def read_minorchemistry(pointid:str=None, limit: int= 1000, db: Session = Depends(get_db)):
+    filters =  []
+    if pointid:
+        pass
+        # filters = [MajorChemistry.PointID==pointid]
+
+    return _read(db, MinorandTraceChemistry, limit=limit, filters=filters)
+
+
+@app.get("/waterlevels", response_model=List[schemas.WaterLevels])
+def read_waterlevels(pointid:str=None, limit: int= 1000, db: Session = Depends(get_db)):
+
+    return _read(db, WaterLevels, limit)
+
+@app.get("/waterlevelspressure", response_model=List[schemas.WaterLevelsPressure])
+def read_waterlevelspressure(pointid:str=None, limit: int= 1000, db: Session = Depends(get_db)):
+
+    return _read(db, WaterLevelsContinuous_Pressure, limit)
+
+
+@app.get("/waterlevelsacoustic", response_model=List[schemas.WaterLevelsAcoustic])
+def read_waterlevelspressure(pointid:str=None, limit: int= 1000, db: Session = Depends(get_db)):
+
+    return _read(db, WaterLevelsContinuous_Acoustic, limit)
 
 @app.get("/")
 async def index():
     return {"message": "NMBGMR Water API"}
 
 
-def _read(db, table, limit=None):
+def _read(db, table, limit=None, filters=None):
     q = db.query(table)
+    if filters:
+        for fi in filters:
+            q = q.filter(fi)
+
     if limit:
         q = q.limit(limit)
+
     return q.all()
 
 

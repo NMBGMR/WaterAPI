@@ -14,76 +14,162 @@
 # limitations under the License.
 # ===============================================================================
 import uuid
-from datetime import datetime
+from datetime import datetime, date, time
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
 
 
 class ORMBase(BaseModel):
-    id: Optional[int] = None
 
     class Config:
         orm_mode = True
-
+        allow_population_by_field_name = True
 
 class Location(ORMBase):
     LocationId: uuid.UUID
     DateCreated: datetime
-
-    # PointID
-    # SiteNames
+    PointID: str
+    SiteNames: Optional[str]=None
     # SiteID
     # AlternateSiteID
     # AlternateSiteID2
-    # SiteDate
-    # DataReliability
-    # Confidential
-    # SiteType
-    # WL_Continuous
-    # WL_Intermittent
-    # WaterQuality
-    # WaterFlow
-    # Hydraulic
-    # Subsurface
-    # WellorSpgNoData
-    # SubsurfaceType
-    # Easting
-    # Northing
-    # UTMDatum
-    # CoordinateNotes
-    # Altitude
-    # AltitudeAccuracy
-    # AltitudeMethod
-    # AltDatum
-    # Latitude
-    # Longitude
-    # LatLonDatum
-    # CoordinateAccuracy
-    # CoordinateMethod
-    # Township
-    # TownshipDirection
-    # Range
-    # RangeDirection
-    # SectionQuarters
+    SiteDate: Optional[datetime]=None
+    #DataReliability: str
+    Confidential: bool
+    # SiteType: str
+    WL_Continuous: bool
+    WL_Intermittent: bool
+    WaterQuality: bool
+    WaterFlow: bool
+    Hydraulic: bool
+    Subsurface: bool
+    WellorSpgNoData: bool
+    SubsurfaceType: Optional[str]
+    Easting: int
+    Northing: int
+    UTMDatum: str
+    CoordinateNotes: str
+    Altitude: float
+    AltitudeAccuracy: Optional[float]
+    # AltitudeMethod: Optional[str]
+    AltDatum: Optional[str]
+    # Latitude: Optional[float]
+    # Longitude: Optional[float]
+    # LatLonDatum: str
+    CoordinateAccuracy: Optional[str]
+    CoordinateMethod: Optional[str]
+    Township: Optional[int]
+    TownshipDirection: Optional[str]
+    Range: Optional[int]
+    RangeDirection: Optional[str]
+    SectionQuarters: Optional[float]
     # SPX
     # SPY
-    # QuadName
-    # County
-    # State
-    # LocationNotes
-    # WLReportDeliver
-    # ChemistryReportDeliver
-    # WLReportNote
-    # ChemistryReportNote
-    # X_NAD83_Zone12
-    # Y_NAD83_Zone12
-    # projectname
-    # USGSProjectID
+    QuadName: Optional[str]
+    County: Optional[str]
+    State: str
+    LocationNotes: Optional[str]
+    WLReportDeliver: Optional[datetime]
+    ChemistryReportDeliver: Optional[datetime]
+    WLReportNote: Optional[str]
+    ChemistryReportNote: Optional[str]
+    X_NAD83_Zone12: float
+    Y_NAD83_Zone12: float
+    projectname: Optional[str]
+    USGSProjectID: Optional[str]
     # ObjectID
-    # LatitudeDD
-    # LongitudeDD
+    LatitudeDD: float
+    LongitudeDD: float
     # SSMA_TimeStamp
-    # PublicRelease
+    PublicRelease: bool
     # Geometry
+
+    altitude_method_meaning: str = Field(..., alias='AltitudeMethodMeaning')
+    coordinate_accuracy_meaning: Optional[str] = Field(..., alias='CoordinateAccuracyMeaning')
+    data_reliability_meaning: Optional[str] = Field(..., alias='DataReliabilityMeaning')
+    site_type_meaning:Optional[str] = Field(..., alias='SiteTypeMeaning')
+
+class Chemistry(ORMBase):
+    SamplePtID: uuid.UUID
+    SamplePointID: str
+    Analyte: str
+    Symbol: Optional[str]
+    SampleValue: float
+    Units: str
+    Uncertainty: Optional[float]
+    AnalysisMethod: Optional[str]
+    AnalysisDate: Optional[datetime]
+    Notes: Optional[str]
+    Volume: Optional[int]
+    VolumeUnit: Optional[str]
+    # OBJECTID
+    # GlobalID
+    AnalysesAgency: Optional[str]
+    WCLab_ID: Optional[str]
+
+class MajorChemistry(Chemistry):
+    pass
+
+class MinorandTraceChemistry(Chemistry):
+    pass
+
+class WaterLevelsBase(ORMBase):
+    WellID: uuid.UUID
+    PointID: str
+    OBJECTID: int
+    DepthToWaterBGS: float
+    measurement_method_meaning: str=Field(alias='MeasurementMethodMeaning')
+
+class WaterLevels(WaterLevelsBase):
+
+    DepthToWater: float
+    LevelStatus: Optional[str]
+    # DataQuality: Optional[str]
+    MPHeight: float
+    # MeasurementMethod: str
+    MeasuredBy: Optional[str]
+    # DataSource: str
+    MeasuringAgency: Optional[str]
+    SiteNotes: Optional[str]
+    LevelStatement: Optional[str]
+    PublicRelease: bool
+    DateMeasured: date
+    TimeMeasured: Optional[time]
+    TimeDatum: Optional[str]
+
+    data_quality_meaning: Optional[str]=Field(alias='DataQualityMeaning')
+    data_source_meaning: Optional[str]=Field(alias='DataSourceMeaning')
+
+
+class WaterLevelsPressure(WaterLevelsBase):
+    DateMeasured: datetime
+    TemperatureWater: float
+    # WaterHead
+    # WaterHeadAdjusted
+    DepthToWaterBGS: float
+    # MeasurementMethod
+    # DataSource
+    # MeasuringAgency
+    QCed: bool
+    Notes: str
+    Created: Optional[datetime]
+    Updated: Optional[datetime]
+    ProcessedBy: Optional[str]
+    CheckedBy: Optional[str]
+    conddl: Optional[str]
+
+class WaterLevelsAcoustic(WaterLevelsBase):
+    TemperatureAir: str
+    Notes: Optional[str]
+    SerialNo: Optional[str]
+    ServerReceiptDate: Optional[datetime]
+    WellntelReadingType: Optional[str]
+    SensorHgtAboveMP: Optional[float]
+    SpeakerToMicLength: Optional[int]
+    PublicRelease: bool
+    Created: Optional[datetime]
+    EventID: Optional[str]
+    ImportID: Optional[str]
 # ============= EOF =============================================

@@ -4,7 +4,7 @@ services:
     build:
       context: ./api/
       dockerfile: ./Dockerfile_dev
-    command: uvicorn api.main:app --host 0.0.0.0 --reload
+    command: uvicorn api.main:app --host 0.0.0.0 --reload --root-path /api/v1
     ports:
       - "8000:8000"
     volumes:
@@ -12,7 +12,7 @@ services:
     depends_on:
       - traefik
     env_file:
-      - ./api/.env
+      - ./api/.env.development
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.api.rule=Host(`localhost`) && PathPrefix(`/api/v1`)"
