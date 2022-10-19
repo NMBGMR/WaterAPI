@@ -50,7 +50,7 @@ class Location(ORMBase):
     Easting: int
     Northing: int
     UTMDatum: str
-    CoordinateNotes: str
+    CoordinateNotes: Optional[str]
     Altitude: float
     AltitudeAccuracy: Optional[float]
     # AltitudeMethod: Optional[str]
@@ -80,8 +80,8 @@ class Location(ORMBase):
     projectname: Optional[str]
     USGSProjectID: Optional[str]
     # ObjectID
-    LatitudeDD: float
-    LongitudeDD: float
+    LatitudeDD: Optional[float]
+    LongitudeDD: Optional[float]
     # SSMA_TimeStamp
     PublicRelease: bool
     # Geometry

@@ -30,9 +30,9 @@ from api.models import Location, MajorChemistry, MinorandTraceChemistry, WaterLe
 from api.session import engine, SessionLocal
 
 tags_metadata = [
-    {"name": "wells", "description": "Water Wells"},
-    {"name": "repairs", "description": "Meter Repairs"},
-    {"name": "meters", "description": "Water use meters"},
+    # {"name": "wells", "description": "Water Wells"},
+    # {"name": "repairs", "description": "Meter Repairs"},
+    # {"name": "meters", "description": "Water use meters"},
 ]
 description = """
 NMBGMR Water API
@@ -72,16 +72,16 @@ def get_db():
         db.close()
 
 
-@app.get("/locations", response_model=List[schemas.Location])
-def read_locations(pointid:str=None, limit: int= 1000, db: Session = Depends(get_db)):
+@app.get("/locations", response_model=List[schemas.Location], tags=['Locations'])
+def read_locations(pointid:str=None, limit: int= 100, db: Session = Depends(get_db)):
     filters =  []
     if pointid:
         filters = [Location.PointID==pointid]
     return _read(db, Location, limit=limit, filters=filters)
 
 
-@app.get("/majorchemistry", response_model=List[schemas.MajorChemistry])
-def read_majorchemistry(pointid:str=None, limit: int= 1000, db: Session = Depends(get_db)):
+@app.get("/majorchemistry", response_model=List[schemas.MajorChemistry], tags=['Water Quality'])
+def read_majorchemistry(pointid:str=None, limit: int= 100, db: Session = Depends(get_db)):
     filters =  []
     if pointid:
         pass
@@ -89,8 +89,8 @@ def read_majorchemistry(pointid:str=None, limit: int= 1000, db: Session = Depend
 
     return _read(db, MajorChemistry, limit=limit, filters=filters)
 
-@app.get("/minorchemistry", response_model=List[schemas.MinorandTraceChemistry])
-def read_minorchemistry(pointid:str=None, limit: int= 1000, db: Session = Depends(get_db)):
+@app.get("/minorchemistry", response_model=List[schemas.MinorandTraceChemistry], tags=['Water Quality'])
+def read_minorchemistry(pointid:str=None, limit: int= 100, db: Session = Depends(get_db)):
     filters =  []
     if pointid:
         pass
@@ -99,19 +99,19 @@ def read_minorchemistry(pointid:str=None, limit: int= 1000, db: Session = Depend
     return _read(db, MinorandTraceChemistry, limit=limit, filters=filters)
 
 
-@app.get("/waterlevels", response_model=List[schemas.WaterLevels])
-def read_waterlevels(pointid:str=None, limit: int= 1000, db: Session = Depends(get_db)):
+@app.get("/waterlevels", response_model=List[schemas.WaterLevels], tags=['Groundwater Levels'])
+def read_waterlevels(pointid:str=None, limit: int= 100, db: Session = Depends(get_db)):
 
     return _read(db, WaterLevels, limit)
 
-@app.get("/waterlevelspressure", response_model=List[schemas.WaterLevelsPressure])
-def read_waterlevelspressure(pointid:str=None, limit: int= 1000, db: Session = Depends(get_db)):
+@app.get("/waterlevelspressure", response_model=List[schemas.WaterLevelsPressure],tags=['Groundwater Levels'])
+def read_waterlevelspressure(pointid:str=None, limit: int= 100, db: Session = Depends(get_db)):
 
     return _read(db, WaterLevelsContinuous_Pressure, limit)
 
 
-@app.get("/waterlevelsacoustic", response_model=List[schemas.WaterLevelsAcoustic])
-def read_waterlevelspressure(pointid:str=None, limit: int= 1000, db: Session = Depends(get_db)):
+@app.get("/waterlevelsacoustic", response_model=List[schemas.WaterLevelsAcoustic],tags=['Groundwater Levels'])
+def read_waterlevelspressure(pointid:str=None, limit: int= 100, db: Session = Depends(get_db)):
 
     return _read(db, WaterLevelsContinuous_Acoustic, limit)
 
