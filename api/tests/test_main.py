@@ -20,7 +20,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from api.main import app, get_db, setup_db
+from api.main import app, get_nm_aquifer, setup_db
 from api.models import Base
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
@@ -41,7 +41,7 @@ def override_get_db():
         db.close()
 
 
-app.dependency_overrides[get_db] = override_get_db
+app.dependency_overrides[get_nm_aquifer] = override_get_db
 client = TestClient(app)
 
 
