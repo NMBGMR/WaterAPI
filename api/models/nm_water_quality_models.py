@@ -54,13 +54,21 @@ class ElementMixin(object):
     DataSource = Column(String)
     DataSourceInfo = Column(String)
     # GeoLocation
+
+    symbol_tag = None
+    value_tag = None
+
     @property
     def value(self):
         return getattr(self, self.value_tag)
 
     @property
     def symbol(self):
-        return getattr(self, f"{self.value_tag}_Symbol")
+        tag = self.symbol_tag
+        if tag is None:
+            tag = self.value_tag
+
+        return getattr(self, f"{tag}_Symbol")
 
 class WQ_Arsenic(Base, ElementMixin):
     Arsenic = Column(Float)
@@ -72,4 +80,45 @@ class WQ_Bicarbonate(Base, ElementMixin):
     HCO3 = Column(Float)
     HCO3_Symbol = Column(String)
     value_tag = 'HCO3'
+
+class WQ_Chlorine(Base, ElementMixin):
+    Cl=Column(Float)
+    Cl_Symbol = Column(String)
+    value_tag = 'Cl'
+class WQ_Calcium(Base, ElementMixin):
+    Ca=Column(Float)
+    Ca_Symbol = Column(String)
+    value_tag = 'Ca'
+class WQ_Fluoride(Base, ElementMixin):
+    Fl=Column(Float)
+    Fl_Symbol = Column(String)
+    value_tag = 'Fl'
+class WQ_Magnesium(Base, ElementMixin):
+    Mg=Column(Float)
+    Mg_Symbol = Column(String)
+    value_tag = 'Mg'
+
+class WQ_Sodium(Base, ElementMixin):
+    Na= Column(Float)
+    Na_Symbol = Column(String)
+    value_tag = 'Na'
+class WQ_Sulfate(Base, ElementMixin):
+    SO4 = Column(Float)
+    SO4_Symbol = Column(String)
+    value_tag = 'SO4'
+class WQ_TDS(Base, ElementMixin):
+    TDS = Column(Float)
+    TDS_Symbol = Column(String)
+    value_tag = 'TDS'
+class WQ_Uranium(Base, ElementMixin):
+    U = Column(Float)
+    Uranium_Symbol = Column(String)
+    value_tag = 'U'
+    symbol_tag = 'Uranium'
+
+class WQ_Specific_Conductance(Base, ElementMixin):
+    CONDLAB = Column(Float)
+    CONDLAB_Symbol = Column(String)
+    value_tag = 'CONDLAB'
+
 # ============= EOF =============================================

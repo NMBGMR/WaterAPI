@@ -27,7 +27,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from api import schemas
 from api.models.nm_aquifer_models import Location, MajorChemistry, MinorandTraceChemistry, WaterLevels, WaterLevelsContinuous_Pressure, \
     WaterLevelsContinuous_Acoustic
-from api.models.nm_water_quality_models import WQ_Arsenic, WQ_Bicarbonate
+from api.models.nm_water_quality_models import WQ_Arsenic, WQ_Bicarbonate, WQ_Calcium, WQ_Chlorine, WQ_Fluoride, \
+    WQ_Magnesium, WQ_Sodium, WQ_Sulfate, WQ_TDS, WQ_Uranium
 from api.session import NM_Aquifer, NM_Water_Quality
 from api.schemas import nm_aquifer_schemas, nm_water_quality_schemas
 
@@ -126,18 +127,60 @@ def read_waterlevelspressure(pointid:str=None, limit: int= 100, db: Session = De
 
 
 @app.get('/compiled/arsenic', response_model=List[nm_water_quality_schemas.CompiledChem], tags=['CompiledChem'])
-def read_compiled_arsenic(limit: int=100, db: Session = Depends(get_nm_water_quality)):
-    return _read(db, WQ_Arsenic, limit)
+def read_compiled_arsenic(limit: int=100, pointid:str=None, datasource:str=None, db: Session = Depends(get_nm_water_quality)):
+    return _read_compiled_chem(db, WQ_Arsenic, limit, pointid, datasource)
 
 @app.get('/compiled/bicarbonate', response_model=List[nm_water_quality_schemas.CompiledChem], tags=['CompiledChem'])
-def read_compiled_bicarbonate(limit: int=100, db: Session = Depends(get_nm_water_quality)):
-    return _read(db, WQ_Bicarbonate, limit)
+def read_compiled_bicarbonate(limit: int=100, pointid:str=None, datasource:str=None, db: Session = Depends(get_nm_water_quality)):
+    return _read_compiled_chem(db, WQ_Bicarbonate, limit, pointid, datasource)
+
+@app.get('/compiled/calcium', response_model=List[nm_water_quality_schemas.CompiledChem], tags=['CompiledChem'])
+def read_compiled_calcium(limit: int=100, pointid:str=None, datasource:str=None, db: Session = Depends(get_nm_water_quality)):
+    return _read_compiled_chem(db, WQ_Calcium, limit, pointid, datasource)
+
+@app.get('/compiled/chlorine', response_model=List[nm_water_quality_schemas.CompiledChem], tags=['CompiledChem'])
+def read_compiled_chlorine(limit: int=100, pointid:str=None, datasource:str=None, db: Session = Depends(get_nm_water_quality)):
+    return _read_compiled_chem(db, WQ_Chlorine, limit, pointid, datasource)
+
+@app.get('/compiled/fluoride', response_model=List[nm_water_quality_schemas.CompiledChem], tags=['CompiledChem'])
+def read_compiled_fluoride(limit: int=100, pointid:str=None, datasource:str=None, db: Session = Depends(get_nm_water_quality)):
+    return _read_compiled_chem(db, WQ_Fluoride, limit, pointid, datasource)
+
+@app.get('/compiled/magnesium', response_model=List[nm_water_quality_schemas.CompiledChem], tags=['CompiledChem'])
+def read_compiled_magnesium(limit: int=100, pointid:str=None, datasource:str=None, db: Session = Depends(get_nm_water_quality)):
+    return _read_compiled_chem(db, WQ_Magnesium, limit, pointid, datasource)
+
+@app.get('/compiled/sodium', response_model=List[nm_water_quality_schemas.CompiledChem], tags=['CompiledChem'])
+def read_compiled_sodium(limit: int=100, pointid:str=None, datasource:str=None, db: Session = Depends(get_nm_water_quality)):
+    return _read_compiled_chem(db, WQ_Sodium, limit, pointid, datasource)
+
+@app.get('/compiled/sulfate', response_model=List[nm_water_quality_schemas.CompiledChem], tags=['CompiledChem'])
+def read_compiled_sulfate(limit: int=100, pointid:str=None, datasource:str=None, db: Session = Depends(get_nm_water_quality)):
+    return _read_compiled_chem(db, WQ_Sulfate, limit, pointid, datasource)
+
+@app.get('/compiled/tds', response_model=List[nm_water_quality_schemas.CompiledChem], tags=['CompiledChem'])
+def read_compiled_tds(limit: int=100, pointid:str=None, datasource:str=None, db: Session = Depends(get_nm_water_quality)):
+    return _read_compiled_chem(db, WQ_TDS, limit, pointid, datasource)
+
+
+@app.get('/compiled/uranium', response_model=List[nm_water_quality_schemas.CompiledChem], tags=['CompiledChem'])
+def read_compiled_uranium(limit: int=100, pointid:str=None, datasource:str=None, db: Session = Depends(get_nm_water_quality)):
+    return _read_compiled_chem(db, WQ_Uranium, limit, pointid, datasource)
 
 
 @app.get("/")
 async def index():
     return {"message": "NMBGMR Water API"}
 
+
+def _read_compiled_chem(db, table, limit, pointid, datasource):
+    filters = []
+    if pointid:
+        filters.append(table.POINT_ID == pointid)
+    if datasource:
+        filters.append(table.DataSource==datasource)
+
+    return _read(db, table, limit, filters=filters)
 
 def _read(db, table, limit=None, filters=None):
     q = db.query(table)
