@@ -20,23 +20,22 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 
 
-
 class ORMBase(BaseModel):
-
     class Config:
         orm_mode = True
         allow_population_by_field_name = True
+
 
 class Location(ORMBase):
     LocationId: uuid.UUID
     DateCreated: datetime
     PointID: str
-    SiteNames: Optional[str]=None
+    SiteNames: Optional[str] = None
     # SiteID
     # AlternateSiteID
     # AlternateSiteID2
-    SiteDate: Optional[datetime]=None
-    #DataReliability: str
+    SiteDate: Optional[datetime] = None
+    # DataReliability: str
     Confidential: bool
     # SiteType: str
     WL_Continuous: bool
@@ -89,7 +88,8 @@ class Location(ORMBase):
     altitude_method_meaning: str = Field(..., alias='AltitudeMethodMeaning')
     coordinate_accuracy_meaning: Optional[str] = Field(..., alias='CoordinateAccuracyMeaning')
     data_reliability_meaning: Optional[str] = Field(..., alias='DataReliabilityMeaning')
-    site_type_meaning:Optional[str] = Field(..., alias='SiteTypeMeaning')
+    site_type_meaning: Optional[str] = Field(..., alias='SiteTypeMeaning')
+
 
 class Chemistry(ORMBase):
     SamplePtID: uuid.UUID
@@ -109,25 +109,28 @@ class Chemistry(ORMBase):
     AnalysesAgency: Optional[str]
     WCLab_ID: Optional[str]
 
+
 class MajorChemistry(Chemistry):
     pass
 
+
 class MinorandTraceChemistry(Chemistry):
     pass
+
 
 class WaterLevelsBase(ORMBase):
     WellID: uuid.UUID
     PointID: str
     OBJECTID: int
     DepthToWaterBGS: float
-    measurement_method_meaning: str=Field(alias='MeasurementMethodMeaning')
+    measurement_method_meaning: str = Field(alias='MeasurementMethodMeaning')
+
 
 class WaterLevels(WaterLevelsBase):
-
     DepthToWater: float
     LevelStatus: Optional[str]
     # DataQuality: Optional[str]
-    MPHeight: float
+    MPHeight: Optional[float]
     # MeasurementMethod: str
     MeasuredBy: Optional[str]
     # DataSource: str
@@ -139,8 +142,8 @@ class WaterLevels(WaterLevelsBase):
     TimeMeasured: Optional[time]
     TimeDatum: Optional[str]
 
-    data_quality_meaning: Optional[str]=Field(alias='DataQualityMeaning')
-    data_source_meaning: Optional[str]=Field(alias='DataSourceMeaning')
+    data_quality_meaning: Optional[str] = Field(alias='DataQualityMeaning')
+    data_source_meaning: Optional[str] = Field(alias='DataSourceMeaning')
 
 
 class WaterLevelsPressure(WaterLevelsBase):
@@ -159,6 +162,7 @@ class WaterLevelsPressure(WaterLevelsBase):
     ProcessedBy: Optional[str]
     CheckedBy: Optional[str]
     conddl: Optional[str]
+
 
 class WaterLevelsAcoustic(WaterLevelsBase):
     TemperatureAir: str

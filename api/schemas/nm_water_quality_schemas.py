@@ -25,8 +25,8 @@ class ORMBase(BaseModel):
         orm_mode = True
         allow_population_by_field_name = True
 
-class CompiledChem(ORMBase):
 
+class CompiledChem(ORMBase):
     POINT_ID: str
     CollectionDate: datetime
     HistoricDate: Optional[int]
@@ -37,6 +37,5 @@ class CompiledChem(ORMBase):
     DataSourceInfo: Optional[str]
     value: float = Field(..., alias='Value')
     symbol: Optional[str] = Field(..., alias='Symbol')
-
 
 # ============= EOF =============================================
