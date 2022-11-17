@@ -19,7 +19,6 @@ from sqlalchemy.orm import sessionmaker
 from .config import settings
 
 
-
 nm_aquifer_engine = create_engine(settings.NM_AQUIFER_URL)
 nm_water_quality_engine = create_engine(settings.NM_WATER_QUALITY_URL)
 
@@ -32,6 +31,8 @@ nm_water_quality_engine = create_engine(settings.NM_WATER_QUALITY_URL)
 # )
 # print(SQLALCHEMY_DATABASE_URL)
 NM_Aquifer = sessionmaker(autocommit=False, autoflush=False, bind=nm_aquifer_engine)
-NM_Water_Quality = sessionmaker(autocommit=False, autoflush=False, bind=nm_water_quality_engine)
+NM_Water_Quality = sessionmaker(
+    autocommit=False, autoflush=False, bind=nm_water_quality_engine
+)
 
 # ============= EOF =============================================

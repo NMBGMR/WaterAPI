@@ -85,10 +85,12 @@ class Location(ORMBase):
     PublicRelease: bool
     # Geometry
 
-    altitude_method_meaning: str = Field(..., alias='AltitudeMethodMeaning')
-    coordinate_accuracy_meaning: Optional[str] = Field(..., alias='CoordinateAccuracyMeaning')
-    data_reliability_meaning: Optional[str] = Field(..., alias='DataReliabilityMeaning')
-    site_type_meaning: Optional[str] = Field(..., alias='SiteTypeMeaning')
+    altitude_method_meaning: str = Field(..., alias="AltitudeMethodMeaning")
+    coordinate_accuracy_meaning: Optional[str] = Field(
+        ..., alias="CoordinateAccuracyMeaning"
+    )
+    data_reliability_meaning: Optional[str] = Field(..., alias="DataReliabilityMeaning")
+    site_type_meaning: Optional[str] = Field(..., alias="SiteTypeMeaning")
 
 
 class Chemistry(ORMBase):
@@ -123,7 +125,7 @@ class WaterLevelsBase(ORMBase):
     PointID: str
     OBJECTID: int
     DepthToWaterBGS: float
-    measurement_method_meaning: str = Field(alias='MeasurementMethodMeaning')
+    measurement_method_meaning: str = Field(alias="MeasurementMethodMeaning")
 
 
 class WaterLevels(WaterLevelsBase):
@@ -142,8 +144,8 @@ class WaterLevels(WaterLevelsBase):
     TimeMeasured: Optional[time]
     TimeDatum: Optional[str]
 
-    data_quality_meaning: Optional[str] = Field(alias='DataQualityMeaning')
-    data_source_meaning: Optional[str] = Field(alias='DataSourceMeaning')
+    data_quality_meaning: Optional[str] = Field(alias="DataQualityMeaning")
+    data_source_meaning: Optional[str] = Field(alias="DataSourceMeaning")
 
 
 class WaterLevelsPressure(WaterLevelsBase):
@@ -176,4 +178,6 @@ class WaterLevelsAcoustic(WaterLevelsBase):
     Created: Optional[datetime]
     EventID: Optional[str]
     ImportID: Optional[str]
+
+
 # ============= EOF =============================================

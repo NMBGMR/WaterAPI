@@ -81,4 +81,6 @@ def _get(db, table, dbid):
         raise HTTPException(status_code=404, detail=f"{table}.{dbid} not found")
 
     return db_item
+
+
 # ============= EOF =============================================

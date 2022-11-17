@@ -50,31 +50,41 @@ client = TestClient(app)
 
 
 def test_read_water_levels():
-    resp = client.get('/waterlevels')
+    resp = client.get("/waterlevels")
     assert resp.status_code == 200
 
 
 def test_read_water_levels_pressure():
-    resp = client.get('/waterlevelspressure')
+    resp = client.get("/waterlevelspressure")
     assert resp.status_code == 200
 
 
 def test_read_water_levels_acoustic():
-    resp = client.get('/waterlevelsacoustic')
+    resp = client.get("/waterlevelsacoustic")
     assert resp.status_code == 200
 
 
 def test_read_locations():
-    resp = client.get('/locations')
+    resp = client.get("/locations")
     assert resp.status_code == 200
 
 
 def test_compiled_chem():
-    for p in ('arsenic', 'bicarbonate', 'calcium', 'chlorine',
-              'fluoride', 'magnesium', 'sodium', 'sulfate', 'tds',
-              'uranium'):
-        resp = client.get(f'/compiled/{p}')
+    for p in (
+        "arsenic",
+        "bicarbonate",
+        "calcium",
+        "chlorine",
+        "fluoride",
+        "magnesium",
+        "sodium",
+        "sulfate",
+        "tds",
+        "uranium",
+    ):
+        resp = client.get(f"/compiled/{p}")
         assert resp.status_code == 200
+
 
 # def test_read_repair_report():
 #     response = client.get("/repair_report")

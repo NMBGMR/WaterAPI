@@ -35,7 +35,8 @@ class CompiledChem(ORMBase):
     WellDepth: Optional[float]
     DataSource: Optional[str]
     DataSourceInfo: Optional[str]
-    value: float = Field(..., alias='Value')
-    symbol: Optional[str] = Field(..., alias='Symbol')
+    value: float = Field(..., alias="Value")
+    symbol: Optional[str] = Field(..., alias="Symbol")
+
 
 # ============= EOF =============================================
