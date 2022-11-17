@@ -19,7 +19,7 @@ from api.models.nm_aquifer_models import MajorChemistry, MinorandTraceChemistry
 from api.models.nm_water_quality_models import WQ_Arsenic, WQ_Bicarbonate, WQ_Calcium, WQ_Chlorine, WQ_Fluoride, \
     WQ_Magnesium, WQ_Sodium, WQ_Sulfate, WQ_TDS, WQ_Uranium
 
-from api.routes import _read, get_nm_aquifer
+from api.routes import _read, get_nm_aquifer, get_nm_water_quality
 from api.schemas import nm_aquifer_schemas, nm_water_quality_schemas
 from fastapi import APIRouter, Depends
 

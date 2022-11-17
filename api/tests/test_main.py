@@ -20,8 +20,10 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from api.main import app, get_nm_aquifer, setup_db
-from api.models import Base
+from api.main import app
+from api.models.nm_aquifer_models import Base as aqbase
+from api.models.nm_water_quality_models import Base as wqbase
+from api.routes import get_nm_aquifer, get_nm_water_quality
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 
@@ -29,7 +31,8 @@ engine = create_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
 )
 
-Base.metadata.create_all(bind=engine)
+aqbase.metadata.create_all(bind=engine)
+wqbase.metadata.create_all(bind=engine)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
@@ -42,8 +45,36 @@ def override_get_db():
 
 
 app.dependency_overrides[get_nm_aquifer] = override_get_db
+app.dependency_overrides[get_nm_water_quality] = override_get_db
 client = TestClient(app)
 
+
+def test_read_water_levels():
+    resp = client.get('/waterlevels')
+    assert resp.status_code == 200
+
+
+def test_read_water_levels_pressure():
+    resp = client.get('/waterlevelspressure')
+    assert resp.status_code == 200
+
+
+def test_read_water_levels_acoustic():
+    resp = client.get('/waterlevelsacoustic')
+    assert resp.status_code == 200
+
+
+def test_read_locations():
+    resp = client.get('/locations')
+    assert resp.status_code == 200
+
+
+def test_compiled_chem():
+    for p in ('arsenic', 'bicarbonate', 'calcium', 'chlorine',
+              'fluoride', 'magnesium', 'sodium', 'sulfate', 'tds',
+              'uranium'):
+        resp = client.get(f'/compiled/{p}')
+        assert resp.status_code == 200
 
 # def test_read_repair_report():
 #     response = client.get("/repair_report")

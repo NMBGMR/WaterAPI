@@ -9,7 +9,8 @@ ENV PYTHONUNBUFFERED 1
 
 RUN apt update
 RUN apt install libsqlite3-mod-spatialite -y
-#
+RUN apt install unixodbc-dev -y
+RUN apt install freetds-dev -y
 COPY ./requirements.txt .
 
 #

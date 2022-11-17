@@ -27,7 +27,7 @@ from sqlalchemy import (
     LargeBinary,
     func,
     Boolean,
-    Date,Time
+    Date, Time
 )
 from sqlalchemy.ext.declarative import as_declarative, declared_attr
 from sqlalchemy.orm import relationship
@@ -70,6 +70,7 @@ class ElementMixin(object):
 
         return getattr(self, f"{tag}_Symbol")
 
+
 class WQ_Arsenic(Base, ElementMixin):
     Arsenic = Column(Float)
     Arsenic_Symbol = Column(String)
@@ -81,40 +82,55 @@ class WQ_Bicarbonate(Base, ElementMixin):
     HCO3_Symbol = Column(String)
     value_tag = 'HCO3'
 
+
 class WQ_Chlorine(Base, ElementMixin):
-    Cl=Column(Float)
+    Cl = Column(Float)
     Cl_Symbol = Column(String)
     value_tag = 'Cl'
+
+
 class WQ_Calcium(Base, ElementMixin):
-    Ca=Column(Float)
+    Ca = Column(Float)
     Ca_Symbol = Column(String)
     value_tag = 'Ca'
+
+
 class WQ_Fluoride(Base, ElementMixin):
-    Fl=Column(Float)
-    Fl_Symbol = Column(String)
-    value_tag = 'Fl'
+    F = Column(Float)
+    F_Symbol = Column(String)
+    value_tag = 'F'
+
+
 class WQ_Magnesium(Base, ElementMixin):
-    Mg=Column(Float)
+    Mg = Column(Float)
     Mg_Symbol = Column(String)
     value_tag = 'Mg'
 
+
 class WQ_Sodium(Base, ElementMixin):
-    Na= Column(Float)
+    Na = Column(Float)
     Na_Symbol = Column(String)
     value_tag = 'Na'
+
+
 class WQ_Sulfate(Base, ElementMixin):
     SO4 = Column(Float)
     SO4_Symbol = Column(String)
     value_tag = 'SO4'
+
+
 class WQ_TDS(Base, ElementMixin):
     TDS = Column(Float)
     TDS_Symbol = Column(String)
     value_tag = 'TDS'
+
+
 class WQ_Uranium(Base, ElementMixin):
     U = Column(Float)
     Uranium_Symbol = Column(String)
     value_tag = 'U'
     symbol_tag = 'Uranium'
+
 
 class WQ_Specific_Conductance(Base, ElementMixin):
     CONDLAB = Column(Float)
