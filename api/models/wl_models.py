@@ -128,7 +128,7 @@ class WellMeasurement(Base):
     well_id = Column(Integer, ForeignKey("Well.id"))
     method_id = Column(Integer, ForeignKey("LU_MeasurementMethod.id"))
     observed_property_id = Column(Integer, ForeignKey("ObservedProperty.id"))
-    sensor_id = Column(Integer, ForeignKey("Sensors.id"))
+    sensor_id = Column(Integer, ForeignKey("Sensor.id"))
     note = Column(String)
     status_id = Column(Integer, ForeignKey("LU_Status.id"))
     qc_id = Column(Integer, ForeignKey("QC.id"))
@@ -141,7 +141,7 @@ class WellMeasurement(Base):
     observed_property = relationship("ObservedProperty")
 
 
-class Sensors(Base):
+class Sensor(Base):
     name = Column(String)
     manufacture = Column
     install_date = Column(DateTime)

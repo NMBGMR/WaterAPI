@@ -60,16 +60,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 app.include_router(wl_router)
+
+
 # app.include_router(wq_router)
 
-setup_db()
+# setup_db()
 
 
 @app.get("/")
 async def index():
     return {"message": "NMBGMR Water API"}
 
+
+def get_user():
+    if not os.environ.get('DATABASE_DEV') == '1':
+        raise HTTPException(403)
+
+
+@app.get("/copy_nm_aquifer", dependencies=[Depends(get_user)])
+async def copy_nm_aquifer():
+    setup_db()
 
 # ============= EOF =============================================
