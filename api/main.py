@@ -48,8 +48,7 @@ origins = [
     "http://localhost:3000",
     "http://localhost:8000",
     "https://localhost",
-    "http://flask2.nmbgmr.nmt.edu"
-    "https://localhost:3000",
+    "http://flask2.nmbgmr.nmt.edu" "https://localhost:3000",
     "https://localhost:8000",
 ]
 
