@@ -164,7 +164,7 @@ function loadLegend(){
 }
 
 function loadLayer(){
-    let url = 'http://localhost/api/v1/locations'
+    let url = 'http://flask2.nmbgmr.nmt.edu/api/v1/locations'
     fetch(url).then(resp=>resp.json()).then((locations)=>{
         console.log(locations)
         let markers = locations.map((loc)=>{
