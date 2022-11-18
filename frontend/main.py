@@ -12,11 +12,9 @@ def index():
     return redirect("/api/v1/docs")
 
 
-@app.route('/map')
+@app.route("/map")
 def map():
-    map_cfg = {"center_lat": 33.5,
-               "center_lon": -104.5,
-               "zoom": 7}
+    map_cfg = {"center_lat": 33.5, "center_lon": -104.5, "zoom": 7}
     return render_template("index.html", map_cfg=map_cfg)
 
 
@@ -52,6 +50,7 @@ def waterlevels(pointid):
         datanote=datanote,
         disclaimer=disclaimer,
     )
+
 
 # DESCRIPTIONS = ['Start', 'Getting More Data', 'Writing to CSV', 'JSON Schema']
 #

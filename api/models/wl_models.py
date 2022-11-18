@@ -63,7 +63,6 @@ class ProjectLocation(Base):
     location = relationship("Location", cascade="all, delete")
 
 
-
 class Location(Base):
     point = Column(Geometry("POINT", 4326))
     point_id = Column(String)
@@ -91,6 +90,7 @@ class Location(Base):
     @property
     def longitude(self):
         return to_shape(self.point).x
+
 
 class Well(Base):
     location_id = Column(Integer, ForeignKey("Location.id"))
