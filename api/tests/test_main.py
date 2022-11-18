@@ -23,7 +23,8 @@ from sqlalchemy.orm import sessionmaker
 from api.main import app
 from api.models.nm_aquifer_models import Base as aqbase
 from api.models.nm_water_quality_models import Base as wqbase
-from api.routes import get_nm_aquifer, get_nm_water_quality
+# from api.routes import get_nm_aquifer, get_nm_water_quality
+from api.routes import get_waterdb
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 
@@ -44,8 +45,9 @@ def override_get_db():
         db.close()
 
 
-app.dependency_overrides[get_nm_aquifer] = override_get_db
-app.dependency_overrides[get_nm_water_quality] = override_get_db
+# app.dependency_overrides[get_nm_aquifer] = override_get_db
+# app.dependency_overrides[get_nm_water_quality] = override_get_db
+app.dependency_overrides[get_waterdb] = override_get_db
 client = TestClient(app)
 
 
@@ -54,37 +56,42 @@ def test_read_water_levels():
     assert resp.status_code == 200
 
 
-def test_read_water_levels_pressure():
-    resp = client.get("/waterlevelspressure")
+def test_read_welltemperatures():
+    resp = client.get("/welltemperatures")
     assert resp.status_code == 200
 
 
-def test_read_water_levels_acoustic():
-    resp = client.get("/waterlevelsacoustic")
-    assert resp.status_code == 200
-
-
-def test_read_locations():
-    resp = client.get("/locations")
-    assert resp.status_code == 200
-
-
-def test_compiled_chem():
-    for p in (
-        "arsenic",
-        "bicarbonate",
-        "calcium",
-        "chlorine",
-        "fluoride",
-        "magnesium",
-        "sodium",
-        "sulfate",
-        "tds",
-        "uranium",
-    ):
-        resp = client.get(f"/compiled/{p}")
-        assert resp.status_code == 200
-
+# def test_read_water_levels_pressure():
+#     resp = client.get("/waterlevelspressure")
+#     assert resp.status_code == 200
+#
+#
+# def test_read_water_levels_acoustic():
+#     resp = client.get("/waterlevelsacoustic")
+#     assert resp.status_code == 200
+#
+#
+# def test_read_locations():
+#     resp = client.get("/locations")
+#     assert resp.status_code == 200
+#
+#
+# def test_compiled_chem():
+#     for p in (
+#         "arsenic",
+#         "bicarbonate",
+#         "calcium",
+#         "chlorine",
+#         "fluoride",
+#         "magnesium",
+#         "sodium",
+#         "sulfate",
+#         "tds",
+#         "uranium",
+#     ):
+#         resp = client.get(f"/compiled/{p}")
+#         assert resp.status_code == 200
+#
 
 # def test_read_repair_report():
 #     response = client.get("/repair_report")
