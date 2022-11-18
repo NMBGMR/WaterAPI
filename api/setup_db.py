@@ -62,9 +62,23 @@ def setup_db():
 
 
 def get_locations(cursor):
-    sql = "select * from dbo.Location order by PointID"
-    cursor.execute(sql)
-    return cursor.fetchall()
+    def func():
+        i = 0
+        while 1:
+            sql = f"""select * from dbo.Location 
+--             where PointID like 'AB-%' 
+            order by PointID
+            offset {i*100} rows fetch next 100 rows only
+            """
+            cursor.execute(sql)
+            records = cursor.fetchall()
+            if not records:
+                break
+            yield from records
+
+            i += 1
+
+    return func()
 
 
 def get_screens(cursor, pointid):
@@ -104,7 +118,10 @@ def fetch(cursor, sql, *args):
 
 def get_lookup_by_name(dest, table, name):
     q = dest.query(table).filter(table.name == name)
-    return q.first().id
+    try:
+        return q.first().id
+    except AttributeError:
+        pass
 
 
 def copy_lu(cursor, dest, table, tag=None):
@@ -143,9 +160,9 @@ def copy_nm_aquifer(dest):
     copy_lu(cursor, dest, LU_MeasurementMethod)
 
     # copy locations
-    locations = get_locations(cursor)
+    # locations =
     projection = pyproj.Proj(proj="utm", zone=int(13), ellps="WGS84")
-    for l in locations:
+    for l in get_locations(cursor):
 
         lon, lat = projection(l["Easting"], l["Northing"], inverse=True)
 
@@ -176,9 +193,10 @@ def copy_nm_aquifer(dest):
             dbwell = Well(location=dbloc)
             dest.add(dbwell)
             screens = get_screens(cursor, l["PointID"])
-            wd = get_welldata(cursor, l["PointID"])[0]
+            wd = get_welldata(cursor, l["PointID"])
             wdkw = {}
             if wd:
+                wd = wd[0]
                 wdkw = dict(
                     casing_diameter=wd["CasingDiameter"],
                     well_depth=wd["WellDepth"],
@@ -217,8 +235,7 @@ def copy_nm_aquifer(dest):
                     )
                 )
 
-    # dest.commit()
+        dest.commit()
     src.close()
-
 
 # ============= EOF =============================================
