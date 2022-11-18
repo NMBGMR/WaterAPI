@@ -62,7 +62,7 @@ def setup_db():
 
 
 def get_locations(cursor):
-    sql = "select top 10 *, Geometry.STAsText() as point from dbo.Location order by PointID"
+    sql = "select * from dbo.Location order by PointID"
     cursor.execute(sql)
     return cursor.fetchall()
 
