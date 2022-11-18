@@ -19,8 +19,9 @@ from sqlalchemy.orm import sessionmaker
 from .config import settings
 
 
-nm_aquifer_engine = create_engine(settings.NM_AQUIFER_URL)
-nm_water_quality_engine = create_engine(settings.NM_WATER_QUALITY_URL)
+waterdbengine = create_engine(settings.WATERDB_URL)
+# nm_aquifer_engine = create_engine(settings.NM_AQUIFER_URL)
+# nm_water_quality_engine = create_engine(settings.NM_WATER_QUALITY_URL)
 
 # if you don't want to install postgres or any database, use sqlite, a file system based database,
 # uncomment below lines if you would like to use sqlite and comment above 2 lines of SQLALCHEMY_DATABASE_URL AND engine
@@ -30,9 +31,10 @@ nm_water_quality_engine = create_engine(settings.NM_WATER_QUALITY_URL)
 #     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
 # )
 # print(SQLALCHEMY_DATABASE_URL)
-NM_Aquifer = sessionmaker(autocommit=False, autoflush=False, bind=nm_aquifer_engine)
-NM_Water_Quality = sessionmaker(
-    autocommit=False, autoflush=False, bind=nm_water_quality_engine
-)
+# NM_Aquifer = sessionmaker(autocommit=False, autoflush=False, bind=nm_aquifer_engine)
+# NM_Water_Quality = sessionmaker(
+#     autocommit=False, autoflush=False, bind=nm_water_quality_engine
+# )
 
+WATERDB = sessionmaker(autocommit=False, autoflush=False, bind=waterdbengine)
 # ============= EOF =============================================

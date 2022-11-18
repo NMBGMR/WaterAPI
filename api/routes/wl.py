@@ -18,61 +18,70 @@ from typing import List
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from api.models.nm_aquifer_models import (
-    WaterLevels,
-    WaterLevelsContinuous_Pressure,
-    WaterLevelsContinuous_Acoustic,
-    Location,
-)
-from api.routes import _read, get_nm_aquifer
-from api.schemas import nm_aquifer_schemas
+# from api.models.nm_aquifer_models import (
+#     WaterLevels,
+#     WaterLevelsContinuous_Pressure,
+#     WaterLevelsContinuous_Acoustic,
+#     Location,
+# )
+from api.models.wl_models import WaterLevels
+
+from api.routes import _read, get_waterdb
+from api.schemas import wl_schemas
 
 router = APIRouter()
 
 
 @router.get(
     "/waterlevels",
-    response_model=List[nm_aquifer_schemas.WaterLevels],
+    response_model=List[wl_schemas.WaterLevels],
     tags=["Groundwater Levels"],
 )
 def read_waterlevels(
-    pointid: str = None, limit: int = 100, db: Session = Depends(get_nm_aquifer)
+        pointid: str = None, limit: int = 1000, db: Session = Depends(get_waterdb)
 ):
-    return _read(db, WaterLevels, limit)
-
-
-@router.get(
-    "/waterlevelspressure",
-    response_model=List[nm_aquifer_schemas.WaterLevelsPressure],
-    tags=["Groundwater Levels"],
-)
-def read_waterlevelspressure(
-    pointid: str = None, limit: int = 100, db: Session = Depends(get_nm_aquifer)
-):
-    return _read(db, WaterLevelsContinuous_Pressure, limit)
-
-
-@router.get(
-    "/waterlevelsacoustic",
-    response_model=List[nm_aquifer_schemas.WaterLevelsAcoustic],
-    tags=["Groundwater Levels"],
-)
-def read_waterlevelspressure(
-    pointid: str = None, limit: int = 100, db: Session = Depends(get_nm_aquifer)
-):
-    return _read(db, WaterLevelsContinuous_Acoustic, limit)
-
-
-@router.get(
-    "/locations", response_model=List[nm_aquifer_schemas.Location], tags=["Locations"]
-)
-def read_locations(
-    pointid: str = None, limit: int = 100, db: Session = Depends(get_nm_aquifer)
-):
-    filters = []
+    fs = []
     if pointid:
-        filters = [Location.PointID == pointid]
-    return _read(db, Location, limit=limit, filters=filters)
+        fs = [WaterLevels.PointID == pointid]
+    # print(limit, pointid, fs)
+    vs = _read(db, WaterLevels, limit, filters=fs, orderby=WaterLevels.DateTimeMeasured)
+    # print(vs)
+    return vs
 
+#
+# @router.get(
+#     "/waterlevelspressure",
+#     response_model=List[nm_aquifer_schemas.WaterLevelsPressure],
+#     tags=["Groundwater Levels"],
+# )
+# def read_waterlevelspressure(
+#         pointid: str = None, limit: int = 1000, db: Session = Depends(get_nm_aquifer)
+# ):
+#     if pointid:
+#         fs = [WaterLevelsContinuous_Pressure.PointID == pointid]
+#     return _read(db, WaterLevelsContinuous_Pressure, limit, filters=fs)
+#
+#
+# @router.get(
+#     "/waterlevelsacoustic",
+#     response_model=List[nm_aquifer_schemas.WaterLevelsAcoustic],
+#     tags=["Groundwater Levels"],
+# )
+# def read_waterlevelspressure(
+#         pointid: str = None, limit: int = 100, db: Session = Depends(get_nm_aquifer)
+# ):
+#     return _read(db, WaterLevelsContinuous_Acoustic, limit)
+#
+#
+# @router.get(
+#     "/locations", response_model=List[nm_aquifer_schemas.Location], tags=["Locations"]
+# )
+# def read_locations(
+#         pointid: str = None, limit: int = 100, db: Session = Depends(get_nm_aquifer)
+# ):
+#     filters = []
+#     if pointid:
+#         filters = [Location.PointID == pointid]
+#     return _read(db, Location, limit=limit, filters=filters)
 
 # ============= EOF =============================================

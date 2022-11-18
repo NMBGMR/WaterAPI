@@ -13,11 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ===============================================================================
-
+import os
 
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from api.routes.wq import router as wq_router
+
+from api.models.wl_models import Base
+from api.session import waterdbengine
+# # from api.routes.wq import router as wq_router
 from api.routes.wl import router as wl_router
 
 tags_metadata = [
@@ -57,8 +60,11 @@ app.add_middleware(
 
 
 app.include_router(wl_router)
-app.include_router(wq_router)
+# app.include_router(wq_router)
 
+if int(os.environ['DATABASE_DEV']):
+    Base.metadata.drop_all(bind=waterdbengine)
+    Base.metadata.create_all(bind=waterdbengine)
 
 @app.get("/")
 async def index():

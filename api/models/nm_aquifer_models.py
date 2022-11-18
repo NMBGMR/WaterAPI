@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ===============================================================================
+from datetime import datetime
 from typing import Any
 from sqlalchemy_utils import UUIDType
 from sqlalchemy import (
@@ -202,35 +203,35 @@ class WaterLevelMixin(object):
     # DataSource=Column(String, ForeignKey('LU_DataSource.code'))
     MeasuringAgency = Column(String)
 
-    @declared_attr
-    def measurement_method(self):
-        return relationship("LU_MeasurementMethod")
+    # @declared_attr
+    # def measurement_method(self):
+    #     return relationship("LU_MeasurementMethod")
+    #
+    # @declared_attr
+    # def data_source(self):
+    #     return relationship("LU_DataSource")
+    #
+    # @declared_attr
+    # def DataSource(self):
+    #     return Column(String, ForeignKey("LU_DataSource.code"))
+    #
+    # @declared_attr
+    # def MeasurementMethod(self):
+    #     return Column(String, ForeignKey("LU_MeasurementMethod.code"))
 
-    @declared_attr
-    def data_source(self):
-        return relationship("LU_DataSource")
-
-    @declared_attr
-    def DataSource(self):
-        return Column(String, ForeignKey("LU_DataSource.code"))
-
-    @declared_attr
-    def MeasurementMethod(self):
-        return Column(String, ForeignKey("LU_MeasurementMethod.code"))
-
-    @property
-    def measurement_method_meaning(self):
-        return self.measurement_method.meaning
-
-    @property
-    def data_source_meaning(self):
-        return self.data_source.meaning
+    # @property
+    # def measurement_method_meaning(self):
+    #     return self.measurement_method.meaning
+    #
+    # @property
+    # def data_source_meaning(self):
+    #     return self.data_source.meaning
 
 
 class WaterLevels(Base, WaterLevelMixin):
     DepthToWater = Column(Float)
     LevelStatus = Column(String)
-    DataQuality = Column(String, ForeignKey("LU_DataQuality.code"))
+    # DataQuality = Column(String, ForeignKey("LU_DataQuality.code"))
     MPHeight = Column(Float)
     MeasuredBy = Column(String)
     SiteNotes = Column(String)
@@ -240,15 +241,29 @@ class WaterLevels(Base, WaterLevelMixin):
     TimeMeasured = Column(Time)
     TimeDatum = Column(String)
 
-    data_quality = relationship("LU_DataQuality")
+    # data_quality = relationship("LU_DataQuality")
 
     @property
     def data_quality_meaning(self):
-        return self.data_quality.meaning
+        return 'asdf'
+        # return self.data_quality.meaning
+
+    @property
+    def DateTimeMeasured(self):
+        dt = self.DateMeasured
+        if self.TimeMeasured:
+            dt = datetime.combine(self.DateMeasured, self.TimeMeasured)
+        else:
+            dt = datetime.fromordinal(dt.toordinal())
+        return dt
 
 
 class WaterLevelsContinuousMixin(WaterLevelMixin):
     DateMeasured = Column(DateTime)
+
+    @property
+    def DateTimeMeasured(self):
+        return self.DateMeasured
 
 
 class WaterLevelsContinuous_Pressure(Base, WaterLevelsContinuousMixin):
@@ -269,7 +284,6 @@ class WaterLevelsContinuous_Pressure(Base, WaterLevelsContinuousMixin):
 
 
 class WaterLevelsContinuous_Acoustic(Base, WaterLevelsContinuousMixin):
-
     TemperatureAir = Column(Float)
 
     Notes = Column(String)
@@ -283,7 +297,6 @@ class WaterLevelsContinuous_Acoustic(Base, WaterLevelsContinuousMixin):
     Created = Column(DateTime)
     EventID = Column(Integer)
     ImportID = Column(UUIDType)
-
 
 # class Meter(Base):
 #     id = Column(Integer, primary_key=True, index=True)

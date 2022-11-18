@@ -15,34 +15,43 @@
 # ===============================================================================
 from http.client import HTTPException
 
-from api.session import NM_Aquifer, NM_Water_Quality
+from api.session import WATERDB
 
 
-def get_nm_aquifer():
-    db = NM_Aquifer()
+# from api.session import NM_Aquifer, NM_Water_Quality
+
+
+# def get_nm_aquifer():
+#     db = NM_Aquifer()
+#     try:
+#         yield db
+#     finally:
+#         db.close()
+#
+#
+# def get_nm_water_quality():
+#     db = NM_Water_Quality()
+#     try:
+#         yield db
+#     finally:
+#         db.close()
+def get_waterdb():
+    db = WATERDB()
     try:
         yield db
     finally:
         db.close()
 
-
-def get_nm_water_quality():
-    db = NM_Water_Quality()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-def _read(db, table, limit=None, filters=None):
+def _read(db, table, limit=None, filters=None, orderby=None):
     q = db.query(table)
     if filters:
         for fi in filters:
             q = q.filter(fi)
 
+    if orderby:
+        q = q.order_by(orderby)
     if limit:
         q = q.limit(limit)
-
     return q.all()
 
 

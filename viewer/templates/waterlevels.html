@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-3.0.2.min.css" type="text/css" />
+    <script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-3.0.2.min.js"></script>
+    {% if figJS %}
+        {{ figJS|safe }}
+    {% endif %}
+    {% if figJS2 %}
+        {{ figJS2|safe }}
+    {% endif %}
+
+{% endblock %}
+
+{% block content %}
+    <h1>Groundwater Level Hydrograph </h1><br /><br />
+
+    <br/>
+
+
+    {% if figDiv %}
+        {{ figDiv|safe }}
+    {% endif %}
+
+
+    <b>Disclaimer:</b><br>
+
+    {{ disclaimer }}
+
+    <p>For more information on this project contact <a href="mailto:stacy.timmons@nmt.edu">Stacy Timmons</a>
+        or <a href="mailto:kitty.pokory@nmt.edu">Cathryn Pokorny</a></p>
+
+{% endblock %}
