@@ -43,8 +43,12 @@ def get_waterdb():
         db.close()
 
 
-def _read(db, table, limit=None, filters=None, orderby=None):
+def _read(db, table, joins=None, limit=None, filters=None, orderby=None):
     q = db.query(table)
+    if joins:
+        for ji in joins:
+            q = q.join(ji)
+
     if filters:
         for fi in filters:
             q = q.filter(fi)
@@ -91,6 +95,5 @@ def _get(db, table, dbid):
         raise HTTPException(status_code=404, detail=f"{table}.{dbid} not found")
 
     return db_item
-
 
 # ============= EOF =============================================

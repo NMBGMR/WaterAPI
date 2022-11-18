@@ -25,11 +25,20 @@ class ORMBase(BaseModel):
         allow_population_by_field_name = True
 
 
-class WaterLevels(ORMBase):
-    DepthToWaterBGS: float
-    DateTimeMeasured: Optional[datetime]
-    MeasuringPointHeight: Optional[float]
-    MeasuringMethod: Optional[str]
+class Location(ORMBase):
+    id: int
+    PointID: str
 
+
+class Well(ORMBase):
+    id: int
+    location: Location
+
+
+class WellMeasurements(ORMBase):
+    id: int
+    value: float
+    timestamp: datetime
+    well: Well
 
 # ============= EOF =============================================

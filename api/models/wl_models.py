@@ -15,7 +15,10 @@
 # ===============================================================================
 from datetime import datetime
 from typing import Any
-from sqlalchemy_utils import UUIDType
+# from sqlalchemy_utils import UUIDType
+from geoalchemy2 import Geometry
+from geoalchemy2.shape import to_shape
+
 from sqlalchemy import (
     Column,
     Integer,
@@ -37,7 +40,7 @@ from sqlalchemy.orm import relationship
 
 @as_declarative()
 class Base:
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, index=True, primary_key=True, autoincrement=True)
     __name__: str
 
     # to generate tablename from classname
@@ -46,18 +49,69 @@ class Base:
         return cls.__name__
 
 
-class WaterLevels(Base):
-    DepthToWaterBGS = Column(Float)
-    DateTimeMeasured = Column(DateTime)
+class Location(Base):
+    point = Column(Geometry("POINT"))
     PointID = Column(String)
     MeasuringPointHeight = Column(Float)
-    MeasuringMethod = Column(String)
+    elevation = Column(Float)
+    elevation_datum = Column(String)
+    public_release = Column(Boolean)
 
 
-# class LU(object):
-#     id = Column(Integer, primary_key=True)
-#     code = Column(String)
-#     meaning = Column(String)
+class Well(Base):
+    location_id = Column(Integer, ForeignKey("Location.id"))
+    location = relationship("Location")
+    public_release = Column(Boolean)
+
+
+class WellConstruction(Base):
+    casing_diameter = Column(Float, default=0)
+    hole_depth = Column(Float, default=0)
+    well_depth = Column(Float, default=0)
+    well_id = Column(Integer, ForeignKey("Well.id"))
+
+    screens = relationship("ScreenInterval")
+
+
+class ScreenInterval(Base):
+    top = Column(Float)
+    bottom = Column(Float)
+    well_construction_id = Column(Integer, ForeignKey("WellConstruction.id"))
+
+
+class ObservedProperty(Base):
+    name = Column(String)
+    units = Column(String)
+    definition = Column(String)
+
+
+class WellMeasurement(Base):
+    value = Column(Float)
+    timestamp = Column(DateTime, default=func.now())
+    well_id = Column(Integer, ForeignKey("Well.id"))
+    method_id = Column(Integer, ForeignKey("LU_MeasurementMethod.id"))
+    observed_property_id = Column(Integer, ForeignKey("ObservedProperty.id"))
+    sensor_id = Column(Integer, ForeignKey("Sensors.id"))
+    note = Column(String)
+    status_id = Column(Integer, ForeignKey("LU_Status.id"))
+    qc_id = Column(Integer, ForeignKey('QC.id'))
+    public_release = Column(Boolean)
+
+    well = relationship("Well")
+
+
+class Sensors(Base):
+    name = Column(String)
+    manufacture = Column
+    install_date = Column(DateTime)
+
+
+class LU(object):
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    meaning = Column(String)
+
+
 #
 #
 # class LU_AltitudeMethod(Base, LU):
@@ -76,8 +130,12 @@ class WaterLevels(Base):
 #     pass
 #
 #
-# class LU_MeasurementMethod(Base, LU):
-#     pass
+class LU_MeasurementMethod(Base, LU):
+    pass
+
+
+class LU_Status(Base, LU):
+    pass
 #
 #
 # class LU_DataQuality(Base, LU):

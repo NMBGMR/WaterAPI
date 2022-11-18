@@ -24,7 +24,7 @@ from sqlalchemy.orm import Session
 #     WaterLevelsContinuous_Acoustic,
 #     Location,
 # )
-from api.models.wl_models import WaterLevels
+from api.models.wl_models import WellMeasurement, Well, Location, ObservedProperty
 
 from api.routes import _read, get_waterdb
 from api.schemas import wl_schemas
@@ -34,20 +34,45 @@ router = APIRouter()
 
 @router.get(
     "/waterlevels",
-    response_model=List[wl_schemas.WaterLevels],
+    response_model=List[wl_schemas.WellMeasurements],
     tags=["Groundwater Levels"],
 )
 def read_waterlevels(
-    pointid: str = None, limit: int = 1000, db: Session = Depends(get_waterdb)
+        pointid: str = None, limit: int = 1000, db: Session = Depends(get_waterdb)
 ):
-    fs = []
+    fs = [ObservedProperty.name == 'DepthToWaterBGS']
+    js = [ObservedProperty]
     if pointid:
-        fs = [WaterLevels.PointID == pointid]
-    # print(limit, pointid, fs)
-    vs = _read(db, WaterLevels, limit, filters=fs, orderby=WaterLevels.DateTimeMeasured)
-    # print(vs)
+        js.extend([Well, Location])
+        fs.append(Location.PointID == pointid)
+
+    vs = _read(db, WellMeasurement, limit=limit,
+               joins=js,
+               filters=fs,
+               orderby=WellMeasurement.timestamp)
+
     return vs
 
+@router.get(
+    "/welltemperatures",
+    response_model=List[wl_schemas.WellMeasurements],
+    tags=["Groundwater Temperatures"],
+)
+def read_temperatures(
+        pointid: str = None, limit: int = 1000, db: Session = Depends(get_waterdb)
+):
+    fs = [ObservedProperty.name == 'WellTemperature']
+    js = [ObservedProperty]
+    if pointid:
+        js.extend([Well, Location])
+        fs.append(Location.PointID == pointid)
+
+    vs = _read(db, WellMeasurement, limit=limit,
+               joins=js,
+               filters=fs,
+               orderby=WellMeasurement.timestamp)
+
+    return vs
 
 #
 # @router.get(

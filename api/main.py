@@ -23,6 +23,7 @@ from api.session import waterdbengine
 
 # # from api.routes.wq import router as wq_router
 from api.routes.wl import router as wl_router
+from api.setup_db import setup_db
 
 tags_metadata = [
     {"name": "Locations", "description": ""},
@@ -63,10 +64,7 @@ app.add_middleware(
 app.include_router(wl_router)
 # app.include_router(wq_router)
 
-if int(os.environ["DATABASE_DEV"]):
-    Base.metadata.drop_all(bind=waterdbengine)
-    Base.metadata.create_all(bind=waterdbengine)
-
+setup_db()
 
 @app.get("/")
 async def index():
