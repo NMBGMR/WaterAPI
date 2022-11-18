@@ -63,8 +63,9 @@ class ProjectLocation(Base):
     location = relationship("Location", cascade="all, delete")
 
 
+
 class Location(Base):
-    point = Column(Geometry("POINT"))
+    point = Column(Geometry("POINT", 4326))
     point_id = Column(String)
     elevation = Column(Float)
     elevation_datum = Column(String)
@@ -83,6 +84,13 @@ class Location(Base):
     half_quarter = Column(Integer)
     quarter_quarter = Column(Integer)
 
+    @property
+    def latitude(self):
+        return to_shape(self.point).y
+
+    @property
+    def longitude(self):
+        return to_shape(self.point).x
 
 class Well(Base):
     location_id = Column(Integer, ForeignKey("Location.id"))

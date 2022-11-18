@@ -14,27 +14,27 @@ services:
     depends_on:
       - traefik
 
-  viewer:
+  frontend:
     build:
-      context: ./viewer/
+      context: ./frontend/
       dockerfile: ./Dockerfile_dev
     command: bash -c "
-      gunicorn viewer.main:app -w 2 -b 0.0.0.0:8001 --reload --reload-extra-file /viewer/templates
+      gunicorn frontend.main:app -w 2 -b 0.0.0.0:8001 --reload --reload-extra-file /frontend/templates
       "
     ports:
       - "8001:8001"
     volumes:
-      - ./viewer:/viewer
+      - ./frontend:/frontend
     depends_on:
       - traefik
       - static-files
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.viewer-insecure.rule=Host(`localhost`) && PathPrefix(`/viewer`)"
-      - "traefik.http.routers.viewer-insecure.entrypoints=web"
-      - "traefik.http.middlewares.viewer-sp.stripprefix.prefixes=/viewer"
-      - "traefik.http.middlewares.viewer-sp.stripprefix.forceSlash=false"
-      - "traefik.http.routers.viewer-insecure.middlewares=viewer-sp"
+      - "traefik.http.routers.frontend-insecure.rule=Host(`localhost`) && PathPrefix(`/frontend`)"
+      - "traefik.http.routers.frontend-insecure.entrypoints=web"
+      - "traefik.http.middlewares.frontend-sp.stripprefix.prefixes=/frontend"
+      - "traefik.http.middlewares.frontend-sp.stripprefix.forceSlash=false"
+      - "traefik.http.routers.frontend-insecure.middlewares=frontend-sp"
 
     restart: on-failure
 

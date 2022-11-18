@@ -1,8 +1,8 @@
 import requests
 from flask import Flask, render_template, Markup, redirect
 
-from viewer import WL_DISCLAIMER
-from viewer.plotting import make_hydrograph
+from frontend import WL_DISCLAIMER
+from frontend.plotting import make_hydrograph
 
 app = Flask(__name__)
 
@@ -12,9 +12,16 @@ def index():
     return redirect("/api/v1/docs")
 
 
+@app.route('/map')
+def map():
+    map_cfg = {"center_lat": 33.5,
+               "center_lon": -104.5,
+               "zoom": 7}
+    return render_template("index.html", map_cfg=map_cfg)
+
+
 @app.route("/waterlevels/<string:pointid>")
 def waterlevels(pointid):
-
     acs = []
     resp = requests.get(
         f"http://host.docker.internal/api/v1/waterlevelspressure?pointid={pointid}"
@@ -45,7 +52,6 @@ def waterlevels(pointid):
         datanote=datanote,
         disclaimer=disclaimer,
     )
-
 
 # DESCRIPTIONS = ['Start', 'Getting More Data', 'Writing to CSV', 'JSON Schema']
 #

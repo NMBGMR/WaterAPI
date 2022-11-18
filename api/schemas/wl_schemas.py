@@ -14,7 +14,9 @@
 # limitations under the License.
 # ===============================================================================
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Any
+from geoalchemy2 import Geometry
+from geojson_pydantic.geometries import Point
 
 from pydantic.main import BaseModel
 
@@ -28,6 +30,8 @@ class ORMBase(BaseModel):
 class Location(ORMBase):
     id: int
     point_id: str
+    latitude: float
+    longitude: float
 
 
 class Well(ORMBase):
