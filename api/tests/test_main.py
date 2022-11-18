@@ -23,6 +23,7 @@ from sqlalchemy.orm import sessionmaker
 from api.main import app
 from api.models.nm_aquifer_models import Base as aqbase
 from api.models.nm_water_quality_models import Base as wqbase
+
 # from api.routes import get_nm_aquifer, get_nm_water_quality
 from api.routes import get_waterdb
 
