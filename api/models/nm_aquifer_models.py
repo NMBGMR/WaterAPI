@@ -245,7 +245,7 @@ class WaterLevels(Base, WaterLevelMixin):
 
     @property
     def data_quality_meaning(self):
-        return 'asdf'
+        return "asdf"
         # return self.data_quality.meaning
 
     @property
@@ -297,6 +297,7 @@ class WaterLevelsContinuous_Acoustic(Base, WaterLevelsContinuousMixin):
     Created = Column(DateTime)
     EventID = Column(Integer)
     ImportID = Column(UUIDType)
+
 
 # class Meter(Base):
 #     id = Column(Integer, primary_key=True, index=True)

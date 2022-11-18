@@ -30,4 +30,6 @@ class WaterLevels(ORMBase):
     DateTimeMeasured: Optional[datetime]
     MeasuringPointHeight: Optional[float]
     MeasuringMethod: Optional[str]
+
+
 # ============= EOF =============================================

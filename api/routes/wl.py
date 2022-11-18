@@ -38,7 +38,7 @@ router = APIRouter()
     tags=["Groundwater Levels"],
 )
 def read_waterlevels(
-        pointid: str = None, limit: int = 1000, db: Session = Depends(get_waterdb)
+    pointid: str = None, limit: int = 1000, db: Session = Depends(get_waterdb)
 ):
     fs = []
     if pointid:
@@ -47,6 +47,7 @@ def read_waterlevels(
     vs = _read(db, WaterLevels, limit, filters=fs, orderby=WaterLevels.DateTimeMeasured)
     # print(vs)
     return vs
+
 
 #
 # @router.get(

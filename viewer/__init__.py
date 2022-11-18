@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ===============================================================================
-WL_DISCLAIMER = '''At NMBGMR, we use different tools to collect groundwater level measurements, including continuous 
+WL_DISCLAIMER = """At NMBGMR, we use different tools to collect groundwater level measurements, including continuous 
 data recorders and manual measurements. All data provided here are in feet, depth to water, below ground surface (BGS). 
 We use pressure transducers to record pressure of water over a device installed in the well, which is converted to feet 
 of water and depth to water. We provide here up to one measurement per hour where the data are that frequent. In some 
@@ -25,6 +25,6 @@ especially for legally binding decisions. Data are subject to changes, deletion,
 at any time and should not be relied on for any critical application. Any opinions expressed may not necessarily 
 reflect the official position of the New Mexico Bureau of Geology, New Mexico Tech, or the State of New Mexico. 
 No warranty expressed or implied, is made regarding the accuracy or utility of the data for general or scientific purposes.
-'''
+"""
 
 # ============= EOF =============================================

@@ -42,6 +42,7 @@ def get_waterdb():
     finally:
         db.close()
 
+
 def _read(db, table, limit=None, filters=None, orderby=None):
     q = db.query(table)
     if filters:

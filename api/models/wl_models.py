@@ -52,6 +52,8 @@ class WaterLevels(Base):
     PointID = Column(String)
     MeasuringPointHeight = Column(Float)
     MeasuringMethod = Column(String)
+
+
 # class LU(object):
 #     id = Column(Integer, primary_key=True)
 #     code = Column(String)
