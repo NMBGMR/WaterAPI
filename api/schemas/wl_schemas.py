@@ -41,4 +41,5 @@ class WellMeasurements(ORMBase):
     timestamp: datetime
     well: Well
 
+
 # ============= EOF =============================================

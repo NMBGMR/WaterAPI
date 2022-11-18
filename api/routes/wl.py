@@ -38,20 +38,25 @@ router = APIRouter()
     tags=["Groundwater Levels"],
 )
 def read_waterlevels(
-        pointid: str = None, limit: int = 1000, db: Session = Depends(get_waterdb)
+    pointid: str = None, limit: int = 1000, db: Session = Depends(get_waterdb)
 ):
-    fs = [ObservedProperty.name == 'DepthToWaterBGS']
+    fs = [ObservedProperty.name == "DepthToWaterBGS"]
     js = [ObservedProperty]
     if pointid:
         js.extend([Well, Location])
         fs.append(Location.PointID == pointid)
 
-    vs = _read(db, WellMeasurement, limit=limit,
-               joins=js,
-               filters=fs,
-               orderby=WellMeasurement.timestamp)
+    vs = _read(
+        db,
+        WellMeasurement,
+        limit=limit,
+        joins=js,
+        filters=fs,
+        orderby=WellMeasurement.timestamp,
+    )
 
     return vs
+
 
 @router.get(
     "/welltemperatures",
@@ -59,20 +64,25 @@ def read_waterlevels(
     tags=["Groundwater Temperatures"],
 )
 def read_temperatures(
-        pointid: str = None, limit: int = 1000, db: Session = Depends(get_waterdb)
+    pointid: str = None, limit: int = 1000, db: Session = Depends(get_waterdb)
 ):
-    fs = [ObservedProperty.name == 'WellTemperature']
+    fs = [ObservedProperty.name == "WellTemperature"]
     js = [ObservedProperty]
     if pointid:
         js.extend([Well, Location])
         fs.append(Location.PointID == pointid)
 
-    vs = _read(db, WellMeasurement, limit=limit,
-               joins=js,
-               filters=fs,
-               orderby=WellMeasurement.timestamp)
+    vs = _read(
+        db,
+        WellMeasurement,
+        limit=limit,
+        joins=js,
+        filters=fs,
+        orderby=WellMeasurement.timestamp,
+    )
 
     return vs
+
 
 #
 # @router.get(

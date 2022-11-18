@@ -20,29 +20,25 @@ from api.session import waterdbengine, WATERDB
 
 
 def setup_db():
-    if int(os.environ['DATABASE_DEV']):
+    if int(os.environ["DATABASE_DEV"]):
         Base.metadata.drop_all(bind=waterdbengine)
         Base.metadata.create_all(bind=waterdbengine)
 
         db = WATERDB()
-        db.add(Location(PointID='JR-001'))
-        db.add(Location(PointID='JR-002'))
+        db.add(Location(PointID="JR-001"))
+        db.add(Location(PointID="JR-002"))
         db.commit()
         db.add(Well(location_id=1))
         db.add(Well(location_id=2))
-        db.add(ObservedProperty(name='DepthToWaterBGS'))
-        db.add(ObservedProperty(name='WellTemperature'))
+        db.add(ObservedProperty(name="DepthToWaterBGS"))
+        db.add(ObservedProperty(name="WellTemperature"))
         db.commit()
-        db.add(WellMeasurement(well_id=1,
-                               value=10,
-                               observed_property_id=1))
-        db.add(WellMeasurement(well_id=2,
-                               value=131,
-                               observed_property_id=1))
+        db.add(WellMeasurement(well_id=1, value=10, observed_property_id=1))
+        db.add(WellMeasurement(well_id=2, value=131, observed_property_id=1))
 
-        db.add(WellMeasurement(well_id=1,
-                               value=103,
-                               observed_property_id=2))
+        db.add(WellMeasurement(well_id=1, value=103, observed_property_id=2))
         db.commit()
         db.close()
+
+
 # ============= EOF =============================================

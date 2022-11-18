@@ -15,6 +15,7 @@
 # ===============================================================================
 from datetime import datetime
 from typing import Any
+
 # from sqlalchemy_utils import UUIDType
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
@@ -94,7 +95,7 @@ class WellMeasurement(Base):
     sensor_id = Column(Integer, ForeignKey("Sensors.id"))
     note = Column(String)
     status_id = Column(Integer, ForeignKey("LU_Status.id"))
-    qc_id = Column(Integer, ForeignKey('QC.id'))
+    qc_id = Column(Integer, ForeignKey("QC.id"))
     public_release = Column(Boolean)
 
     well = relationship("Well")
@@ -136,6 +137,8 @@ class LU_MeasurementMethod(Base, LU):
 
 class LU_Status(Base, LU):
     pass
+
+
 #
 #
 # class LU_DataQuality(Base, LU):

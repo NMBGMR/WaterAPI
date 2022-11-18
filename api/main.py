@@ -66,6 +66,7 @@ app.include_router(wl_router)
 
 setup_db()
 
+
 @app.get("/")
 async def index():
     return {"message": "NMBGMR Water API"}
