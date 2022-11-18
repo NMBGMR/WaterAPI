@@ -59,8 +59,9 @@ class ProjectLocation(Base):
     project_id = Column(Integer, ForeignKey("Project.id"))
     location_id = Column(Integer, ForeignKey("Location.id"))
 
-    project = relationship("Project", cascade='all, delete')
-    location = relationship("Location", cascade='all, delete')
+    project = relationship("Project", cascade="all, delete")
+    location = relationship("Location", cascade="all, delete")
+
 
 class Location(Base):
     point = Column(Geometry("POINT"))
@@ -68,7 +69,7 @@ class Location(Base):
     elevation = Column(Float)
     elevation_datum = Column(String)
     public_release = Column(Boolean)
-    state = Column(String, default='NM')
+    state = Column(String, default="NM")
     county = Column(String)
     quad = Column(String)
     notes = Column(String)
@@ -131,6 +132,7 @@ class WellMeasurement(Base):
     well = relationship("Well")
     observed_property = relationship("ObservedProperty")
 
+
 class Sensors(Base):
     name = Column(String)
     manufacture = Column
@@ -175,6 +177,7 @@ class LU_MeasurementMethod(Base, LU):
 class LU_Status(Base, LU):
     pass
 
+
 #
 #
 # class LU_DataQuality(Base, LU):
@@ -183,6 +186,7 @@ class LU_Status(Base, LU):
 #
 class LU_DataSource(Base, LU):
     pass
+
 
 #
 # class Location(Base):

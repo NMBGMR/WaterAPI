@@ -17,8 +17,19 @@ import os
 
 import pymssql
 from api.config import settings
-from api.models.wl_models import Base, Location, Well, ObservedProperty, WellMeasurement, WellConstruction, \
-    ScreenInterval, Project, ProjectLocation, LU_DataSource, LU_MeasurementMethod
+from api.models.wl_models import (
+    Base,
+    Location,
+    Well,
+    ObservedProperty,
+    WellMeasurement,
+    WellConstruction,
+    ScreenInterval,
+    Project,
+    ProjectLocation,
+    LU_DataSource,
+    LU_MeasurementMethod,
+)
 from api.session import waterdbengine, WATERDB, NM_Aquifer
 
 
@@ -41,7 +52,7 @@ def setup_db():
         #
         # db.add(WellMeasurement(well_id=1, value=103, observed_property_id=2))
 
-    if int(os.environ['COPY_NM_AQUIFER']):
+    if int(os.environ["COPY_NM_AQUIFER"]):
         copy_nm_aquifer(db)
 
     db.commit()
@@ -49,38 +60,38 @@ def setup_db():
 
 
 def get_locations(cursor):
-    sql = 'select top 10 *, Geometry.STAsText() as point from dbo.Location order by PointID'
+    sql = "select top 10 *, Geometry.STAsText() as point from dbo.Location order by PointID"
     cursor.execute(sql)
     return cursor.fetchall()
 
 
 def get_screens(cursor, pointid):
-    sql = 'select * from dbo.WellScreens where PointID=%s'
+    sql = "select * from dbo.WellScreens where PointID=%s"
     return fetch(cursor, sql, pointid)
 
 
 def get_welldata(cursor, pointid):
-    sql = 'select * from dbo.WellData where PointID=%s'
+    sql = "select * from dbo.WellData where PointID=%s"
     return fetch(cursor, sql, pointid)
 
 
 def get_projects(cursor):
-    sql = 'select * from dbo.Projects'
+    sql = "select * from dbo.Projects"
     return fetch(cursor, sql)
 
 
 def get_associated_projects(cursor, pointid):
-    sql = 'select * from dbo.ProjectLocations where PointID=%s'
+    sql = "select * from dbo.ProjectLocations where PointID=%s"
     return fetch(cursor, sql, pointid)
 
 
 def get_manual_water_levels(cursor, pointid):
-    sql = '''select (CASE
+    sql = """select (CASE
      WHEN TimeMeasured is NULL 
      then CONVERT(DateTime, DateMeasured) 
         else
        CONVERT(DateTime, DateMeasured) + CONVERT(DateTime, TimeMeasured) 
-       end) as DateTimeMeasured, * from dbo.WaterLevels where PointID=%s order by DateMeasured'''
+       end) as DateTimeMeasured, * from dbo.WaterLevels where PointID=%s order by DateMeasured"""
     return fetch(cursor, sql, pointid)
 
 
@@ -98,10 +109,10 @@ def copy_lu(cursor, dest, table, tag=None):
     if tag is None:
         tag = table.__tablename__
 
-    sql = f'select * from dbo.{tag}'
+    sql = f"select * from dbo.{tag}"
     cursor.execute(sql)
     for li in cursor.fetchall():
-        d = table(name=li['CODE'], meaning=li['MEANING'])
+        d = table(name=li["CODE"], meaning=li["MEANING"])
         dest.add(d)
     dest.commit()
     dest.flush()
@@ -114,7 +125,7 @@ def copy_nm_aquifer(dest):
     # copy projects
     projects = get_projects(cursor)
     for p in projects:
-        dbp = Project(name=p['Project'], point_id_prefix=p['PointIDPrefix'])
+        dbp = Project(name=p["Project"], point_id_prefix=p["PointIDPrefix"])
         dest.add(dbp)
     dest.commit()
     dest.flush()
@@ -133,61 +144,75 @@ def copy_nm_aquifer(dest):
     locations = get_locations(cursor)
     for l in locations:
         print(f'adding location {l["PointID"]}')
-        dbloc = Location(point_id=l['PointID'],
-                         elevation=l['Altitude'],
-                         elevation_datum=l['AltDatum'],
-                         point=l['point'],
-                         township=l['Township'],
-                         township_direction=l['TownshipDirection'],
-                         range=l['Range'],
-                         range_direction=l['RangeDirection'],
-                         public_release=l['PublicRelease'],
-                         county=l['County'],
-                         state=l['State'],
-                         quad=l['QuadName'],
-                         notes=l['LocationNotes'])
+        dbloc = Location(
+            point_id=l["PointID"],
+            elevation=l["Altitude"],
+            elevation_datum=l["AltDatum"],
+            point=l["point"],
+            township=l["Township"],
+            township_direction=l["TownshipDirection"],
+            range=l["Range"],
+            range_direction=l["RangeDirection"],
+            public_release=l["PublicRelease"],
+            county=l["County"],
+            state=l["State"],
+            quad=l["QuadName"],
+            notes=l["LocationNotes"],
+        )
         dest.add(dbloc)
 
         # add location to associated projects
-        for ap in get_associated_projects(cursor, l['PointID']):
-            q = dest.query(Project).filter(Project.name == ap['ProjectName'])
+        for ap in get_associated_projects(cursor, l["PointID"]):
+            q = dest.query(Project).filter(Project.name == ap["ProjectName"])
             dest.add(ProjectLocation(project=q.first(), location=dbloc))
 
-        if l['SiteType'] == 'GW':
+        if l["SiteType"] == "GW":
             dbwell = Well(location=dbloc)
             dest.add(dbwell)
-            screens = get_screens(cursor, l['PointID'])
-            wd = get_welldata(cursor, l['PointID'])[0]
+            screens = get_screens(cursor, l["PointID"])
+            wd = get_welldata(cursor, l["PointID"])[0]
             wdkw = {}
             if wd:
-                wdkw = dict(casing_diameter=wd['CasingDiameter'],
-                            well_depth=wd['WellDepth'],
-                            hole_depth=wd['HoleDepth'],
-                            measuring_point_height=wd['MPHeight']
-                            )
-            dbscreens = [ScreenInterval(top=i['ScreenTop'], bottom=i['ScreenTop'],
-                                        description=i['ScreenDescription'],
-                                        ) for i in screens]
-            dbwc = WellConstruction(well=dbwell,
-                                    screens=dbscreens, **wdkw)
+                wdkw = dict(
+                    casing_diameter=wd["CasingDiameter"],
+                    well_depth=wd["WellDepth"],
+                    hole_depth=wd["HoleDepth"],
+                    measuring_point_height=wd["MPHeight"],
+                )
+            dbscreens = [
+                ScreenInterval(
+                    top=i["ScreenTop"],
+                    bottom=i["ScreenTop"],
+                    description=i["ScreenDescription"],
+                )
+                for i in screens
+            ]
+            dbwc = WellConstruction(well=dbwell, screens=dbscreens, **wdkw)
             dest.add(dbwc)
 
             # copy waterlevels
-            for wl in get_manual_water_levels(cursor, l['PointID']):
-                dsid = get_lookup_by_name(dest, LU_DataSource, wl['DataSource'])
-                mmid = get_lookup_by_name(dest, LU_MeasurementMethod, wl['MeasurementMethod'])
+            for wl in get_manual_water_levels(cursor, l["PointID"]):
+                dsid = get_lookup_by_name(dest, LU_DataSource, wl["DataSource"])
+                mmid = get_lookup_by_name(
+                    dest, LU_MeasurementMethod, wl["MeasurementMethod"]
+                )
 
-                dest.add(WellMeasurement(well=dbwell,
-                                         value=wl['DepthToWaterBGS'],
-                                         timestamp=wl['DateTimeMeasured'],
-                                         public_release=wl['PublicRelease'],
-                                         data_source_id=dsid,
-                                         method_id=mmid,
-                                         measuring_agency=wl['MeasuringAgency'],
-                                         measured_by=wl['MeasuredBy'],
-                                         observed_property=obsprop_bgs))
+                dest.add(
+                    WellMeasurement(
+                        well=dbwell,
+                        value=wl["DepthToWaterBGS"],
+                        timestamp=wl["DateTimeMeasured"],
+                        public_release=wl["PublicRelease"],
+                        data_source_id=dsid,
+                        method_id=mmid,
+                        measuring_agency=wl["MeasuringAgency"],
+                        measured_by=wl["MeasuredBy"],
+                        observed_property=obsprop_bgs,
+                    )
+                )
 
     # dest.commit()
     src.close()
+
 
 # ============= EOF =============================================
