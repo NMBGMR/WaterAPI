@@ -38,13 +38,13 @@ router = APIRouter()
     tags=["Groundwater Levels"],
 )
 def read_waterlevels(
-    pointid: str = None, limit: int = 1000, db: Session = Depends(get_waterdb)
+    point_id: str = None, limit: int = 1000, db: Session = Depends(get_waterdb)
 ):
     fs = [ObservedProperty.name == "DepthToWaterBGS"]
     js = [ObservedProperty]
-    if pointid:
+    if point_id:
         js.extend([Well, Location])
-        fs.append(Location.PointID == pointid)
+        fs.append(Location.point_id == point_id)
 
     vs = _read(
         db,
@@ -64,13 +64,13 @@ def read_waterlevels(
     tags=["Groundwater Temperatures"],
 )
 def read_temperatures(
-    pointid: str = None, limit: int = 1000, db: Session = Depends(get_waterdb)
+    point_id: str = None, limit: int = 1000, db: Session = Depends(get_waterdb)
 ):
     fs = [ObservedProperty.name == "WellTemperature"]
     js = [ObservedProperty]
-    if pointid:
+    if point_id:
         js.extend([Well, Location])
-        fs.append(Location.PointID == pointid)
+        fs.append(Location.point_id == point_id)
 
     vs = _read(
         db,

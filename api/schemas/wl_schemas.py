@@ -27,7 +27,7 @@ class ORMBase(BaseModel):
 
 class Location(ORMBase):
     id: int
-    PointID: str
+    point_id: str
 
 
 class Well(ORMBase):

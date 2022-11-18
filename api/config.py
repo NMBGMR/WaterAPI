@@ -28,17 +28,18 @@ class Settings:
     PROJECT_VERSION: str = "0.0.1"
 
     def __init__(self):
-        # db_user = os.getenv("NM_AQUIFER_USER")
-        # db_password = os.getenv("NM_AQUIFER_PASSWORD")
-        # db_host = os.getenv("NM_AQUIFER_HOST", "localhost")
-        # # DB_PORT = os.getenv(
-        # #     "NM_AQUIFER_PORT", 5432
-        # # )  # default postgres port is 5432
-        # db_name = os.getenv("NM_AQUIFER_NAME", "NM_Aquifer")
-        # db_driver = os.getenv("NM_AQUIFER_DRIVER", "mssql+pymssql")
-        # self.NM_AQUIFER_URL = (
-        #     f"{db_driver}://{db_user}:{db_password}@{db_host}/{db_name}"
-        # )
+        db_user = os.getenv("NM_AQUIFER_USER")
+        db_password = os.getenv("NM_AQUIFER_PASSWORD")
+        db_host = os.getenv("NM_AQUIFER_HOST", "localhost")
+        # DB_PORT = os.getenv(
+        #     "NM_AQUIFER_PORT", 5432
+        # )  # default postgres port is 5432
+        db_name = os.getenv("NM_AQUIFER_NAME", "NM_Aquifer")
+        db_driver = os.getenv("NM_AQUIFER_DRIVER", "mssql+pymssql")
+        self.NM_AQUIFER_ARGS = (db_host, db_user, db_password, db_name)
+        self.NM_AQUIFER_URL = (
+            f"{db_driver}://{db_user}:{db_password}@{db_host}/{db_name}"
+        )
         #
         # db_user = os.getenv("NM_WATER_QUALITY_USER", db_user)
         # db_password = os.getenv("NM_WATER_QUALITY_PASSWORD", db_password)

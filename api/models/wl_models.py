@@ -50,13 +50,37 @@ class Base:
         return cls.__name__
 
 
+class Project(Base):
+    name = Column(String)
+    point_id_prefix = Column(String)
+
+
+class ProjectLocation(Base):
+    project_id = Column(Integer, ForeignKey("Project.id"))
+    location_id = Column(Integer, ForeignKey("Location.id"))
+
+    project = relationship("Project", cascade='all, delete')
+    location = relationship("Location", cascade='all, delete')
+
 class Location(Base):
     point = Column(Geometry("POINT"))
-    PointID = Column(String)
-    MeasuringPointHeight = Column(Float)
+    point_id = Column(String)
     elevation = Column(Float)
     elevation_datum = Column(String)
     public_release = Column(Boolean)
+    state = Column(String, default='NM')
+    county = Column(String)
+    quad = Column(String)
+    notes = Column(String)
+
+    township = Column(Integer)
+    township_direction = Column(String)
+    range = Column(Integer)
+    range_direction = Column(String)
+    section = Column(Integer)
+    quarter = Column(Integer)
+    half_quarter = Column(Integer)
+    quarter_quarter = Column(Integer)
 
 
 class Well(Base):
@@ -66,17 +90,20 @@ class Well(Base):
 
 
 class WellConstruction(Base):
+    measuring_point_height = Column(Float)
     casing_diameter = Column(Float, default=0)
     hole_depth = Column(Float, default=0)
     well_depth = Column(Float, default=0)
     well_id = Column(Integer, ForeignKey("Well.id"))
 
+    well = relationship("Well")
     screens = relationship("ScreenInterval")
 
 
 class ScreenInterval(Base):
     top = Column(Float)
     bottom = Column(Float)
+    description = Column(String)
     well_construction_id = Column(Integer, ForeignKey("WellConstruction.id"))
 
 
@@ -97,14 +124,24 @@ class WellMeasurement(Base):
     status_id = Column(Integer, ForeignKey("LU_Status.id"))
     qc_id = Column(Integer, ForeignKey("QC.id"))
     public_release = Column(Boolean)
+    data_source_id = Column(Integer, ForeignKey("LU_DataSource.id"))
+    measuring_agency = Column(String)
+    measured_by = Column(String)
 
     well = relationship("Well")
-
+    observed_property = relationship("ObservedProperty")
 
 class Sensors(Base):
     name = Column(String)
     manufacture = Column
     install_date = Column(DateTime)
+
+
+class QC(Base):
+    user = Column(String)
+    timestamp = Column(DateTime)
+    status = Column(Boolean)
+    note = Column(String)
 
 
 class LU(object):
@@ -138,15 +175,14 @@ class LU_MeasurementMethod(Base, LU):
 class LU_Status(Base, LU):
     pass
 
-
 #
 #
 # class LU_DataQuality(Base, LU):
 #     pass
 #
 #
-# class LU_DataSource(Base, LU):
-#     pass
+class LU_DataSource(Base, LU):
+    pass
 
 #
 # class Location(Base):
