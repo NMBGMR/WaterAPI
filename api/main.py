@@ -14,6 +14,7 @@
 # limitations under the License.
 # ===============================================================================
 import os
+from threading import Thread
 
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -80,7 +81,9 @@ def get_user():
 
 @app.get("/copy_nm_aquifer", dependencies=[Depends(get_user)])
 async def copy_nm_aquifer():
-    setup_db()
+    t = Thread(target=setup_db)
+    t.start()
+    return
 
 
 # ============= EOF =============================================
