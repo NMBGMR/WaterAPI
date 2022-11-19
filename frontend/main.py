@@ -23,7 +23,9 @@ def map():
         "base_api_url": os.environ.get("BASE_API_URL", "http://localhost/api/v1/"),
     }
 
-    return render_template("index.html", map_cfg=map_cfg)
+    return render_template("index.html",
+                           disclaimer=WL_DISCLAIMER,
+                           map_cfg=map_cfg)
 
 
 @app.route("/entry")
