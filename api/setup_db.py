@@ -66,7 +66,7 @@ def get_locations(cursor):
         i = 0
         while 1:
             sql = f"""select * from dbo.Location 
---             where PointID like 'AB-%' 
+            where PointID like 'AB-%' 
             order by PointID
             offset {i*100} rows fetch next 100 rows only
             """
