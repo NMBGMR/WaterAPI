@@ -136,7 +136,7 @@ def fuzzy_search(column, searchterm):
     if "%" in searchterm or "_" in searchterm:
         return column.like(searchterm)
     else:
-        return column.eq(searchterm)
+        return column == searchterm
 
 
 @router.get("/wells", response_model=Page[wl_schemas.Well], tags=["Wells"])
