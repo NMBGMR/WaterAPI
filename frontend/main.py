@@ -25,9 +25,11 @@ def map():
 
     return render_template("index.html", map_cfg=map_cfg)
 
+
 @app.route("/entry")
 def entry():
     return render_template("entry.html")
+
 
 #
 # @app.route("/waterlevels/<string:pointid>")
