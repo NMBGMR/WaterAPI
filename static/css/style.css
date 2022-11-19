@@ -6,6 +6,7 @@
 .disclaimer {
   /*background-color: #e7f3fe;*/
   border-left: 6px solid #f5df73;
+  font-size: 8pt;
 }
 
 #map {
