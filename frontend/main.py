@@ -16,13 +16,14 @@ def index():
 
 @app.route("/map")
 def map():
-    map_cfg = {"center_lat": 33.5,
-               "center_lon": -104.5, "zoom": 7,
-               "base_api_url": os.environ.get('BASE_API_URL', 'http://localhost/api/v1')}
+    map_cfg = {
+        "center_lat": 33.5,
+        "center_lon": -104.5,
+        "zoom": 7,
+        "base_api_url": os.environ.get("BASE_API_URL", "http://localhost/api/v1"),
+    }
 
-    return render_template("index.html",
-
-                           map_cfg=map_cfg)
+    return render_template("index.html", map_cfg=map_cfg)
 
 
 #

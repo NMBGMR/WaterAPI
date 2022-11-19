@@ -133,7 +133,7 @@ def read_locations(
 
 
 def fuzzy_search(column, searchterm):
-    if '%' in searchterm or '_' in searchterm:
+    if "%" in searchterm or "_" in searchterm:
         return column.like(searchterm)
     else:
         return column.eq(searchterm)
