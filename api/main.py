@@ -18,13 +18,14 @@ from threading import Thread
 
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi_pagination import add_pagination
 
 from api.models.wl_models import Base
 from api.session import waterdbengine
 
 # # from api.routes.wq import router as wq_router
 from api.routes.wl import router as wl_router
-from api.setup_db import setup_db
+from api.setup_db import setup_db, setup_db_default
 
 tags_metadata = [
     {"name": "Locations", "description": ""},
@@ -49,7 +50,9 @@ origins = [
     "http://localhost:3000",
     "http://localhost:8000",
     "https://localhost",
-    "http://flask2.nmbgmr.nmt.edu" "https://localhost:3000",
+    "http://flask2.nmbgmr.nmt.edu",
+    "http://host.docker.internal",
+    "http://flask2.nmbgmr.nmt.edu",
     "https://localhost:8000",
 ]
 
@@ -62,11 +65,11 @@ app.add_middleware(
 )
 
 app.include_router(wl_router)
-
+add_pagination(app)
 
 # app.include_router(wq_router)
 
-# setup_db()
+setup_db_default()
 
 
 @app.get("/")

@@ -22,28 +22,33 @@ from pydantic.main import BaseModel
 
 
 class ORMBase(BaseModel):
+    id: int
     class Config:
         orm_mode = True
         allow_population_by_field_name = True
 
 
 class Location(ORMBase):
-    id: int
     point_id: str
     latitude: float
     longitude: float
 
 
+class WellConstruction(ORMBase):
+    measuring_point_height: Optional[float]
+    casing_diameter: Optional[float]
+    hole_depth: Optional[float]
+    well_depth: Optional[float]
+
+
 class Well(ORMBase):
-    id: int
-    location: Location
+    public_release: bool
+    well_construction: WellConstruction
 
 
 class WellMeasurements(ORMBase):
-    id: int
     value: float
     timestamp: datetime
     well: Well
-
 
 # ============= EOF =============================================

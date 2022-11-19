@@ -14,7 +14,7 @@
 # limitations under the License.
 # ===============================================================================
 from typing import List
-
+from fastapi_pagination import add_pagination, Page, paginate
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -26,7 +26,7 @@ from sqlalchemy.orm import Session
 # )
 from api.models.wl_models import WellMeasurement, Well, Location, ObservedProperty
 
-from api.routes import _read, get_waterdb
+from api.routes import _read, get_waterdb, Params
 from api.schemas import wl_schemas
 
 router = APIRouter()
@@ -38,7 +38,7 @@ router = APIRouter()
     tags=["Groundwater Levels"],
 )
 def read_waterlevels(
-    point_id: str = None, limit: int = 1000, db: Session = Depends(get_waterdb)
+        point_id: str = None, limit: int = 1000, db: Session = Depends(get_waterdb)
 ):
     fs = [ObservedProperty.name == "DepthToWaterBGS"]
     js = [ObservedProperty]
@@ -64,7 +64,7 @@ def read_waterlevels(
     tags=["Groundwater Temperatures"],
 )
 def read_temperatures(
-    point_id: str = None, limit: int = 1000, db: Session = Depends(get_waterdb)
+        point_id: str = None, limit: int = 1000, db: Session = Depends(get_waterdb)
 ):
     fs = [ObservedProperty.name == "WellTemperature"]
     js = [ObservedProperty]
@@ -109,14 +109,34 @@ def read_temperatures(
 #     return _read(db, WaterLevelsContinuous_Acoustic, limit)
 #
 #
-@router.get("/locations", response_model=List[wl_schemas.Location], tags=["Locations"])
+@router.get("/locations", response_model=Page[wl_schemas.Location], tags=["Locations"])
 def read_locations(
-    point_id: str = None, limit: int = 100, db: Session = Depends(get_waterdb)
+        point_id: str = None, limit: int = 100, db: Session = Depends(get_waterdb),
+        params: Params = Depends()
 ):
     filters = []
     if point_id:
         filters = [Location.point_id == point_id]
-    return _read(db, Location, limit=limit, filters=filters)
+    return paginate(_read(db, Location, limit=limit, filters=filters), params)
 
+
+@router.get("/wells", response_model=Page[wl_schemas.Well], tags=["Wells"])
+def read_wells(
+        location_id: int = None,
+        point_id: str = None,
+        db: Session = Depends(get_waterdb),
+        params: Params = Depends()
+):
+    joins = []
+    filters = []
+    if point_id:
+        joins.append(Location)
+        filters.append(Location.point_id == point_id)
+    elif location_id:
+        filters.append(Well.location_id == location_id)
+
+    return paginate(_read(db, Well,
+                          joins=joins,
+                          filters=filters), params)
 
 # ============= EOF =============================================

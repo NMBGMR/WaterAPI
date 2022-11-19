@@ -35,25 +35,36 @@ from api.models.wl_models import (
 from api.session import waterdbengine, WATERDB, NM_Aquifer
 
 
-def setup_db():
+def setup_db_default():
     if int(os.environ["DATABASE_DEV"]):
         Base.metadata.drop_all(bind=waterdbengine)
         Base.metadata.create_all(bind=waterdbengine)
 
         db = WATERDB()
-        # db.add(Location(PointID="JR-001"))
-        # db.add(Location(PointID="JR-002"))
-        # db.commit()
-        # db.add(Well(location_id=1))
-        # db.add(Well(location_id=2))
-        # db.add(ObservedProperty(name="DepthToWaterBGS"))
-        # db.add(ObservedProperty(name="WellTemperature"))
-        # db.commit()
-        # db.add(WellMeasurement(well_id=1, value=10, observed_property_id=1))
-        # db.add(WellMeasurement(well_id=2, value=131, observed_property_id=1))
-        #
-        # db.add(WellMeasurement(well_id=1, value=103, observed_property_id=2))
+        db.add(Location(point_id="JR-001", point='Point(-105 35)'))
+        db.add(Location(point_id="JR-002", point='Point(-104 34)'))
+        db.commit()
 
+        w1 = Well(location_id=1)
+        w2 = Well(location_id=2)
+        db.add(w1)
+        db.add(w2)
+        db.add(WellConstruction(well=w1))
+        db.add(WellConstruction(well=w2))
+        db.add(ObservedProperty(name="DepthToWaterBGS"))
+        db.add(ObservedProperty(name="WellTemperature"))
+        db.commit()
+        db.add(WellMeasurement(well_id=1, value=10, observed_property_id=1))
+        db.add(WellMeasurement(well_id=2, value=131, observed_property_id=1))
+
+        db.add(WellMeasurement(well_id=1, value=103, observed_property_id=2))
+        db.commit()
+        db.close()
+
+
+def setup_db():
+
+    db = WATERDB()
     if int(os.environ["COPY_NM_AQUIFER"]):
         copy_nm_aquifer(db)
 

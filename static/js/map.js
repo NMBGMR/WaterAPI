@@ -164,14 +164,20 @@ function loadLegend(){
 }
 
 function loadLayer(){
-    let url = 'http://flask2.nmbgmr.nmt.edu/api/v1/locations'
+    // let url = 'http://flask2.nmbgmr.nmt.edu/api/v1/locations'
+    let url = 'http://localhost/api/v1/locations'
     fetch(url).then(resp=>resp.json()).then((locations)=>{
         console.log(locations)
-        let markers = locations.map((loc)=>{
-            return L.circleMarker([loc.latitude, loc.longitude])
+        let markers = locations.items.map((loc)=>{
+            let marker = L.circleMarker([loc.latitude, loc.longitude])
+            marker.location = loc
+            return marker
         })
         const layer = new L.featureGroup(markers)
         map.addLayer(layer)
+        layer.on('click', function(e){
+            show_location_table(e, e.layer.location)
+        })
     })
 }
 // function loadLayer(ls, color, label, load_things){

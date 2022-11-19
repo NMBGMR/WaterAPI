@@ -68,7 +68,7 @@ class Location(Base):
     point_id = Column(String)
     elevation = Column(Float)
     elevation_datum = Column(String)
-    public_release = Column(Boolean)
+    public_release = Column(Boolean, default=False)
     state = Column(String, default="NM")
     county = Column(String)
     quad = Column(String)
@@ -95,7 +95,9 @@ class Location(Base):
 class Well(Base):
     location_id = Column(Integer, ForeignKey("Location.id"))
     location = relationship("Location")
-    public_release = Column(Boolean)
+    public_release = Column(Boolean, default=False)
+
+    well_construction = relationship("WellConstruction", back_populates="well", uselist=False)
 
 
 class WellConstruction(Base):
@@ -105,7 +107,7 @@ class WellConstruction(Base):
     well_depth = Column(Float, default=0)
     well_id = Column(Integer, ForeignKey("Well.id"))
 
-    well = relationship("Well")
+    well = relationship("Well", back_populates="well_construction", uselist=False)
     screens = relationship("ScreenInterval")
 
 
@@ -113,6 +115,7 @@ class ScreenInterval(Base):
     top = Column(Float)
     bottom = Column(Float)
     description = Column(String)
+    aquifer = Column(String)
     well_construction_id = Column(Integer, ForeignKey("WellConstruction.id"))
 
 
@@ -132,7 +135,7 @@ class WellMeasurement(Base):
     note = Column(String)
     status_id = Column(Integer, ForeignKey("LU_Status.id"))
     qc_id = Column(Integer, ForeignKey("QC.id"))
-    public_release = Column(Boolean)
+    public_release = Column(Boolean, default=False)
     data_source_id = Column(Integer, ForeignKey("LU_DataSource.id"))
     measuring_agency = Column(String)
     measured_by = Column(String)
