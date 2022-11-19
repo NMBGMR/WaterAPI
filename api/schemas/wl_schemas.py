@@ -47,7 +47,7 @@ class Well(ORMBase):
     well_construction: WellConstruction
 
 
-class WellMeasurements(ORMBase):
+class WellMeasurement(ORMBase):
     value: float
     timestamp: datetime
     well: Well

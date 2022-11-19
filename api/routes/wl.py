@@ -34,7 +34,7 @@ router = APIRouter()
 
 @router.get(
     "/waterlevels",
-    response_model=List[wl_schemas.WellMeasurements],
+    response_model=List[wl_schemas.WellMeasurement],
     tags=["Groundwater Levels"],
 )
 def read_waterlevels(
