@@ -62,10 +62,25 @@
 {#    </div>#}
 
     <div class="row">
-        <div class="col-lg-8 rounded">
+        <div class="col-lg-3 rounded">
+             <div class="form-group">
+                <label for="pointid_entry">PointID</label>
+                <input class="form-control" id="pointid_entry"
+                       placeholder="Enter PointID">
+                <small id="pointid_entry_help"
+                       class="form-text text-muted">Enter a full (e.g. MG-030) PointID. For partial search use
+                    the % character(s) (e.g MG-% for all PointIDs that startwith "MG-" or %-030 for all PointIDs
+                    that end with "-030" or %30% for PointIDs that contain "30"</small>
+
+                   <button type="submit"
+                           onclick="point_id_search()"
+                           class="btn btn-primary">Submit</button>
+              </div>
+        </div>
+        <div class="col-lg-6 rounded">
             <div id="map"></div>
         </div>
-        <div class="col-lg-4 rounded">
+        <div class="col-lg-3 rounded">
             <h4 class="panelabel">Selection Metadata</h4>
             <table id="selectiontable" class="table table-striped table-bordered table-sm">
                 <thead>
@@ -75,21 +90,6 @@
                     </tr>
                 </thead>
             </table>
-{#            <div class="tab">#}
-{#                <button class="tablinks" onclick="openInfo(event, 'Location')">Location</button>#}
-{#                <button class="tablinks" onclick="openInfo(event, 'Well')">Thing</button>#}
-{#                <button class="tablinks" onclick="openInfo(event, 'Datastream')">Datastream</button>#}
-{#                <button class="tablinks" onclick="openInfo(event, 'ObservedProperty')">ObservedProperty</button>#}
-{#                <button class="tablinks" onclick="openInfo(event, 'Sensor')">Sensor</button>#}
-{#            </div>#}
-{#            <div class="tabcontent" id="Location">#}
-{#                <table id="locationinfotable" class="table table-striped table-bordered table-sm">#}
-{#                </table>#}
-{#            </div>#}
-{#            <div class="tabcontent" id="Well">#}
-{#                <table id="wellinfotable" class="table table-striped table-bordered table-sm">#}
-{#                </table>#}
-{#            </div>#}
         </div>
 
     </div>

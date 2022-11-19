@@ -124,12 +124,19 @@ def read_locations(
 ):
     filters = []
     if point_id:
-        filters.append(Location.point_id == point_id)
+        filters.append(fuzzy_search(Location.point_id, point_id))
 
     if public_release is not None:
         filters.append(Location.public_release == public_release)
 
     return paginate(_read(db, Location, filters=filters), params)
+
+
+def fuzzy_search(column, searchterm):
+    if '%' in searchterm or '_' in searchterm:
+        return column.like(searchterm)
+    else:
+        return column.eq(searchterm)
 
 
 @router.get("/wells", response_model=Page[wl_schemas.Well], tags=["Wells"])
@@ -143,7 +150,7 @@ def read_wells(
     filters = []
     if point_id:
         joins.append(Location)
-        filters.append(Location.point_id == point_id)
+        filters.append(fuzzy_search(Location.point_id, point_id))
     elif location_id:
         filters.append(Well.location_id == location_id)
 

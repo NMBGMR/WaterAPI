@@ -103,7 +103,7 @@ L.Rectangle.include({
 //
 // });
 
-// let MAP_CFG;
+let MAP_CFG;
 // function ResetSelection(){
 //      myChart.data.datasets = [];
 //      myChart.update()
@@ -119,11 +119,11 @@ L.Rectangle.include({
 // }
 
 function mapInit(cfg){
-    // MAP_CFG = cfg;
+    MAP_CFG = cfg;
     map.setView([cfg.center_lat, cfg.center_lon], cfg.zoom);
 
 
-    loadLayer()
+    // loadLayer()
     // $.ajaxSetup({
     // async: false
     // });
@@ -165,25 +165,65 @@ function loadLegend(){
 }
 
 function loadLayer(){
-    let url = 'http://flask2.nmbgmr.nmt.edu/api/v1/locations'
+    // let url = MAP_CFG.base_api_url+'/locations'
     // let url = 'http://localhost/api/v1/locations'
 
-    retrieveItems(url, 5000, (locations)=>{
-        console.log('asdfasdf', locations)
-        let markers = locations.map((loc)=>{
-            let marker = L.circleMarker([loc.latitude, loc.longitude],
-                {radius: 5})
-            marker.location = loc
-            return marker
-        })
-        const layer = new L.featureGroup(markers)
-        map.addLayer(layer)
-        layer.on('click', function(e){
-            show_location_table(e, e.layer.location)
-        })
-    })
+    // retrieveItems(url, 20000, (locations)=>{
+    //     console.log('asdfasdf', locations)
+    //     let markers = locations.map((loc)=>{
+    //         let marker = L.circleMarker([loc.latitude, loc.longitude],
+    //             {radius: 5})
+    //         marker.location = loc
+    //         return marker
+    //     })
+    //     const layer = new L.featureGroup(markers)
+    //     map.addLayer(layer)
+    //     layer.on('click', function(e){
+    //         show_location_table(e, e.layer.location)
+    //     })
+    // })
 
 }
+
+let locationLayer;
+
+function clear_locations_from_map(){
+    if (locationLayer){
+        map.removeLayer(locationLayer)
+    }
+}
+function add_locations_to_map(locations){
+    console.log('adding locations', locations)
+    let markers = locations.map((loc)=>{
+    let marker = L.circleMarker([loc.latitude, loc.longitude],
+        {radius: 5})
+    marker.location = loc
+    return marker
+})
+locationLayer = new L.featureGroup(markers)
+map.addLayer(locationLayer)
+locationLayer.on('click', function(e){
+    show_location_table(e, e.layer.location)
+})
+
+}
+
+function point_id_search(){
+    let searchstr = document.querySelector('#pointid_entry').value;
+    console.log('search', searchstr)
+    if (searchstr){
+        let url = MAP_CFG.base_api_url+'/locations?point_id='+searchstr
+        retrieveItems(url, 20000, (locations)=>{
+            clear_locations_from_map()
+            add_locations_to_map(locations)
+        })
+    }else{
+        alert('Please enter a search term')
+    }
+
+
+}
+
 // function loadLayer(ls, color, label, load_things){
 //     console.debug('load layer')
 //
