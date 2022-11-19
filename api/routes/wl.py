@@ -52,13 +52,16 @@ def read_waterlevels(
         js.extend([Well, Location])
         fs.append(Location.id == location_id)
 
-    return paginate(_read(
-        db,
-        WellMeasurement,
-        joins=js,
-        filters=fs,
-        orderby=WellMeasurement.timestamp,
-    ), params)
+    return paginate(
+        _read(
+            db,
+            WellMeasurement,
+            joins=js,
+            filters=fs,
+            orderby=WellMeasurement.timestamp,
+        ),
+        params,
+    )
     # return paginate(vs, params)
 
 
