@@ -45,6 +45,7 @@ services:
     command: bash -c "
       while !</dev/tcp/db/5432; do sleep 1; done;
       uvicorn api.main:app
+      --workers 2
       --host 0.0.0.0
       --reload --root-path /api/v1
       "
