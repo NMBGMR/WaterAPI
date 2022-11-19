@@ -59,7 +59,7 @@ def read_waterlevels(
         filters=fs,
         orderby=WellMeasurement.timestamp,
     )
-
+    print(vs)
     return paginate(vs, params)
 
 
@@ -69,7 +69,8 @@ def read_waterlevels(
     tags=["Groundwater Temperatures"],
 )
 def read_temperatures(
-    point_id: str = None, db: Session = Depends(get_waterdb), params: Params = Depends()
+    point_id: str = None, db: Session = Depends(get_waterdb),
+        params: Params = Depends()
 ):
     fs = [ObservedProperty.name == "WellTemperature"]
     js = [ObservedProperty]
