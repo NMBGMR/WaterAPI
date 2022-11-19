@@ -181,8 +181,8 @@ const getItems = (url, maxitems, i, items, resolve, reject) =>{
             }
         }
         // console.log(url, ritems)
-        console.log('asdfasdf', response.total)
-        if (ritems.length<=response.total){
+        // console.log('asdfasdf', .total)
+        if (response.items.length>0){
             getItems(url, maxitems, i+1, ritems, resolve, reject)
         }else{
             resolve(ritems)
@@ -199,7 +199,7 @@ function loadLayer(){
     let url = 'http://flask2.nmbgmr.nmt.edu/api/v1/locations'
     // let url = 'http://localhost/api/v1/locations'
 
-    retrieveItems(url, 2000, (locations)=>{
+    retrieveItems(url, 5000, (locations)=>{
         console.log('asdfasdf', locations)
         let markers = locations.map((loc)=>{
             let marker = L.circleMarker([loc.latitude, loc.longitude],
