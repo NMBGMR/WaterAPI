@@ -286,7 +286,7 @@ function show_location_table(evt, location){
 
     url = 'http://flask2.nmbgmr.nmt.edu/api/v1/waterlevels?location_id='+location.id
     retrieveItems(url, 1000, (measurements)=>{
-        console.log(measurements)
+        console.log('baa', measurements)
     })
 
     // let locationURL = url+'Locations('+make_id(iotid)+')'

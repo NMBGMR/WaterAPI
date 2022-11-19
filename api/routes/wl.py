@@ -49,6 +49,7 @@ def read_waterlevels(
         js.extend([Well, Location])
         fs.append(Location.point_id == point_id)
     elif location_id:
+        js.extend([Well, Location])
         fs.append(Location.id == location_id)
 
     vs = _read(

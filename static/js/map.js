@@ -170,7 +170,15 @@ const retrieveItems = (url, maxitems, callback) => {
 
 
 const getItems = (url, maxitems, i, items, resolve, reject) =>{
-    $.get(url+'?page='+i).then(response=>{
+
+    let qurl = url
+    if (url.includes('?')){
+        url+='&page='+i
+    }else{
+        url+'?page='+i
+    }
+
+    $.get(qurl).then(response=>{
         console.log(url, response)
         let ritems = items.concat(response.items)
         if (maxitems>0){
