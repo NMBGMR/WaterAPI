@@ -38,24 +38,28 @@ router = APIRouter()
     tags=["Groundwater Levels"],
 )
 def read_waterlevels(
-    point_id: str = None, limit: int = 1000, db: Session = Depends(get_waterdb)
+        point_id: str = None,
+        location_id: int = None,
+        db: Session = Depends(get_waterdb),
+        params: Params = Depends()
 ):
     fs = [ObservedProperty.name == "DepthToWaterBGS"]
     js = [ObservedProperty]
     if point_id:
         js.extend([Well, Location])
         fs.append(Location.point_id == point_id)
+    elif location_id:
+        fs.append(Location.id == location_id)
 
     vs = _read(
         db,
         WellMeasurement,
-        limit=limit,
         joins=js,
         filters=fs,
         orderby=WellMeasurement.timestamp,
     )
 
-    return vs
+    return paginate(vs, params)
 
 
 @router.get(
@@ -64,7 +68,9 @@ def read_waterlevels(
     tags=["Groundwater Temperatures"],
 )
 def read_temperatures(
-    point_id: str = None, limit: int = 1000, db: Session = Depends(get_waterdb)
+        point_id: str = None,
+        db: Session = Depends(get_waterdb),
+        params: Params = Depends()
 ):
     fs = [ObservedProperty.name == "WellTemperature"]
     js = [ObservedProperty]
@@ -81,7 +87,7 @@ def read_temperatures(
         orderby=WellMeasurement.timestamp,
     )
 
-    return vs
+    return paginate(vs, params)
 
 
 #
@@ -111,10 +117,10 @@ def read_temperatures(
 #
 @router.get("/locations", response_model=Page[wl_schemas.Location], tags=["Locations"])
 def read_locations(
-    point_id: str = None,
-    public_release: bool = None,
-    db: Session = Depends(get_waterdb),
-    params: Params = Depends(),
+        point_id: str = None,
+        public_release: bool = None,
+        db: Session = Depends(get_waterdb),
+        params: Params = Depends(),
 ):
     filters = []
     if point_id:
@@ -128,10 +134,10 @@ def read_locations(
 
 @router.get("/wells", response_model=Page[wl_schemas.Well], tags=["Wells"])
 def read_wells(
-    location_id: int = None,
-    point_id: str = None,
-    db: Session = Depends(get_waterdb),
-    params: Params = Depends(),
+        location_id: int = None,
+        point_id: str = None,
+        db: Session = Depends(get_waterdb),
+        params: Params = Depends(),
 ):
     joins = []
     filters = []
@@ -142,6 +148,5 @@ def read_wells(
         filters.append(Well.location_id == location_id)
 
     return paginate(_read(db, Well, joins=joins, filters=filters), params)
-
 
 # ============= EOF =============================================

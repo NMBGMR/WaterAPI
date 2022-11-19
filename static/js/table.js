@@ -284,6 +284,11 @@ function show_location_table(evt, location){
         ]).draw()
     })
 
+    url = 'http://flask2.nmbgmr.nmt.edu/api/v1/waterlevels?location_id='+location.id
+    retrieveItems(url, 1000, (measurements)=>{
+        console.log(measurements)
+    })
+
     // let locationURL = url+'Locations('+make_id(iotid)+')'
     // console.log(locationURL+'?$expand=Things/Datastreams/ObservedProperty,Things/Datastreams/Sensor')
     // $('#chartprogress').show()
