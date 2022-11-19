@@ -25,6 +25,8 @@ services:
       - "8001:8001"
     volumes:
       - ./frontend:/frontend
+    env_file:
+      - ./api/.env.development
     depends_on:
       - traefik
       - static-files
