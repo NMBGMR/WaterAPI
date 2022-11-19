@@ -34,7 +34,7 @@ router = APIRouter()
 
 @router.get(
     "/waterlevels",
-    response_model=List[wl_schemas.WellMeasurement],
+    response_model=Page[wl_schemas.WellMeasurement],
     tags=["Groundwater Levels"],
 )
 def read_waterlevels(
@@ -52,20 +52,19 @@ def read_waterlevels(
         js.extend([Well, Location])
         fs.append(Location.id == location_id)
 
-    vs = _read(
+    return paginate(_read(
         db,
         WellMeasurement,
         joins=js,
         filters=fs,
         orderby=WellMeasurement.timestamp,
-    )
-    print(vs)
-    return paginate(vs, params)
+    ), params)
+    # return paginate(vs, params)
 
 
 @router.get(
     "/welltemperatures",
-    response_model=List[wl_schemas.WellMeasurement],
+    response_model=Page[wl_schemas.WellMeasurement],
     tags=["Groundwater Temperatures"],
 )
 def read_temperatures(
