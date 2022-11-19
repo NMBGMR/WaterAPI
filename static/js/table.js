@@ -236,11 +236,11 @@ $(document).ready(function (){
 //     return allmarkers.filter(function (m){ return m.stid == iotid})[0]
 // }
 
-function show_location_table(evt, location){
+function show_location_table(evt, location, base_api_url){
     console.log('location selected', location)
-
+    console.log('event', evt)
     // let url = 'http://flask2.nmbgmr.nmt.edu/api/v1/locations'
-    let url = 'http://flask2.nmbgmr.nmt.edu/api/v1/wells?location_id='+location.id
+    let url = base_api_url+'wells?location_id='+location.id
     fetch(url).then(resp=>resp.json()).then((data)=>{
         console.log('thiasdf', data)
         let well =data.items[0]
@@ -254,12 +254,13 @@ function show_location_table(evt, location){
         ]).draw()
     })
 
-    url = 'http://flask2.nmbgmr.nmt.edu/api/v1/waterlevels?location_id='+location.id
+    url = base_api_url+'waterlevels?location_id='+location.id
     retrieveItems(url, 1000, (measurements)=>{
         console.log('baa', measurements)
-        let datasets = myChart.data.datasets
+
+        // let datasets = myChart.data.datasets
         let color = 'black'
-         ndata = {
+         let ndata = [{
                 // iot: {'Datastream': ds,
                 //           'Thing': thing,
                 //           'Location': {'name': name,
@@ -277,10 +278,16 @@ function show_location_table(evt, location){
                     borderColor: color,
                     backgroundColor: color,
                     tension: 0.1
-                }
+                }]
 
-            datasets.push(ndata)
+            // datasets.push(ndata)
+            myChart.data.datasets=ndata
             myChart.update()
+            let div = document.getElementById("chartoverlay")
+            div.style.display="block"
+            console.log(evt.originalEvent.clientY, evt.originalEvent.clientY+20+'px')
+            div.style.top = evt.originalEvent.clientY+20+'px'
+            div.style.left = evt.originalEvent.clientX+20+'px'
 
 
     })

@@ -78,7 +78,10 @@
               </div>
         </div>
         <div class="col-lg-6 rounded">
-            <div id="map"></div>
+            <div id="map" onclick="chartoff()"></div>
+            <div id="chartoverlay">
+                <canvas id="chartdiv"></canvas>
+            </div>
         </div>
         <div class="col-lg-3 rounded">
             <h4 class="panelabel">Selection Metadata</h4>
@@ -94,9 +97,6 @@
 
     </div>
 
-    <div>
-    <canvas id="chartdiv"></canvas>
-    </div>
 
     <script src="{{ url_for('static', filename='js/map.js') }}">
     </script>

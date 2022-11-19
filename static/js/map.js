@@ -210,11 +210,14 @@ function add_locations_to_map(locations){
 locationLayer = new L.featureGroup(markers)
 map.addLayer(locationLayer)
 locationLayer.on('click', function(e){
-    show_location_table(e, e.layer.location)
+    show_location_table(e, e.layer.location, MAP_CFG.base_api_url)
 })
 
 }
 
+function chartoff(){
+    document.getElementById("chartoverlay").style.display="none"
+}
 function point_id_search(){
     let searchstr = document.querySelector('#pointid_entry').value;
     console.log('search', searchstr)
