@@ -212,7 +212,7 @@ function point_id_search(){
     let searchstr = document.querySelector('#pointid_entry').value;
     console.log('search', searchstr)
     if (searchstr){
-        let url = MAP_CFG.base_api_url+'/locations?point_id='+searchstr
+        let url = MAP_CFG.base_api_url+'locations?point_id='+searchstr
         retrieveItems(url, 20000, (locations)=>{
             clear_locations_from_map()
             add_locations_to_map(locations)

@@ -20,7 +20,7 @@ def map():
         "center_lat": 33.5,
         "center_lon": -104.5,
         "zoom": 7,
-        "base_api_url": os.environ.get("BASE_API_URL", "http://localhost/api/v1"),
+        "base_api_url": os.environ.get("BASE_API_URL", "http://localhost/api/v1/"),
     }
 
     return render_template("index.html", map_cfg=map_cfg)
