@@ -41,8 +41,8 @@ def setup_db_default():
         Base.metadata.create_all(bind=waterdbengine)
 
         db = WATERDB()
-        db.add(Location(point_id="JR-001", point='Point(-105 35)'))
-        db.add(Location(point_id="JR-002", point='Point(-104 34)'))
+        db.add(Location(point_id="JR-001", point="Point(-105 35)"))
+        db.add(Location(point_id="JR-002", point="Point(-104 34)"))
         db.commit()
 
         w1 = Well(location_id=1)

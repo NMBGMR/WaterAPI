@@ -97,7 +97,9 @@ class Well(Base):
     location = relationship("Location")
     public_release = Column(Boolean, default=False)
 
-    well_construction = relationship("WellConstruction", back_populates="well", uselist=False)
+    well_construction = relationship(
+        "WellConstruction", back_populates="well", uselist=False
+    )
 
 
 class WellConstruction(Base):

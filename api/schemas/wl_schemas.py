@@ -23,6 +23,7 @@ from pydantic.main import BaseModel
 
 class ORMBase(BaseModel):
     id: int
+
     class Config:
         orm_mode = True
         allow_population_by_field_name = True
@@ -50,5 +51,6 @@ class WellMeasurements(ORMBase):
     value: float
     timestamp: datetime
     well: Well
+
 
 # ============= EOF =============================================
