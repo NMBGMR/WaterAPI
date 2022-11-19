@@ -50,7 +50,7 @@ class Well(ORMBase):
 class WellMeasurement(ORMBase):
     value: float
     timestamp: datetime
-    well: Well
+    # well: Well
 
 
 # ============= EOF =============================================
