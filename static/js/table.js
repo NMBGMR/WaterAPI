@@ -219,7 +219,7 @@ function deselectLocation(iotid, name){
     })
 }
 
-const colors = chroma.scale(['#eeee14','#1471a2']).mode('lch').colors(10)
+// const colors = chroma.scale(['#eeee14','#1471a2']).mode('lch').colors(10)
 
 // function hashIOTID(iotid) {
 //   var hash = 0, i, chr;

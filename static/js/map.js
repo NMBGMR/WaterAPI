@@ -163,12 +163,45 @@ function loadLegend(){
 
 }
 
+const retrieveItems = (url, maxitems, callback) => {
+    new Promise((resolve, reject) => {
+        getItems(url, maxitems, 1, [], resolve, reject)}).then(callback)
+}
+
+
+const getItems = (url, maxitems, i, items, resolve, reject) =>{
+    $.get(url+'?page='+i).then(response=>{
+        console.log(url, response)
+        let ritems = items.concat(response.items)
+        if (maxitems>0){
+            if (ritems.length>maxitems){
+                ritems = ritems.slice(0,maxitems)
+                resolve(ritems)
+                return
+            }
+        }
+        // console.log(url, ritems)
+        console.log('asdfasdf', response.total)
+        if (ritems.length<=response.total){
+            getItems(url, maxitems, i+1, ritems, resolve, reject)
+        }else{
+            resolve(ritems)
+        }
+        // resolve(ritems)
+        // if (response['@iot.nextLink']!=null){
+        //     getItems(response['@iot.nextLink'], maxitems, i+1, ritems, resolve, reject)
+        // }else{
+        // }
+    })
+}
+
 function loadLayer(){
     let url = 'http://flask2.nmbgmr.nmt.edu/api/v1/locations'
     // let url = 'http://localhost/api/v1/locations'
-    fetch(url).then(resp=>resp.json()).then((locations)=>{
-        console.log(locations)
-        let markers = locations.items.map((loc)=>{
+
+    retrieveItems(url, 2000, (locations)=>{
+        console.log('asdfasdf', locations)
+        let markers = locations.map((loc)=>{
             let marker = L.circleMarker([loc.latitude, loc.longitude],
                 {radius: 5})
             marker.location = loc
@@ -180,6 +213,7 @@ function loadLayer(){
             show_location_table(e, e.layer.location)
         })
     })
+
 }
 // function loadLayer(ls, color, label, load_things){
 //     console.debug('load layer')

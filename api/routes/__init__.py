@@ -47,7 +47,7 @@ T = TypeVar("T")
 
 
 class Params(BaseParams):
-    size: int = Query(500, ge=1, le=1_000, description="Page size")
+    size: int = Query(2000, ge=1, le=5000, description="Page size")
 
 
 class Page(BasePage[T], Generic[T]):
