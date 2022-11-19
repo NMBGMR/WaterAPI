@@ -198,6 +198,16 @@ function add_locations_to_map(locations){
     let marker = L.circleMarker([loc.latitude, loc.longitude],
         {radius: 5})
     marker.location = loc
+    marker.bindPopup(loc['point_id'])
+
+
+    // console.log(loc, loc['Things'])
+    marker.on('mouseover', function(e) {
+        marker.openPopup();
+    } )
+    marker.on('mouseout', function(e) {
+        map.closePopup();
+    } )
     return marker
 })
 locationLayer = new L.featureGroup(markers)

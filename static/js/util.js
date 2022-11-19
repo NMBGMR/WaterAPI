@@ -26,7 +26,7 @@ const getItems = (url, maxitems, i, items, resolve, reject) =>{
         }
         // console.log(url, ritems)
         // console.log('asdfasdf', .total)
-        if (response.items.length>0){
+        if (ritems.length<response.total){
             getItems(url, maxitems, i+1, ritems, resolve, reject)
         }else{
             resolve(ritems)
