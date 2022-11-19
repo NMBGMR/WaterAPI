@@ -39,6 +39,7 @@ const map = L.map('map', {
     }
 )
 
+
 // this can be used to add multiple tile layers together
 // let grp = L.featureGroup()
 // map.createPane('pane1')
@@ -161,46 +162,6 @@ function loadLegend(){
 
     legend.addTo(map);
 
-}
-
-const retrieveItems = (url, maxitems, callback) => {
-    new Promise((resolve, reject) => {
-        getItems(url, maxitems, 1, [], resolve, reject)}).then(callback)
-}
-
-
-const getItems = (url, maxitems, i, items, resolve, reject) =>{
-
-    let qurl = url
-    if (url.includes('?')){
-        url+='&page='+i
-    }else{
-        url+'?page='+i
-    }
-
-    $.get(qurl).then(response=>{
-        console.log(url, response)
-        let ritems = items.concat(response.items)
-        if (maxitems>0){
-            if (ritems.length>maxitems){
-                ritems = ritems.slice(0,maxitems)
-                resolve(ritems)
-                return
-            }
-        }
-        // console.log(url, ritems)
-        // console.log('asdfasdf', .total)
-        if (response.items.length>0){
-            getItems(url, maxitems, i+1, ritems, resolve, reject)
-        }else{
-            resolve(ritems)
-        }
-        // resolve(ritems)
-        // if (response['@iot.nextLink']!=null){
-        //     getItems(response['@iot.nextLink'], maxitems, i+1, ritems, resolve, reject)
-        // }else{
-        // }
-    })
 }
 
 function loadLayer(){

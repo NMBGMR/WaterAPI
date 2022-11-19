@@ -1,27 +1,27 @@
-// const ytitle = 'Depth to Water (ft BGS)'
-//
-// const yAxis =  {
-//                     position: "left",
-//                     reverse: true,
-//                     // beginAtZero: true,
-//                     title: {text: ytitle, display: true}
-//
-//                 }
-// const xAxis = {
-//                     position: "bottom",
-//                     type: "time",
-//                     title: {text: "Time", display: true}
-//                 }
-// const options = {scales: {yAxis: yAxis,
-//                           xAxis: xAxis},
-//                  animation: {
-//         duration: 0
-//     }}
-//
-// const myChart = new Chart(document.getElementById('graph').getContext('2d'), {type: 'line',
-//                                     data: {labels: [], datasets:[]},
-//         options: options
-//     })
+const ytitle = 'Depth to Water (ft BGS)'
+
+const yAxis =  {
+                    position: "left",
+                    reverse: true,
+                    // beginAtZero: true,
+                    title: {text: ytitle, display: true}
+
+                }
+const xAxis = {
+                    position: "bottom",
+                    type: "time",
+                    title: {text: "Time", display: true}
+                }
+const options = {scales: {yAxis: yAxis,
+                          xAxis: xAxis},
+                 animation: {
+        duration: 0
+    }}
+
+const myChart = new Chart(document.getElementById('chartdiv').getContext('2d'), {type: 'line',
+                                    data: {labels: [], datasets:[]},
+        options: options
+    })
 //
 // const yearChart = new Chart(document.getElementById('ygraph').getContext('2d'), {type: 'line',
 //                                     data: {labels: [], datasets:[]},
@@ -71,6 +71,7 @@ let ods = [];
 // }
 
 $(document).ready(function (){
+
     var table = $('#selectiontable')
         var dtt = table.DataTable({select: {style: 'multi'},
                             paging: false,
@@ -199,25 +200,25 @@ $(document).ready(function (){
 //     }
 //
 // }
-function deselectLocation(iotid, name){
-    console.log('deselect location')
-    var datasets = myChart.data.datasets
-    console.log(iotid, name)
-    // console.log(datasets.filter(function(d){
-    //     return !(d.label === name)
-    // }))
-    myChart.data.datasets = datasets.filter(function(d){
-        return !(d.label === name)
-    })
-    myChart.update()
-
-    allmarkers.forEach(function (m){
-        if (m.stid===iotid){
-            m.setStyle({color: m.defaultColor,
-                        fillColor: m.defaultColor})
-        }
-    })
-}
+// function deselectLocation(iotid, name){
+//     console.log('deselect location')
+//     var datasets = myChart.data.datasets
+//     console.log(iotid, name)
+//     // console.log(datasets.filter(function(d){
+//     //     return !(d.label === name)
+//     // }))
+//     myChart.data.datasets = datasets.filter(function(d){
+//         return !(d.label === name)
+//     })
+//     myChart.update()
+//
+//     allmarkers.forEach(function (m){
+//         if (m.stid===iotid){
+//             m.setStyle({color: m.defaultColor,
+//                         fillColor: m.defaultColor})
+//         }
+//     })
+// }
 
 // const colors = chroma.scale(['#eeee14','#1471a2']).mode('lch').colors(10)
 
@@ -238,37 +239,6 @@ function deselectLocation(iotid, name){
 function show_location_table(evt, location){
     console.log('location selected', location)
 
-    // hightlight points on the map
-    // let m = getMarker(iotid)
-    // if (!m){
-    //     return
-    // }
-    //
-    // let url;
-    // let dsname;
-    //
-    // if (m.source=='USGS'){
-    //     url = 'https://labs.waterdata.usgs.gov/sta/v1.1/'
-    //     dsname = ''
-    //     make_id = function(iotid){
-    //     return "'"+iotid+"'"
-    //     }
-    //     makecolor = function(iotid){
-    //         return colors[hashIOTID(iotid)%10]
-    //     }
-    // }else{
-    //     url = "https://st2.newmexicowaterdata.org/FROST-Server/v1.1/"
-    //     dsname = 'Groundwater Levels'
-    //     make_id = function(iotid){
-    //     return iotid
-    //     }
-    //     makecolor = function(iotid){
-    //         return colors[iotid%10]
-    //     }
-    // }
-
-    // clearInfoTables()
-    // populateLocationInfoTable(location)
     // let url = 'http://flask2.nmbgmr.nmt.edu/api/v1/locations'
     let url = 'http://flask2.nmbgmr.nmt.edu/api/v1/wells?location_id='+location.id
     fetch(url).then(resp=>resp.json()).then((data)=>{
@@ -287,6 +257,32 @@ function show_location_table(evt, location){
     url = 'http://flask2.nmbgmr.nmt.edu/api/v1/waterlevels?location_id='+location.id
     retrieveItems(url, 1000, (measurements)=>{
         console.log('baa', measurements)
+        let datasets = myChart.data.datasets
+        let color = 'black'
+         ndata = {
+                // iot: {'Datastream': ds,
+                //           'Thing': thing,
+                //           'Location': {'name': name,
+                //                         '@iot.id': iotid,
+                //                         'url': locationURL,
+                //                         'location': data['location']},
+                //           'sourceURL': url,
+                //           'source': m.source},
+                    label: name,
+                    data: measurements.map(f=>{
+                        var d = new Date(f['timestamp'])
+                        // d.setHours(d.getHours()+6)
+                        return [d, f['value']]
+                    }),
+                    borderColor: color,
+                    backgroundColor: color,
+                    tension: 0.1
+                }
+
+            datasets.push(ndata)
+            myChart.update()
+
+
     })
 
     // let locationURL = url+'Locations('+make_id(iotid)+')'
