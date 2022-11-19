@@ -199,9 +199,6 @@ function add_locations_to_map(locations){
         {radius: 5})
     marker.location = loc
     marker.bindPopup(loc['point_id'])
-
-
-    // console.log(loc, loc['Things'])
     marker.on('mouseover', function(e) {
         marker.openPopup();
     } )
