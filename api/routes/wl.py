@@ -112,14 +112,13 @@ def read_temperatures(
 @router.get("/locations", response_model=Page[wl_schemas.Location], tags=["Locations"])
 def read_locations(
     point_id: str = None,
-    limit: int = 100,
     db: Session = Depends(get_waterdb),
     params: Params = Depends(),
 ):
     filters = []
     if point_id:
         filters = [Location.point_id == point_id]
-    return paginate(_read(db, Location, limit=limit, filters=filters), params)
+    return paginate(_read(db, Location, filters=filters), params)
 
 
 @router.get("/wells", response_model=Page[wl_schemas.Well], tags=["Wells"])
