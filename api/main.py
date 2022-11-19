@@ -78,7 +78,7 @@ async def index():
 
 
 def get_user():
-    if not os.environ.get("DATABASE_DEV") == "1":
+    if not os.environ.get("GET_USER_DEV") == "1":
         raise HTTPException(403)
 
 
