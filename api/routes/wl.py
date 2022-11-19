@@ -65,11 +65,13 @@ def read_waterlevels(
 
 @router.get(
     "/welltemperatures",
-    response_model=List[wl_schemas.WellMeasurements],
+    response_model=List[wl_schemas.WellMeasurement],
     tags=["Groundwater Temperatures"],
 )
 def read_temperatures(
-    point_id: str = None, db: Session = Depends(get_waterdb), params: Params = Depends()
+    point_id: str = None,
+        db: Session = Depends(get_waterdb),
+        params: Params = Depends()
 ):
     fs = [ObservedProperty.name == "WellTemperature"]
     js = [ObservedProperty]
@@ -80,7 +82,6 @@ def read_temperatures(
     vs = _read(
         db,
         WellMeasurement,
-        limit=limit,
         joins=js,
         filters=fs,
         orderby=WellMeasurement.timestamp,
