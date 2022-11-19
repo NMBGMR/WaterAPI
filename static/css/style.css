@@ -25,7 +25,15 @@
   /*left: 25%;*/
   /*right: 0;*/
   /*bottom: 0;*/
-  background-color: rgba(255,255,255,255); /* Black background with opacity */
+
+  background-color: rgb(222, 242, 249); /* Black background with opacity */
   z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
   cursor: pointer; /* Add a pointer on hover */
+}
+
+.bordered {
+  border: rgb(0, 123, 255);
+  border-width: thick;
+  border-style: solid;
+  border-radius: 10px;
 }
