@@ -269,7 +269,7 @@ function show_location_table(evt, location, base_api_url){
                 //                         'location': data['location']},
                 //           'sourceURL': url,
                 //           'source': m.source},
-                    label: name,
+                    label: location.point_id,
                     data: measurements.map(f=>{
                         var d = new Date(f['timestamp'])
                         // d.setHours(d.getHours()+6)
