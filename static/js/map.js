@@ -164,12 +164,13 @@ function loadLegend(){
 }
 
 function loadLayer(){
-    // let url = 'http://flask2.nmbgmr.nmt.edu/api/v1/locations'
-    let url = 'http://localhost/api/v1/locations'
+    let url = 'http://flask2.nmbgmr.nmt.edu/api/v1/locations'
+    // let url = 'http://localhost/api/v1/locations'
     fetch(url).then(resp=>resp.json()).then((locations)=>{
         console.log(locations)
         let markers = locations.items.map((loc)=>{
-            let marker = L.circleMarker([loc.latitude, loc.longitude])
+            let marker = L.circleMarker([loc.latitude, loc.longitude],
+                {radius: 5})
             marker.location = loc
             return marker
         })

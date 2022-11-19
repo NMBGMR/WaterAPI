@@ -270,7 +270,7 @@ function show_location_table(evt, location){
     // clearInfoTables()
     // populateLocationInfoTable(location)
     // let url = 'http://flask2.nmbgmr.nmt.edu/api/v1/locations'
-    let url = 'http://localhost/api/v1/wells?location_id='+location.id
+    let url = 'http://flask2.nmbgmr.nmt.edu/api/v1/wells?location_id='+location.id
     fetch(url).then(resp=>resp.json()).then((data)=>{
         console.log('thiasdf', data)
         let well =data.items[0]
