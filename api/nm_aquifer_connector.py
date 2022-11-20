@@ -25,7 +25,6 @@ def get_gw_locations(cursor, public_release="true"):
             order by PointID
             offset {i*100} rows fetch next 100 rows only
             """
-            print(sql, public_release)
             cursor.execute(sql, public_release)
             records = cursor.fetchall()
             if not records:
