@@ -15,7 +15,6 @@
 # ===============================================================================
 import os
 
-from progress.bar import Bar
 import pymssql
 import pyproj as pyproj
 from geoalchemy2 import Geometry
@@ -215,22 +214,17 @@ def copy_gw_location(projection, cursor, dest, obsprop_bgs, l):
 def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
     projection = pyproj.Proj(proj="utm", zone=int(13), ellps="WGS84")
     failures = []
-    # locations =list(locations)
-    # total = len(locations)
-    # with Bar('Syncing', max=total) as bar:
-    for l in Bar("Syncing").iter(locations):
-        # l = locations[i]
-        # for i, l in enumerate(locations):
-        # for l in Bar('Syncing').iter(locations):
-        # for i, l in enumerate(locations):
+    locations =list(locations)
+    total = len(locations)
+    for i, l in enumerate(locations):
         if l["SiteType"] != "GW":
             continue
         try:
             copy_gw_location(projection, cursor, dest, obsprop_bgs, l)
         except BaseException:
             failures.append(l)
-        # bar.next()
-        # printProgressBar(i, total, prefix=f'Sync PointID={l["PointID"]}', suffix='Complete')
+
+        printProgressBar(i, total, prefix=f'Sync PointID={l["PointID"]}', suffix='Complete')
 
     return failures
 
