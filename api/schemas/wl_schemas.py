@@ -52,12 +52,12 @@ class WellConstruction(ORMBase):
 class Well(ORMBase):
     public_release: bool
     well_construction: WellConstruction
-    ose_well_id: str
-    ose_well_tag_id: str
+    ose_well_id: Optional[str]
+    ose_well_tag_id: Optional[str]
 
-    aquifer_class: str
-    aquifer_type: str
-    formation: str
+    aquifer_class: Optional[str]
+    aquifer_type: Optional[str]
+    formation: Optional[str]
 
 
 class WellMeasurement(ORMBase):
