@@ -58,6 +58,8 @@ class Well(ORMBase):
     aquifer_class: Optional[str]
     aquifer_type: Optional[str]
     formation: Optional[str]
+    current_use: Optional[str]
+    status: Optional[str]
 
 
 class WellMeasurement(ORMBase):
