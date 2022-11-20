@@ -24,7 +24,14 @@ from sqlalchemy.orm import Session
 #     WaterLevelsContinuous_Acoustic,
 #     Location,
 # )
-from api.models.wl_models import WellMeasurement, Well, Location, ObservedProperty, ProjectLocation, Project
+from api.models.wl_models import (
+    WellMeasurement,
+    Well,
+    Location,
+    ObservedProperty,
+    ProjectLocation,
+    Project,
+)
 
 from api.routes import _read, get_waterdb, Params
 from api.schemas import wl_schemas
@@ -124,7 +131,7 @@ def read_locations(
     params: Params = Depends(),
 ):
     filters = []
-    joins=[]
+    joins = []
     if point_id:
         filters.append(fuzzy_search(Location.point_id, point_id))
 

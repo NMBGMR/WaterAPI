@@ -57,9 +57,8 @@ def setup_db_default():
         # Base.metadata.create_all(bind=waterdbengine)
 
         db = WATERDB()
-        db.add(Project(name='foo'))
-        db.add(Project(name='bar'))
-
+        db.add(Project(name="foo"))
+        db.add(Project(name="bar"))
 
         db.add(Location(point_id="JR-001", point="Point(-105 35)"))
         db.add(Location(point_id="JR-002", point="Point(-104 34)"))
