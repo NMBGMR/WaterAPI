@@ -175,10 +175,9 @@ def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
         aid = get_lookup_by_name(dest, LU_MeasurementMethod, "Acoustic")
 
         def pressure_payload(r):
-            return dict(public_release=r["PublicRelease"])
-
-        def acoustic_payload(r):
             return dict(public_release=True)
+        def acoustic_payload(r):
+            return dict(public_release=r["PublicRelease"])
 
         for (mmid, func, payload) in (
             (ptid, get_pressure_water_levels, pressure_payload),
@@ -192,7 +191,7 @@ def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
                         timestamp=wl["DateMeasured"],
                         method_id=mmid,
                         observed_property=obsprop_bgs,
-                        **payload(wl),
+                        **payload(wl)
                     )
                 )
             dest.commit()
