@@ -176,6 +176,7 @@ def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
 
         def pressure_payload(r):
             return dict(public_release=r["PublicRelease"])
+
         def acoustic_payload(r):
             return dict(public_release=True)
 
@@ -191,7 +192,7 @@ def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
                         timestamp=wl["DateMeasured"],
                         method_id=mmid,
                         observed_property=obsprop_bgs,
-                        **payload(wl)
+                        **payload(wl),
                     )
                 )
             dest.commit()
