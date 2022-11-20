@@ -214,7 +214,7 @@ def copy_gw_location(projection, cursor, dest, obsprop_bgs, l):
 def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
     projection = pyproj.Proj(proj="utm", zone=int(13), ellps="WGS84")
     failures = []
-    locations =list(locations)
+    locations = list(locations)
     total = len(locations)
     for i, l in enumerate(locations):
         if l["SiteType"] != "GW":
@@ -224,7 +224,9 @@ def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
         except BaseException:
             failures.append(l)
 
-        printProgressBar(i, total, prefix=f'Sync PointID={l["PointID"]}', suffix='Complete')
+        printProgressBar(
+            i, total, prefix=f'Sync PointID={l["PointID"]}', suffix="Complete"
+        )
 
     return failures
 
