@@ -214,7 +214,7 @@ def copy_gw_location(projection, cursor, dest, obsprop_bgs, l):
 def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
     projection = pyproj.Proj(proj="utm", zone=int(13), ellps="WGS84")
     failures = []
-    locations =list(locations)
+    locations = list(locations)
     total = len(locations)
     for i, l in enumerate(locations):
         if l["SiteType"] != "GW":
@@ -223,7 +223,9 @@ def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
             copy_gw_location(projection, cursor, dest, obsprop_bgs, l)
         except BaseException:
             failures.append(l)
-        printProgressBar(i, total, prefix=f'Sync PointID={l["PointID"]}', suffix='Complete')
+        printProgressBar(
+            i, total, prefix=f'Sync PointID={l["PointID"]}', suffix="Complete"
+        )
 
     return failures
 
@@ -270,8 +272,18 @@ def copy_nm_aquifer(dest):
     dest.commit()
     src.close()
 
+
 # Print iterations progress
-def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
+def printProgressBar(
+    iteration,
+    total,
+    prefix="",
+    suffix="",
+    decimals=1,
+    length=100,
+    fill="█",
+    printEnd="\r",
+):
     """
     Call in a loop to create terminal progress bar
     @params:
@@ -286,10 +298,11 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
     """
     percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
     filledLength = int(length * iteration // total)
-    bar = fill * filledLength + '-' * (length - filledLength)
-    print(f'\r{prefix} |{bar}| {percent}% {suffix}', end = printEnd)
+    bar = fill * filledLength + "-" * (length - filledLength)
+    print(f"\r{prefix} |{bar}| {percent}% {suffix}", end=printEnd)
     # Print New Line on Complete
     if iteration == total:
         print()
+
 
 # ============= EOF =============================================
