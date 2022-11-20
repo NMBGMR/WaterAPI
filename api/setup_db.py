@@ -98,6 +98,7 @@ def copy_lu(cursor, dest, table, tag=None):
     dest.commit()
     dest.flush()
 
+
 def copy_gw_location(projection, cursor, dest, obsprop_bgs, l):
     lon, lat = projection(l["Easting"], l["Northing"], inverse=True)
     print(f'adding location {l["PointID"]}')
@@ -143,16 +144,10 @@ def copy_gw_location(projection, cursor, dest, obsprop_bgs, l):
         wkw = dict(
             ose_well_id=wd["OSEWellID"],
             ose_well_tag_id=wd["OSEWelltagID"],
-            aquifer_class_id=get_lookup_by_name(
-                dest, LU_AquiferClass, wd["AqClass"]
-            ),
-            aquifer_type_id=get_lookup_by_name(
-                dest, LU_AquiferType, wd["AquiferType"]
-            ),
+            aquifer_class_id=get_lookup_by_name(dest, LU_AquiferClass, wd["AqClass"]),
+            aquifer_type_id=get_lookup_by_name(dest, LU_AquiferType, wd["AquiferType"]),
             formation=wd["FormationZone"],
-            current_use_id=get_lookup_by_name(
-                dest, LU_CurrentUse, wd["CurrentUse"]
-            ),
+            current_use_id=get_lookup_by_name(dest, LU_CurrentUse, wd["CurrentUse"]),
             status_id=get_lookup_by_name(dest, LU_Status, wd["Status"]),
         )
 
@@ -172,9 +167,7 @@ def copy_gw_location(projection, cursor, dest, obsprop_bgs, l):
     # copy waterlevels
     for wl in get_manual_water_levels(cursor, l["PointID"]):
         dsid = get_lookup_by_name(dest, LU_DataSource, wl["DataSource"])
-        mmid = get_lookup_by_name(
-            dest, LU_MeasurementMethod, wl["MeasurementMethod"]
-        )
+        mmid = get_lookup_by_name(dest, LU_MeasurementMethod, wl["MeasurementMethod"])
         dest.add(
             WellMeasurement(
                 well=dbwell,
@@ -200,8 +193,8 @@ def copy_gw_location(projection, cursor, dest, obsprop_bgs, l):
         return dict(public_release=r["PublicRelease"])
 
     for (mmid, func, payload) in (
-            (ptid, get_pressure_water_levels, pressure_payload),
-            (aid, get_acoustic_water_levels, acoustic_payload),
+        (ptid, get_pressure_water_levels, pressure_payload),
+        (aid, get_acoustic_water_levels, acoustic_payload),
     ):
         for wl in func(cursor, l["PointID"]):
             dest.add(
@@ -261,12 +254,12 @@ def copy_nm_aquifer(dest):
         cursor, dest, obsprop_bgs, get_gw_locations(cursor, public_release=True)
     )
     dest.commit()
-    print(f'public location failures. {pfailures}')
+    print(f"public location failures. {pfailures}")
     # copy non public locations
     npfailures = copy_gw_locations(
         cursor, dest, obsprop_bgs, get_gw_locations(cursor, public_release=False)
     )
-    print(f'public location failures. {npfailures}')
+    print(f"public location failures. {npfailures}")
 
     dest.commit()
     src.close()
