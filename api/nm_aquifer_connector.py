@@ -14,6 +14,7 @@
 # limitations under the License.
 # ===============================================================================
 
+
 def get_gw_locations(cursor, public_release=True):
     def func():
         i = 0
@@ -64,15 +65,18 @@ def get_manual_water_levels(cursor, pointid):
        end) as DateTimeMeasured, * from dbo.WaterLevels where PointID=%s order by DateMeasured"""
     return fetch(cursor, sql, pointid)
 
+
 def get_pressure_water_levels(cursor, pointid):
     sql = """select * from dbo.WaterLevelsContinuousPressure
     where PointID=%s order by DateTimeMeasured"""
     return fetch(cursor, sql, pointid)
 
+
 def get_acoustic_water_levels(cursor, pointid):
     sql = """select * from dbo.WaterLevelsContinuousAcoustic
         where PointID=%s order by DateTimeMeasured"""
     return fetch(cursor, sql, pointid)
+
 
 def fetch(cursor, sql, *args):
     cursor.execute(sql, *args)
@@ -85,4 +89,6 @@ def get_lookup_by_name(dest, table, name):
         return q.first().id
     except AttributeError:
         pass
+
+
 # ============= EOF =============================================

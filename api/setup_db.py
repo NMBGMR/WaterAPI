@@ -32,8 +32,17 @@ from api.models.wl_models import (
     LU_DataSource,
     LU_MeasurementMethod,
 )
-from api.nm_aquifer_connector import get_associated_projects, get_screens, get_welldata, get_manual_water_levels, \
-    get_lookup_by_name, get_pressure_water_levels, get_projects, get_gw_locations, get_acoustic_water_levels
+from api.nm_aquifer_connector import (
+    get_associated_projects,
+    get_screens,
+    get_welldata,
+    get_manual_water_levels,
+    get_lookup_by_name,
+    get_pressure_water_levels,
+    get_projects,
+    get_gw_locations,
+    get_acoustic_water_levels,
+)
 from api.session import waterdbengine, WATERDB, NM_Aquifer
 
 
@@ -71,8 +80,6 @@ def copy_db():
 
     db.commit()
     db.close()
-
-
 
 
 def copy_lu(cursor, dest, table, tag=None):
@@ -164,15 +171,13 @@ def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
             )
 
         # copy continuous
-        ptid = get_lookup_by_name(
-                dest, LU_MeasurementMethod, 'Pressure Transducer'
-            )
-        aid = get_lookup_by_name(
-            dest, LU_MeasurementMethod, 'Acoustic'
-        )
+        ptid = get_lookup_by_name(dest, LU_MeasurementMethod, "Pressure Transducer")
+        aid = get_lookup_by_name(dest, LU_MeasurementMethod, "Acoustic")
 
-        for (mmid, func) in ((ptid, get_pressure_water_levels),
-                             (aid, get_acoustic_water_levels)):
+        for (mmid, func) in (
+            (ptid, get_pressure_water_levels),
+            (aid, get_acoustic_water_levels),
+        ):
             for wl in func(cursor, l["PointID"]):
                 dest.add(
                     WellMeasurement(
@@ -186,6 +191,7 @@ def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
                         observed_property=obsprop_bgs,
                     )
                 )
+
 
 def copy_nm_aquifer(dest):
     src = pymssql.connect(*settings.NM_AQUIFER_ARGS)
@@ -210,15 +216,15 @@ def copy_nm_aquifer(dest):
     copy_lu(cursor, dest, LU_MeasurementMethod)
 
     # copy  public locations
-    copy_gw_locations(cursor, dest,
-                      obsprop_bgs,
-                      get_gw_locations(cursor, public_release=True))
+    copy_gw_locations(
+        cursor, dest, obsprop_bgs, get_gw_locations(cursor, public_release=True)
+    )
     dest.commit()
 
     # copy non public locations
-    copy_gw_locations(cursor, dest,
-                      obsprop_bgs,
-                      get_gw_locations(cursor, public_release=False))
+    copy_gw_locations(
+        cursor, dest, obsprop_bgs, get_gw_locations(cursor, public_release=False)
+    )
 
     dest.commit()
     src.close()
