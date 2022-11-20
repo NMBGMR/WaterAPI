@@ -251,10 +251,10 @@ def copy_nm_aquifer(dest):
 
     # copy  public locations
     pfailures = copy_gw_locations(
-        cursor, dest, obsprop_bgs, get_gw_locations(cursor, public_release='true')
+        cursor, dest, obsprop_bgs, get_gw_locations(cursor, public_release="true")
     )
     dest.commit()
-    print(f'public location failures. {pfailures}')
+    print(f"public location failures. {pfailures}")
 
     # copy non public locations
     npfailures = copy_gw_locations(
