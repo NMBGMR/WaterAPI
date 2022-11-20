@@ -36,15 +36,28 @@ class Location(ORMBase):
 
 
 class WellConstruction(ORMBase):
+    measuring_point: Optional[str]
     measuring_point_height: Optional[float]
     casing_diameter: Optional[float]
+    casing_depth: Optional[float]
+    casing_description: Optional[str]
+
     hole_depth: Optional[float]
     well_depth: Optional[float]
+
+    construction_method: Optional[str]
+    construction_notes: Optional[str]
 
 
 class Well(ORMBase):
     public_release: bool
     well_construction: WellConstruction
+    ose_well_id: str
+    ose_well_tag_id: str
+
+    aquifer: str
+    aquifer_type: str
+    formation: str
 
 
 class WellMeasurement(ORMBase):

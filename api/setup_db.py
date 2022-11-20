@@ -30,7 +30,7 @@ from api.models.wl_models import (
     Project,
     ProjectLocation,
     LU_DataSource,
-    LU_MeasurementMethod,
+    LU_MeasurementMethod, LU_Status, LU_CurrentUse, LU_AquiferType, LU_AquiferClass,
 )
 from api.nm_aquifer_connector import (
     get_associated_projects,
@@ -126,19 +126,41 @@ def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
             q = dest.query(Project).filter(Project.name == ap["ProjectName"])
             dest.add(ProjectLocation(project=q.first(), location=dbloc))
 
-        dbwell = Well(location=dbloc)
-        dest.add(dbwell)
         screens = get_screens(cursor, l["PointID"])
         wd = get_welldata(cursor, l["PointID"])
-        wdkw = {}
+        wckw = {}
+        wkw = {}
         if wd:
             wd = wd[0]
-            wdkw = dict(
+            wckw = dict(
+                construction_method=wd["ConstructionMethod"],
+                construction_notes=wd["ConstructionNotes"],
                 casing_diameter=wd["CasingDiameter"],
+                casing_depth= wd["CasingDepth"],
+                casing_description = wd["CasingDescription"],
                 well_depth=wd["WellDepth"],
                 hole_depth=wd["HoleDepth"],
                 measuring_point_height=wd["MPHeight"],
+                measuring_point=wd["MeasuringPoint"]
             )
+            wkw = dict(ose_well_id=wd["OSEWellID"],
+                      ose_well_tag_id=wd["OSEWelltagID"],
+                      aquifer_class_id=get_lookup_by_name(dest,
+                                                          LU_AquiferClass,
+                                                          wd["AqClass"]),
+                      aquifer_type_id=get_lookup_by_name(dest,
+                                                      LU_AquiferType,
+                                                      wd['AquiferType']),
+                      formation=wd["FormationZone"],
+                      current_use_id=get_lookup_by_name(dest,
+                                                        LU_CurrentUse,
+                                                        wd['CurrentUse']),
+                       status_id=get_lookup_by_name(dest, LU_Status,
+                                                    wd['Status'])
+                       )
+
+        dbwell = Well(location=dbloc, **wkw)
+        dest.add(dbwell)
         dbscreens = [
             ScreenInterval(
                 top=i["ScreenTop"],
@@ -147,7 +169,7 @@ def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
             )
             for i in screens
         ]
-        dbwc = WellConstruction(well=dbwell, screens=dbscreens, **wdkw)
+        dbwc = WellConstruction(well=dbwell, screens=dbscreens, **wckw)
         dest.add(dbwc)
 
         # copy waterlevels
@@ -216,9 +238,13 @@ def copy_nm_aquifer(dest):
     # obsprop_wt = ObservedProperty(name="WellTemperature")
     # dest.add(obsprop_wt)
 
-    # copy LU_Datasource
+    # copy LUs
     copy_lu(cursor, dest, LU_DataSource)
     copy_lu(cursor, dest, LU_MeasurementMethod)
+    copy_lu(cursor, dest, LU_Status)
+    copy_lu(cursor, dest, LU_CurrentUse)
+    copy_lu(cursor, dest, LU_AquiferType)
+    copy_lu(cursor, dest, LU_AquiferClass)
 
     # copy  public locations
     copy_gw_locations(

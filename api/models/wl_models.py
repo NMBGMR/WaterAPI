@@ -97,18 +97,34 @@ class Well(Base):
     location = relationship("Location")
     public_release = Column(Boolean, default=False)
 
+    formation = Column(String)
+
+    ose_well_id = Column(String)
+    ose_well_tag_id = Column(String)
+
+    aquifer_class_id = Column(Integer, ForeignKey("LU_AquiferClass.id"))
+    aquifer_type_id = Column(Integer, ForeignKey("LU_AquiferType.id"))
+    status_id = Column(Integer, ForeignKey("LU_Status.id"))
+    current_use_id =Column(Integer, ForeignKey("LU_CurrentUse.id"))
     well_construction = relationship(
         "WellConstruction", back_populates="well", uselist=False
     )
 
 
 class WellConstruction(Base):
+    measuring_point = Column(String)
     measuring_point_height = Column(Float)
     casing_diameter = Column(Float, default=0)
+    casing_depth = Column(Float)
+    casing_description=Column(String)
+
     hole_depth = Column(Float, default=0)
     well_depth = Column(Float, default=0)
-    well_id = Column(Integer, ForeignKey("Well.id"))
 
+    construction_method=Column(String)
+    construction_notes=Column(String)
+
+    well_id = Column(Integer, ForeignKey("Well.id"))
     well = relationship("Well", back_populates="well_construction", uselist=False)
     screens = relationship("ScreenInterval")
 
@@ -117,7 +133,6 @@ class ScreenInterval(Base):
     top = Column(Float)
     bottom = Column(Float)
     description = Column(String)
-    aquifer = Column(String)
     well_construction_id = Column(Integer, ForeignKey("WellConstruction.id"))
 
 
@@ -183,6 +198,11 @@ class LU(object):
 #     pass
 #
 #
+
+class LU_CurrentUse(Base, LU):
+    pass
+
+
 class LU_MeasurementMethod(Base, LU):
     pass
 
@@ -200,7 +220,11 @@ class LU_Status(Base, LU):
 class LU_DataSource(Base, LU):
     pass
 
+class LU_AquiferType(Base, LU):
+    pass
 
+class LU_AquiferClass(Base, LU):
+    pass
 #
 # class Location(Base):
 #     LocationId = Column(UUIDType(binary=False), primary_key=True)
