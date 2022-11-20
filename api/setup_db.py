@@ -45,8 +45,7 @@ from api.nm_aquifer_connector import (
     get_pressure_water_levels,
     get_projects,
     get_gw_locations,
-    get_acoustic_water_levels,
-    LOCATION_CHUNK,
+    get_acoustic_water_levels, LOCATION_CHUNK,
 )
 from api.session import waterdbengine, WATERDB, NM_Aquifer
 
@@ -215,17 +214,13 @@ def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
     projection = pyproj.Proj(proj="utm", zone=int(13), ellps="WGS84")
     failures = []
 
-    locations = list(locations)
-    it = tqdm(total=len(locations))
-    for l in locations:
+    for l in tqdm(locations):
         if l["SiteType"] != "GW":
             continue
         try:
             copy_gw_location(projection, cursor, dest, obsprop_bgs, l)
         except BaseException:
             failures.append(l)
-        it.update(1)
-        print(it)
 
     return failures
 
