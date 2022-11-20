@@ -98,130 +98,136 @@ def copy_lu(cursor, dest, table, tag=None):
     dest.commit()
     dest.flush()
 
+def copy_gw_location(projection, cursor, dest, obsprop_bgs, l):
+    lon, lat = projection(l["Easting"], l["Northing"], inverse=True)
+    print(f'adding location {l["PointID"]}')
+    dbloc = Location(
+        point_id=l["PointID"],
+        elevation=l["Altitude"],
+        elevation_datum=l["AltDatum"],
+        point=f"POINT({lon} {lat})",
+        township=l["Township"],
+        township_direction=l["TownshipDirection"],
+        range=l["Range"],
+        range_direction=l["RangeDirection"],
+        public_release=l["PublicRelease"],
+        county=l["County"],
+        state=l["State"],
+        quad=l["QuadName"],
+        notes=l["LocationNotes"],
+    )
+    dest.add(dbloc)
 
-def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
-    projection = pyproj.Proj(proj="utm", zone=int(13), ellps="WGS84")
+    # add location to associated projects
+    for ap in get_associated_projects(cursor, l["PointID"]):
+        q = dest.query(Project).filter(Project.name == ap["ProjectName"])
+        dest.add(ProjectLocation(project=q.first(), location=dbloc))
 
-    for l in locations:
-        if l["SiteType"] != "GW":
-            continue
-
-        lon, lat = projection(l["Easting"], l["Northing"], inverse=True)
-        print(f'adding location {l["PointID"]}')
-        dbloc = Location(
-            point_id=l["PointID"],
-            elevation=l["Altitude"],
-            elevation_datum=l["AltDatum"],
-            point=f"POINT({lon} {lat})",
-            township=l["Township"],
-            township_direction=l["TownshipDirection"],
-            range=l["Range"],
-            range_direction=l["RangeDirection"],
-            public_release=l["PublicRelease"],
-            county=l["County"],
-            state=l["State"],
-            quad=l["QuadName"],
-            notes=l["LocationNotes"],
+    screens = get_screens(cursor, l["PointID"])
+    wd = get_welldata(cursor, l["PointID"])
+    wckw = {}
+    wkw = {}
+    if wd:
+        wd = wd[0]
+        wckw = dict(
+            construction_method=wd["ConstructionMethod"],
+            construction_notes=wd["ConstructionNotes"],
+            casing_diameter=wd["CasingDiameter"],
+            casing_depth=wd["CasingDepth"],
+            casing_description=wd["CasingDescription"],
+            well_depth=wd["WellDepth"],
+            hole_depth=wd["HoleDepth"],
+            measuring_point_height=wd["MPHeight"],
+            measuring_point=wd["MeasuringPoint"],
         )
-        dest.add(dbloc)
+        wkw = dict(
+            ose_well_id=wd["OSEWellID"],
+            ose_well_tag_id=wd["OSEWelltagID"],
+            aquifer_class_id=get_lookup_by_name(
+                dest, LU_AquiferClass, wd["AqClass"]
+            ),
+            aquifer_type_id=get_lookup_by_name(
+                dest, LU_AquiferType, wd["AquiferType"]
+            ),
+            formation=wd["FormationZone"],
+            current_use_id=get_lookup_by_name(
+                dest, LU_CurrentUse, wd["CurrentUse"]
+            ),
+            status_id=get_lookup_by_name(dest, LU_Status, wd["Status"]),
+        )
 
-        # add location to associated projects
-        for ap in get_associated_projects(cursor, l["PointID"]):
-            q = dest.query(Project).filter(Project.name == ap["ProjectName"])
-            dest.add(ProjectLocation(project=q.first(), location=dbloc))
+    dbwell = Well(location=dbloc, **wkw)
+    dest.add(dbwell)
+    dbscreens = [
+        ScreenInterval(
+            top=i["ScreenTop"],
+            bottom=i["ScreenTop"],
+            description=i["ScreenDescription"],
+        )
+        for i in screens
+    ]
+    dbwc = WellConstruction(well=dbwell, screens=dbscreens, **wckw)
+    dest.add(dbwc)
 
-        screens = get_screens(cursor, l["PointID"])
-        wd = get_welldata(cursor, l["PointID"])
-        wckw = {}
-        wkw = {}
-        if wd:
-            wd = wd[0]
-            wckw = dict(
-                construction_method=wd["ConstructionMethod"],
-                construction_notes=wd["ConstructionNotes"],
-                casing_diameter=wd["CasingDiameter"],
-                casing_depth=wd["CasingDepth"],
-                casing_description=wd["CasingDescription"],
-                well_depth=wd["WellDepth"],
-                hole_depth=wd["HoleDepth"],
-                measuring_point_height=wd["MPHeight"],
-                measuring_point=wd["MeasuringPoint"],
+    # copy waterlevels
+    for wl in get_manual_water_levels(cursor, l["PointID"]):
+        dsid = get_lookup_by_name(dest, LU_DataSource, wl["DataSource"])
+        mmid = get_lookup_by_name(
+            dest, LU_MeasurementMethod, wl["MeasurementMethod"]
+        )
+        dest.add(
+            WellMeasurement(
+                well=dbwell,
+                value=wl["DepthToWaterBGS"],
+                timestamp=wl["DateTimeMeasured"],
+                public_release=wl["PublicRelease"],
+                data_source_id=dsid,
+                method_id=mmid,
+                measuring_agency=wl["MeasuringAgency"],
+                measured_by=wl["MeasuredBy"],
+                observed_property=obsprop_bgs,
             )
-            wkw = dict(
-                ose_well_id=wd["OSEWellID"],
-                ose_well_tag_id=wd["OSEWelltagID"],
-                aquifer_class_id=get_lookup_by_name(
-                    dest, LU_AquiferClass, wd["AqClass"]
-                ),
-                aquifer_type_id=get_lookup_by_name(
-                    dest, LU_AquiferType, wd["AquiferType"]
-                ),
-                formation=wd["FormationZone"],
-                current_use_id=get_lookup_by_name(
-                    dest, LU_CurrentUse, wd["CurrentUse"]
-                ),
-                status_id=get_lookup_by_name(dest, LU_Status, wd["Status"]),
-            )
+        )
+    dest.commit()
+    # copy continuous
+    ptid = get_lookup_by_name(dest, LU_MeasurementMethod, "Pressure Transducer")
+    aid = get_lookup_by_name(dest, LU_MeasurementMethod, "Acoustic")
 
-        dbwell = Well(location=dbloc, **wkw)
-        dest.add(dbwell)
-        dbscreens = [
-            ScreenInterval(
-                top=i["ScreenTop"],
-                bottom=i["ScreenTop"],
-                description=i["ScreenDescription"],
-            )
-            for i in screens
-        ]
-        dbwc = WellConstruction(well=dbwell, screens=dbscreens, **wckw)
-        dest.add(dbwc)
+    def pressure_payload(r):
+        return dict(public_release=True)
 
-        # copy waterlevels
-        for wl in get_manual_water_levels(cursor, l["PointID"]):
-            dsid = get_lookup_by_name(dest, LU_DataSource, wl["DataSource"])
-            mmid = get_lookup_by_name(
-                dest, LU_MeasurementMethod, wl["MeasurementMethod"]
-            )
+    def acoustic_payload(r):
+        return dict(public_release=r["PublicRelease"])
+
+    for (mmid, func, payload) in (
+            (ptid, get_pressure_water_levels, pressure_payload),
+            (aid, get_acoustic_water_levels, acoustic_payload),
+    ):
+        for wl in func(cursor, l["PointID"]):
             dest.add(
                 WellMeasurement(
                     well=dbwell,
                     value=wl["DepthToWaterBGS"],
-                    timestamp=wl["DateTimeMeasured"],
-                    public_release=wl["PublicRelease"],
-                    data_source_id=dsid,
+                    timestamp=wl["DateMeasured"],
                     method_id=mmid,
-                    measuring_agency=wl["MeasuringAgency"],
-                    measured_by=wl["MeasuredBy"],
                     observed_property=obsprop_bgs,
+                    **payload(wl),
                 )
             )
         dest.commit()
-        # copy continuous
-        ptid = get_lookup_by_name(dest, LU_MeasurementMethod, "Pressure Transducer")
-        aid = get_lookup_by_name(dest, LU_MeasurementMethod, "Acoustic")
 
-        def pressure_payload(r):
-            return dict(public_release=True)
 
-        def acoustic_payload(r):
-            return dict(public_release=r["PublicRelease"])
-
-        for (mmid, func, payload) in (
-            (ptid, get_pressure_water_levels, pressure_payload),
-            (aid, get_acoustic_water_levels, acoustic_payload),
-        ):
-            for wl in func(cursor, l["PointID"]):
-                dest.add(
-                    WellMeasurement(
-                        well=dbwell,
-                        value=wl["DepthToWaterBGS"],
-                        timestamp=wl["DateMeasured"],
-                        method_id=mmid,
-                        observed_property=obsprop_bgs,
-                        **payload(wl),
-                    )
-                )
-            dest.commit()
+def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
+    projection = pyproj.Proj(proj="utm", zone=int(13), ellps="WGS84")
+    failures = []
+    for l in locations:
+        if l["SiteType"] != "GW":
+            continue
+        try:
+            copy_gw_location(projection, cursor, dest, obsprop_bgs, l)
+        except BaseException:
+            failures.append(l)
+    return failures
 
 
 def copy_nm_aquifer(dest):
@@ -251,15 +257,16 @@ def copy_nm_aquifer(dest):
     copy_lu(cursor, dest, LU_AquiferClass)
 
     # copy  public locations
-    copy_gw_locations(
+    pfailures = copy_gw_locations(
         cursor, dest, obsprop_bgs, get_gw_locations(cursor, public_release=True)
     )
     dest.commit()
-
+    print(f'public location failures. {pfailures}')
     # copy non public locations
-    copy_gw_locations(
+    npfailures = copy_gw_locations(
         cursor, dest, obsprop_bgs, get_gw_locations(cursor, public_release=False)
     )
+    print(f'public location failures. {npfailures}')
 
     dest.commit()
     src.close()
