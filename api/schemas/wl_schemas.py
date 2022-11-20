@@ -55,7 +55,7 @@ class Well(ORMBase):
     ose_well_id: str
     ose_well_tag_id: str
 
-    aquifer: str
+    aquifer_class: str
     aquifer_type: str
     formation: str
 

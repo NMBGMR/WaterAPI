@@ -250,7 +250,21 @@ function show_location_table(evt, location, base_api_url){
         table.rows.add([{key: "PointID", value: location.point_id },
             {key: "Hole Depth (ft)", value: well.well_construction.hole_depth},
             {key: "Well Depth (ft)", value: well.well_construction.well_depth},
+            {key: "Casing Depth", value: well.well_construction.casing_depth},
             {key: "Casing Diameter", value: well.well_construction.casing_diameter},
+            {key: "Casing Description", value: well.well_construction.casing_description},
+            {key: "Measuring Point", value: well.well_construction.measuring_point},
+            {key: "Measuring Point Height", value: well.well_construction.measuring_point_height},
+
+            {key: "OSE Well ID", value: well.ose_well_id},
+            {key: "OSE Well Tag ID", value: well.ose_well_tag_id},
+
+            {key: "Aquifer Class", value: well.aquifer_class},
+            {key: "Aquifer Type", value: well.aquifer_type},
+            {key: "Formation", value: well.formation},
+            {key: "Status", value: well.status},
+            {key: "CurrentUse", value: well.current_use}
+
         ]).draw()
     })
 

@@ -105,10 +105,33 @@ class Well(Base):
     aquifer_class_id = Column(Integer, ForeignKey("LU_AquiferClass.id"))
     aquifer_type_id = Column(Integer, ForeignKey("LU_AquiferType.id"))
     status_id = Column(Integer, ForeignKey("LU_Status.id"))
-    current_use_id = Column(Integer, ForeignKey("LU_CurrentUse.id"))
+    current_use_id =Column(Integer, ForeignKey("LU_CurrentUse.id"))
+
     well_construction = relationship(
         "WellConstruction", back_populates="well", uselist=False
     )
+    files = relationship("WellFile", back_populates="well")
+
+    aquifer_class_ = relationship("LU_AquiferClass")
+    aquifer_type_ = relationship("LU_AquiferType")
+    current_use = relationship("LU_CurrentUse")
+    status_ = relationship("LU_Status")
+
+    @property
+    def aquifer_class(self):
+        return self.aquifer_class_.meaning
+
+    @property
+    def aquifer_type(self):
+        return self.aquifer_type_.meaning
+
+    @property
+    def current_use(self):
+        return self.current_use_.meaning
+
+    @property
+    def status(self):
+        return self.status_.meaning
 
 
 class WellConstruction(Base):
@@ -116,17 +139,23 @@ class WellConstruction(Base):
     measuring_point_height = Column(Float)
     casing_diameter = Column(Float, default=0)
     casing_depth = Column(Float)
-    casing_description = Column(String)
+    casing_description=Column(String)
 
     hole_depth = Column(Float, default=0)
     well_depth = Column(Float, default=0)
 
-    construction_method = Column(String)
-    construction_notes = Column(String)
+    construction_method=Column(String)
+    construction_notes=Column(String)
 
     well_id = Column(Integer, ForeignKey("Well.id"))
     well = relationship("Well", back_populates="well_construction", uselist=False)
     screens = relationship("ScreenInterval")
+
+
+class WellFile(Base):
+    path = Column(String)
+    well_id = Column(Integer, ForeignKey("Well.id"))
+    well = relationship("Well", back_populates="files")
 
 
 class ScreenInterval(Base):
@@ -199,7 +228,6 @@ class LU(object):
 #
 #
 
-
 class LU_CurrentUse(Base, LU):
     pass
 
@@ -221,15 +249,11 @@ class LU_Status(Base, LU):
 class LU_DataSource(Base, LU):
     pass
 
-
 class LU_AquiferType(Base, LU):
     pass
 
-
 class LU_AquiferClass(Base, LU):
     pass
-
-
 #
 # class Location(Base):
 #     LocationId = Column(UUIDType(binary=False), primary_key=True)
