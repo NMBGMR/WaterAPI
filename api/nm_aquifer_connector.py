@@ -15,7 +15,7 @@
 # ===============================================================================
 
 
-def get_gw_locations(cursor, public_release='true'):
+def get_gw_locations(cursor, public_release="true"):
     def func():
         i = 0
         while 1:
