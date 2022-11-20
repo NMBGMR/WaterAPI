@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ===============================================================================
-
+LOCATION_CHUNK=500
 
 def get_gw_locations(cursor, public_release="true"):
     def func():
@@ -23,7 +23,7 @@ def get_gw_locations(cursor, public_release="true"):
 --             where PointID like 'AB-%'
             where PublicRelease=(%s) and SiteType='GW'
             order by PointID
-            offset {i*100} rows fetch next 100 rows only
+            offset {i*LOCATION_CHUNK} rows fetch next {LOCATION_CHUNK} rows only
             """
             cursor.execute(sql, public_release)
             records = cursor.fetchall()
