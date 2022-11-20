@@ -215,6 +215,7 @@ def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
     projection = pyproj.Proj(proj="utm", zone=int(13), ellps="WGS84")
     failures = []
 
+    locations = list(locations)
     for l in tqdm(locations):
         if l["SiteType"] != "GW":
             continue
