@@ -16,6 +16,9 @@
 def make_pdf_report(db, pointid):
     pass
 
+
 def make_json_report(db, pointid):
     pass
+
+
 # ============= EOF =============================================

@@ -39,6 +39,8 @@ def point_id_detail(point_id):
 @app.route("/point_id_report/<string:point_id>")
 def point_id_report(point_id):
     return redirect(f"/api/v1/point_id_report/{point_id}?format=pdf")
+
+
 #
 # @app.route("/waterlevels/<string:pointid>")
 # def waterlevels(pointid):

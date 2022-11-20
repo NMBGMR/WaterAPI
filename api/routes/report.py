@@ -22,15 +22,19 @@ from api.reports import point_id as report_point_id
 
 
 router = APIRouter()
-@router.get('/point_id_report/{point_id}', tags=["Reports"])
-def read_point_id_report(point_id: str,
-                         format: str= "pdf",
-                         db: Session = Depends(get_waterdb)):
-    if format=='pdf':
+
+
+@router.get("/point_id_report/{point_id}", tags=["Reports"])
+def read_point_id_report(
+    point_id: str, format: str = "pdf", db: Session = Depends(get_waterdb)
+):
+    if format == "pdf":
         # make pdf report
         report = report_point_id.make_pdf_report(db, point_id)
     else:
         # make json report
         report = report_point_id.make_json_report(db, point_id)
     return report
+
+
 # ============= EOF =============================================
