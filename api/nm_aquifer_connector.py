@@ -21,7 +21,7 @@ def get_gw_locations(cursor, public_release=True):
         while 1:
             sql = f"""select * from dbo.Location 
 --             where PointID like 'AB-%'
-            where PublicRelease=%s and SiteType='GW'
+            where PublicRelease=(%s) and SiteType='GW'
             order by PointID
             offset {i*100} rows fetch next 100 rows only
             """
