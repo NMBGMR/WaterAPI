@@ -24,7 +24,7 @@ from sqlalchemy.orm import Session
 #     WaterLevelsContinuous_Acoustic,
 #     Location,
 # )
-from api.models.wl_models import WellMeasurement, Well, Location, ObservedProperty
+from api.models.wl_models import WellMeasurement, Well, Location, ObservedProperty, ProjectLocation, Project
 
 from api.routes import _read, get_waterdb, Params
 from api.schemas import wl_schemas
@@ -118,18 +118,24 @@ def read_temperatures(
 @router.get("/locations", response_model=Page[wl_schemas.Location], tags=["Locations"])
 def read_locations(
     point_id: str = None,
+    project: str = None,
     public_release: bool = None,
     db: Session = Depends(get_waterdb),
     params: Params = Depends(),
 ):
     filters = []
+    joins=[]
     if point_id:
         filters.append(fuzzy_search(Location.point_id, point_id))
+
+    if project:
+        joins.extend((ProjectLocation, Project))
+        filters.append(fuzzy_search(Project.name, project))
 
     if public_release is not None:
         filters.append(Location.public_release == public_release)
 
-    return paginate(_read(db, Location, filters=filters), params)
+    return paginate(_read(db, Location, joins=joins, filters=filters), params)
 
 
 def fuzzy_search(column, searchterm):

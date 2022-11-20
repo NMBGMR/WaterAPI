@@ -72,9 +72,17 @@
                     the % character(s) (e.g MG-% for all PointIDs that startwith "MG-" or %-030 for all PointIDs
                     that end with "-030" or %30% for PointIDs that contain "30"</small>
 
+
+
+                 <label for="project_entry">Project</label>
+                <input class="form-control" id="project_entry"
+                       placeholder="Enter PointID" value="JR-%">
+                <small id="project_entry_help"
+                       class="form-text text-muted"></small>
+
                    <button type="submit"
-                           onclick="point_id_search()"
-                           class="btn btn-primary">Submit</button>
+                           onclick="location_search()"
+                           class="btn btn-primary">Search</button>
               </div>
         </div>
         <div class="col-lg-6 rounded">

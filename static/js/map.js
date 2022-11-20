@@ -218,11 +218,31 @@ locationLayer.on('click', function(e){
 function chartoff(){
     document.getElementById("chartoverlay").style.display="none"
 }
+
+function project_search(){
+    location_search('#project_entry', 'project')
+}
 function point_id_search(){
-    let searchstr = document.querySelector('#pointid_entry').value;
-    console.log('search', searchstr)
-    if (searchstr){
-        let url = MAP_CFG.base_api_url+'locations?point_id='+searchstr
+    location_search('#pointid_entry', 'point_id')
+}
+
+function location_search(){
+
+    let project = document.querySelector("#project_entry").value;
+    let pointid = document.querySelector("#pointid_entry").value;
+    let url = MAP_CFG.base_api_url+'locations?'
+    if (pointid){
+        url+="point_id="+pointid
+    }
+    if (project){
+        if (pointid){
+            url+='&'
+        }
+        url+='project='+project
+    }
+
+    if (project || pointid){
+        console.log('search', pointid, project, url)
         retrieveItems(url, 20000, (locations)=>{
             clear_locations_from_map()
             add_locations_to_map(locations)
@@ -230,9 +250,9 @@ function point_id_search(){
     }else{
         alert('Please enter a search term')
     }
-
-
 }
+
+
 
 // function loadLayer(ls, color, label, load_things){
 //     console.debug('load layer')
