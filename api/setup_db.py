@@ -14,7 +14,7 @@
 # limitations under the License.
 # ===============================================================================
 import os
-from tqdm import tqdm
+
 import pymssql
 import pyproj as pyproj
 from geoalchemy2 import Geometry
@@ -102,7 +102,7 @@ def copy_lu(cursor, dest, table, tag=None):
 
 def copy_gw_location(projection, cursor, dest, obsprop_bgs, l):
     lon, lat = projection(l["Easting"], l["Northing"], inverse=True)
-    # print(f'adding location {l["PointID"]}')
+    print(f'adding location {l["PointID"]}')
     dbloc = Location(
         point_id=l["PointID"],
         elevation=l["Altitude"],
@@ -214,14 +214,16 @@ def copy_gw_location(projection, cursor, dest, obsprop_bgs, l):
 def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
     projection = pyproj.Proj(proj="utm", zone=int(13), ellps="WGS84")
     failures = []
-
-    for l in tqdm(locations):
+    locations =list(locations)
+    total = len(locations)
+    for i, l in enumerate(locations):
         if l["SiteType"] != "GW":
             continue
         try:
             copy_gw_location(projection, cursor, dest, obsprop_bgs, l)
         except BaseException:
             failures.append(l)
+        printProgressBar(i, total, prefix=f'Sync PointID={l["PointID"]}', suffix='Complete')
 
     return failures
 
@@ -268,5 +270,26 @@ def copy_nm_aquifer(dest):
     dest.commit()
     src.close()
 
+# Print iterations progress
+def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
+    """
+    Call in a loop to create terminal progress bar
+    @params:
+        iteration   - Required  : current iteration (Int)
+        total       - Required  : total iterations (Int)
+        prefix      - Optional  : prefix string (Str)
+        suffix      - Optional  : suffix string (Str)
+        decimals    - Optional  : positive number of decimals in percent complete (Int)
+        length      - Optional  : character length of bar (Int)
+        fill        - Optional  : bar fill character (Str)
+        printEnd    - Optional  : end character (e.g. "\r", "\r\n") (Str)
+    """
+    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+    filledLength = int(length * iteration // total)
+    bar = fill * filledLength + '-' * (length - filledLength)
+    print(f'\r{prefix} |{bar}| {percent}% {suffix}', end = printEnd)
+    # Print New Line on Complete
+    if iteration == total:
+        print()
 
 # ============= EOF =============================================
