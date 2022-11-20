@@ -223,10 +223,8 @@ def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
             copy_gw_location(projection, cursor, dest, obsprop_bgs, l)
         except BaseException:
             failures.append(l)
-
-        printProgressBar(
-            i, total, prefix=f'Sync PointID={l["PointID"]}', suffix="Complete"
-        )
+        print(l["PointID"], i, total)
+        # printProgressBar(i, total, prefix=f'Sync PointID={l["PointID"]}', suffix='Complete')
 
     return failures
 
