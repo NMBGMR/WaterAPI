@@ -30,7 +30,11 @@ from api.models.wl_models import (
     Project,
     ProjectLocation,
     LU_DataSource,
-    LU_MeasurementMethod, LU_Status, LU_CurrentUse, LU_AquiferType, LU_AquiferClass,
+    LU_MeasurementMethod,
+    LU_Status,
+    LU_CurrentUse,
+    LU_AquiferType,
+    LU_AquiferClass,
 )
 from api.nm_aquifer_connector import (
     get_associated_projects,
@@ -136,28 +140,28 @@ def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
                 construction_method=wd["ConstructionMethod"],
                 construction_notes=wd["ConstructionNotes"],
                 casing_diameter=wd["CasingDiameter"],
-                casing_depth= wd["CasingDepth"],
-                casing_description = wd["CasingDescription"],
+                casing_depth=wd["CasingDepth"],
+                casing_description=wd["CasingDescription"],
                 well_depth=wd["WellDepth"],
                 hole_depth=wd["HoleDepth"],
                 measuring_point_height=wd["MPHeight"],
-                measuring_point=wd["MeasuringPoint"]
+                measuring_point=wd["MeasuringPoint"],
             )
-            wkw = dict(ose_well_id=wd["OSEWellID"],
-                      ose_well_tag_id=wd["OSEWelltagID"],
-                      aquifer_class_id=get_lookup_by_name(dest,
-                                                          LU_AquiferClass,
-                                                          wd["AqClass"]),
-                      aquifer_type_id=get_lookup_by_name(dest,
-                                                      LU_AquiferType,
-                                                      wd['AquiferType']),
-                      formation=wd["FormationZone"],
-                      current_use_id=get_lookup_by_name(dest,
-                                                        LU_CurrentUse,
-                                                        wd['CurrentUse']),
-                       status_id=get_lookup_by_name(dest, LU_Status,
-                                                    wd['Status'])
-                       )
+            wkw = dict(
+                ose_well_id=wd["OSEWellID"],
+                ose_well_tag_id=wd["OSEWelltagID"],
+                aquifer_class_id=get_lookup_by_name(
+                    dest, LU_AquiferClass, wd["AqClass"]
+                ),
+                aquifer_type_id=get_lookup_by_name(
+                    dest, LU_AquiferType, wd["AquiferType"]
+                ),
+                formation=wd["FormationZone"],
+                current_use_id=get_lookup_by_name(
+                    dest, LU_CurrentUse, wd["CurrentUse"]
+                ),
+                status_id=get_lookup_by_name(dest, LU_Status, wd["Status"]),
+            )
 
         dbwell = Well(location=dbloc, **wkw)
         dest.add(dbwell)
