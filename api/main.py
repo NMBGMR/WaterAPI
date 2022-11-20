@@ -30,6 +30,7 @@ from api.session import waterdbengine
 
 # # from api.routes.wq import router as wq_router
 from api.routes.wl import router as wl_router
+from api.routes.report import router as report_router
 from api.setup_db import setup_db_default, copy_db
 
 tags_metadata = [
@@ -70,6 +71,7 @@ app.add_middleware(
 )
 
 app.include_router(wl_router)
+app.include_router(report_router)
 add_pagination(app)
 
 # app.include_router(wq_router)
