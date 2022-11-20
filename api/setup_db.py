@@ -218,9 +218,11 @@ def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
     # locations =list(locations)
     # total = len(locations)
     # with Bar('Syncing', max=total) as bar:
-    for i in Bar("Syncing").iter(locations):
-        l = locations[i]
+    for l in Bar("Syncing").iter(locations):
+        # l = locations[i]
         # for i, l in enumerate(locations):
+    # for l in Bar('Syncing').iter(locations):
+    # for i, l in enumerate(locations):
         if l["SiteType"] != "GW":
             continue
         try:
