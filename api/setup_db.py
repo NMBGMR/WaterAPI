@@ -169,7 +169,7 @@ def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
                     observed_property=obsprop_bgs,
                 )
             )
-
+        dest.commit()
         # copy continuous
         ptid = get_lookup_by_name(dest, LU_MeasurementMethod, "Pressure Transducer")
         aid = get_lookup_by_name(dest, LU_MeasurementMethod, "Acoustic")
@@ -183,7 +183,7 @@ def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
                     WellMeasurement(
                         well=dbwell,
                         value=wl["DepthToWaterBGS"],
-                        timestamp=wl["DateTimeMeasured"],
+                        timestamp=wl["DateMeasured"],
                         public_release=wl["PublicRelease"],
                         method_id=ptid,
                         # measuring_agency=wl["MeasuringAgency"],
@@ -191,6 +191,7 @@ def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
                         observed_property=obsprop_bgs,
                     )
                 )
+            dest.commit()
 
 
 def copy_nm_aquifer(dest):
