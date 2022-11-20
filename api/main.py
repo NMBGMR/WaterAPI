@@ -14,7 +14,11 @@
 # limitations under the License.
 # ===============================================================================
 import os
+import sys
 from threading import Thread
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# print(BASE_DIR)
+# sys.path.append(BASE_DIR)
 
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -25,7 +29,7 @@ from api.session import waterdbengine
 
 # # from api.routes.wq import router as wq_router
 from api.routes.wl import router as wl_router
-from api.setup_db import setup_db, setup_db_default
+from api.setup_db import setup_db_default, copy_db
 
 tags_metadata = [
     {"name": "Locations", "description": ""},
@@ -84,7 +88,7 @@ def get_user():
 
 @app.get("/copy_nm_aquifer", dependencies=[Depends(get_user)])
 async def copy_nm_aquifer():
-    t = Thread(target=setup_db)
+    t = Thread(target=copy_db)
     t.start()
     return True
 
