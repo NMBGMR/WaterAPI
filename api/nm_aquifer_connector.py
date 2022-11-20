@@ -67,13 +67,13 @@ def get_manual_water_levels(cursor, pointid):
 
 
 def get_pressure_water_levels(cursor, pointid):
-    sql = """select * from dbo.WaterLevelsContinuousPressure
+    sql = """select * from dbo.WaterLevelsContinuous_Pressure
     where PointID=%s order by DateTimeMeasured"""
     return fetch(cursor, sql, pointid)
 
 
 def get_acoustic_water_levels(cursor, pointid):
-    sql = """select * from dbo.WaterLevelsContinuousAcoustic
+    sql = """select * from dbo.WaterLevelsContinuous_Acoustic
         where PointID=%s order by DateTimeMeasured"""
     return fetch(cursor, sql, pointid)
 
