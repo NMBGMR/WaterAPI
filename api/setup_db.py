@@ -45,7 +45,8 @@ from api.nm_aquifer_connector import (
     get_pressure_water_levels,
     get_projects,
     get_gw_locations,
-    get_acoustic_water_levels, LOCATION_CHUNK,
+    get_acoustic_water_levels,
+    LOCATION_CHUNK,
 )
 from api.session import waterdbengine, WATERDB, NM_Aquifer
 
