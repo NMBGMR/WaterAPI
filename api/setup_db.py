@@ -102,7 +102,7 @@ def copy_lu(cursor, dest, table, tag=None):
 
 def copy_gw_location(projection, cursor, dest, obsprop_bgs, l):
     lon, lat = projection(l["Easting"], l["Northing"], inverse=True)
-    print(f'adding location {l["PointID"]}')
+    # print(f'adding location {l["PointID"]}')
     dbloc = Location(
         point_id=l["PointID"],
         elevation=l["Altitude"],
