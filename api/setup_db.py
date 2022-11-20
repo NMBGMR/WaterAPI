@@ -218,9 +218,9 @@ def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
     # locations =list(locations)
     # total = len(locations)
     # with Bar('Syncing', max=total) as bar:
-    for i in Bar('Syncing').iter(locations):
+    for i in Bar("Syncing").iter(locations):
         l = locations[i]
-    # for i, l in enumerate(locations):
+        # for i, l in enumerate(locations):
         if l["SiteType"] != "GW":
             continue
         try:
@@ -228,7 +228,7 @@ def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
         except BaseException:
             failures.append(l)
         # bar.next()
-            # printProgressBar(i, total, prefix=f'Sync PointID={l["PointID"]}', suffix='Complete')
+        # printProgressBar(i, total, prefix=f'Sync PointID={l["PointID"]}', suffix='Complete')
 
     return failures
 
@@ -275,8 +275,18 @@ def copy_nm_aquifer(dest):
     dest.commit()
     src.close()
 
+
 # Print iterations progress
-def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
+def printProgressBar(
+    iteration,
+    total,
+    prefix="",
+    suffix="",
+    decimals=1,
+    length=100,
+    fill="█",
+    printEnd="\r",
+):
     """
     Call in a loop to create terminal progress bar
     @params:
@@ -291,10 +301,11 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
     """
     percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
     filledLength = int(length * iteration // total)
-    bar = fill * filledLength + '-' * (length - filledLength)
-    print(f'\r{prefix} |{bar}| {percent}% {suffix}', end = printEnd)
+    bar = fill * filledLength + "-" * (length - filledLength)
+    print(f"\r{prefix} |{bar}| {percent}% {suffix}", end=printEnd)
     # Print New Line on Complete
     if iteration == total:
         print()
+
 
 # ============= EOF =============================================
