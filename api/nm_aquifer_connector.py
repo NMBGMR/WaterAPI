@@ -13,7 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ===============================================================================
-LOCATION_CHUNK=500
+LOCATION_CHUNK = 500
+
 
 def get_gw_locations(cursor, public_release="true"):
     def func():
