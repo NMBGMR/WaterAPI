@@ -37,4 +37,6 @@ def read_point_id_report(
         report = report_point_id.make_json_report(db, point_id)
 
     return FileResponse(report)
+
+
 # ============= EOF =============================================
