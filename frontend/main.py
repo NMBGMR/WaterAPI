@@ -38,11 +38,12 @@ def point_id_report(point_id):
 
 @app.route("/point_id_detail/<string:point_id>")
 def point_id_detail(point_id):
-    config = {"base_api_url": os.environ.get("BASE_API_URL", "http://localhost/api/v1/")}
+    config = {
+        "base_api_url": os.environ.get("BASE_API_URL", "http://localhost/api/v1/")
+    }
 
-    return render_template('point_id_detail.html',
-                           config=config,
-                           point_id=point_id)
+    return render_template("point_id_detail.html", config=config, point_id=point_id)
+
 
 #
 # @app.route("/waterlevels/<string:pointid>")
