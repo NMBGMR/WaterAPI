@@ -21,6 +21,12 @@
 
 }
 
+#chart{
+  width: 50%;
+  height: 500px
+
+}
+
 #chartoverlay {
   position: fixed; /* Sit on top of the page content */
   display: none; /* Hidden by default */
