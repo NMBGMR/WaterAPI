@@ -24,7 +24,7 @@ def get_gw_locations(cursor, public_release="true"):
 --             where PointID like 'AB-%'
             where PublicRelease=(%s) and SiteType='GW'
             order by PointID
-            offset {i*LOCATION_CHUNK} rows fetch next {LOCATION_CHUNK} rows only
+            offset {i * LOCATION_CHUNK} rows fetch next {LOCATION_CHUNK} rows only
             """
             cursor.execute(sql, public_release)
             records = cursor.fetchall()
@@ -73,10 +73,17 @@ def get_pressure_water_levels(cursor, pointid):
     return fetch(cursor, sql, pointid)
 
 
-def get_acoustic_water_levels(cursor, pointid):
+def get_acoustic_water_levels(cursor, point_id):
     sql = """select * from dbo.WaterLevelsContinuous_Acoustic
         where PointID=%s order by DateMeasured"""
-    return fetch(cursor, sql, pointid)
+    return fetch(cursor, sql, point_id)
+
+
+def get_major_chemistry(cursor, point_id):
+    sql = """select * from dbo.MajorChemistry
+    where substring(SamplePointID, 1, len(SamplePointID)-1) = %s
+    """
+    return fetch(cursor, sql, point_id)
 
 
 def fetch(cursor, sql, *args):
@@ -90,6 +97,5 @@ def get_lookup_by_name(dest, table, name):
         return q.first().id
     except AttributeError:
         pass
-
 
 # ============= EOF =============================================

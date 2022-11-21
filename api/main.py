@@ -30,6 +30,7 @@ from api.session import waterdbengine
 
 # # from api.routes.wq import router as wq_router
 from api.routes.wl import router as wl_router
+from api.routes.wq import router as wq_router
 from api.routes.report import router as report_router
 from api.setup_db import setup_db_default, copy_db
 
@@ -71,6 +72,7 @@ app.add_middleware(
 )
 
 app.include_router(wl_router)
+app.include_router(wq_router)
 app.include_router(report_router)
 add_pagination(app)
 
@@ -95,5 +97,10 @@ async def copy_nm_aquifer():
     t.start()
     return True
 
+@app.get("/copy_nm_aquifer", dependencies=[Depends(get_user)])
+async def copy_nm_aquifer():
+    t = Thread(target=copy_db)
+    t.start()
+    return True
 
 # ============= EOF =============================================

@@ -46,19 +46,19 @@ def point_id_detail(point_id):
 
 
 #
-# @app.route("/waterlevels/<string:pointid>")
-# def waterlevels(pointid):
+# @app.route("/waterlevels/<string:point_id>")
+# def waterlevels(point_id):
 #     acs = []
 #     resp = requests.get(
-#         f"http://host.docker.internal/api/v1/waterlevelspressure?pointid={pointid}"
+#         f"http://host.docker.internal/api/v1/waterlevelspressure?pointid={point_id}"
 #     )
 #     pt = resp.json()
 #
 #     resp = requests.get(
-#         f"http://host.docker.internal/api/v1/waterlevels?pointid={pointid}"
+#         f"http://host.docker.internal/api/v1/waterlevels?pointid={point_id}"
 #     )
 #     manual = resp.json()
-#     js, div = make_hydrograph(pt, acs, manual, pointid)
+#     js, div = make_hydrograph(pt, acs, manual, point_id)
 #
 #     disclaimer = Markup(WL_DISCLAIMER)
 #
@@ -74,7 +74,7 @@ def point_id_detail(point_id):
 #         "waterlevels.html",
 #         figJS=js,
 #         figDiv=div,
-#         pointid=pointid,
+#         point_id=point_id,
 #         datanote=datanote,
 #         disclaimer=disclaimer,
 #         base_api_url=os.environ.get('BASE_API_URL', 'http://localhost/api/v1'),

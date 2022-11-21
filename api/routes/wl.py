@@ -104,10 +104,10 @@ def read_temperatures(
 #     tags=["Groundwater Levels"],
 # )
 # def read_waterlevelspressure(
-#         pointid: str = None, limit: int = 1000, db: Session = Depends(get_nm_aquifer)
+#         point_id: str = None, limit: int = 1000, db: Session = Depends(get_nm_aquifer)
 # ):
-#     if pointid:
-#         fs = [WaterLevelsContinuous_Pressure.PointID == pointid]
+#     if point_id:
+#         fs = [WaterLevelsContinuous_Pressure.PointID == point_id]
 #     return _read(db, WaterLevelsContinuous_Pressure, limit, filters=fs)
 #
 #
@@ -117,7 +117,7 @@ def read_temperatures(
 #     tags=["Groundwater Levels"],
 # )
 # def read_waterlevelspressure(
-#         pointid: str = None, limit: int = 100, db: Session = Depends(get_nm_aquifer)
+#         point_id: str = None, limit: int = 100, db: Session = Depends(get_nm_aquifer)
 # ):
 #     return _read(db, WaterLevelsContinuous_Acoustic, limit)
 #

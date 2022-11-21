@@ -169,6 +169,7 @@ class ObservedProperty(Base):
     name = Column(String)
     units = Column(String)
     definition = Column(String)
+    group = Column(String)
 
 
 class WellMeasurement(Base):
