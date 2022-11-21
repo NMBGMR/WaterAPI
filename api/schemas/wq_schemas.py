@@ -41,4 +41,5 @@ class ObservedProperty(ORMBase):
 class MajorChemistry(WellMeasurement):
     observed_property: ObservedProperty
 
+
 # ============= EOF =============================================

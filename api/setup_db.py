@@ -46,7 +46,8 @@ from api.nm_aquifer_connector import (
     get_projects,
     get_gw_locations,
     get_acoustic_water_levels,
-    LOCATION_CHUNK, get_major_chemistry,
+    LOCATION_CHUNK,
+    get_major_chemistry,
 )
 from api.session import waterdbengine, WATERDB, NM_Aquifer
 
@@ -75,9 +76,9 @@ def setup_db_default():
         db.add(WellConstruction(well=w2))
         db.add(ObservedProperty(name="DepthToWaterBGS"))
         db.add(ObservedProperty(name="WellTemperature"))
-        db.add(ObservedProperty(name="Na", group='water_chemistry'))
-        db.add(ObservedProperty(name="Ca", group='water_chemistry'))
-        db.add(ObservedProperty(name="Mg", group='water_chemistry'))
+        db.add(ObservedProperty(name="Na", group="water_chemistry"))
+        db.add(ObservedProperty(name="Ca", group="water_chemistry"))
+        db.add(ObservedProperty(name="Mg", group="water_chemistry"))
         db.commit()
         db.add(WellMeasurement(well_id=1, value=10, observed_property_id=1))
         db.add(WellMeasurement(well_id=2, value=131, observed_property_id=1))
@@ -218,8 +219,8 @@ def copy_gw_location(projection, cursor, dest, obsprop_bgs, l):
         return dict(public_release=r["PublicRelease"])
 
     for (mmid, func, payload) in (
-            (ptid, get_pressure_water_levels, pressure_payload),
-            (aid, get_acoustic_water_levels, acoustic_payload),
+        (ptid, get_pressure_water_levels, pressure_payload),
+        (aid, get_acoustic_water_levels, acoustic_payload),
     ):
         for wl in func(cursor, l["PointID"]):
             dest.add(
@@ -253,9 +254,11 @@ def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
     return failures
 
 
-def copy_obsprop(dest, record, group='water_chemistry'):
-    analyte = record['Analyte']
-    obsprop = dest.query(ObservedProperty).filter(ObservedProperty.name == analyte).first()
+def copy_obsprop(dest, record, group="water_chemistry"):
+    analyte = record["Analyte"]
+    obsprop = (
+        dest.query(ObservedProperty).filter(ObservedProperty.name == analyte).first()
+    )
     if obsprop is None:
         obsprop = ObservedProperty(name=analyte, group=group)
         dest.add(obsprop)
@@ -278,8 +281,7 @@ def copy_nm_aquifer_waterchem(dest):
         for wi in wc:
             obsprop = copy_obsprop(dest, wi)
 
-            m = WellMeasurement(well=location.well,
-                                observed_property=obsprop)
+            m = WellMeasurement(well=location.well, observed_property=obsprop)
             dest.add(m)
 
         dest.commit()
@@ -331,14 +333,14 @@ def copy_nm_aquifer_waterlevels(dest):
 
 # Print iterations progress
 def printProgressBar(
-        iteration,
-        total,
-        prefix="",
-        suffix="",
-        decimals=1,
-        length=100,
-        fill="█",
-        printEnd="\r",
+    iteration,
+    total,
+    prefix="",
+    suffix="",
+    decimals=1,
+    length=100,
+    fill="█",
+    printEnd="\r",
 ):
     """
     Call in a loop to create terminal progress bar
@@ -359,5 +361,6 @@ def printProgressBar(
     # Print New Line on Complete
     if iteration == total:
         print()
+
 
 # ============= EOF =============================================

@@ -44,10 +44,10 @@ router = APIRouter()
 )
 def read_chemistry(point_id: str, db: Session = Depends(get_waterdb)):
     js = [Well, Location, ObservedProperty]
-    fs = [Location.point_id == point_id,
-          ObservedProperty.group == "water_chemistry"]
+    fs = [Location.point_id == point_id, ObservedProperty.group == "water_chemistry"]
 
     return _read(db, WellMeasurement, filters=fs, joins=js)
+
 
 # @router.get(
 #     "/majorchemistry",

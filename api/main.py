@@ -97,10 +97,12 @@ async def copy_nm_aquifer():
     t.start()
     return True
 
+
 @app.get("/copy_nm_aquifer", dependencies=[Depends(get_user)])
 async def copy_nm_aquifer():
     t = Thread(target=copy_db)
     t.start()
     return True
+
 
 # ============= EOF =============================================
