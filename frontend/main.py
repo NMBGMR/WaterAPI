@@ -31,11 +31,6 @@ def entry():
     return render_template("entry.html")
 
 
-@app.route("/point_id_detail/<string:point_id>")
-def point_id_detail(point_id):
-    return render_template("point_id_detail.html", point_id=point_id)
-
-
 @app.route("/point_id_report/<string:point_id>")
 def point_id_report(point_id):
     return redirect(f"/api/v1/point_id_report/{point_id}?format=pdf")

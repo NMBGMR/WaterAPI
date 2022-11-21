@@ -241,6 +241,8 @@ function show_location_table(evt, location, base_api_url){
     console.log('event', evt)
     // let url = 'http://flask2.nmbgmr.nmt.edu/api/v1/locations'
     let url = base_api_url+'wells?location_id='+location.id
+    console.log(url)
+
     fetch(url).then(resp=>resp.json()).then((data)=>{
         console.log('thiasdf', data)
         let well =data.items[0]
