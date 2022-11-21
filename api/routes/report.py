@@ -15,7 +15,7 @@
 # ===============================================================================
 from fastapi_pagination import add_pagination, Page, paginate
 from fastapi import APIRouter, Depends
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from sqlalchemy.orm import Session
 
 from api.routes import get_waterdb
@@ -32,11 +32,13 @@ def read_point_id_report(
     if format == "pdf":
         # make pdf report
         report = report_point_id.make_pdf_report(db, point_id)
+        response = FileResponse(report)
     else:
         # make json report
-        report = report_point_id.make_json_report(db, point_id)
+        report = report_point_id.make_json_data(db, point_id)
+        response = JSONResponse(report)
 
-    return FileResponse(report)
+    return response
 
 
 # ============= EOF =============================================

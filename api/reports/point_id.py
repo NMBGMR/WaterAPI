@@ -14,13 +14,14 @@
 # limitations under the License.
 # ===============================================================================
 import io
+import os
 from io import StringIO
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, \
+    Paragraph, Spacer, Table, TableStyle, Frame, PageTemplate, Image, XBox
 from reportlab.lib.units import inch
-from reportlab.lib.styles import getSampleStyleSheet
 
 from api.models.wl_models import Location, Well
 from api.schemas import wl_schemas
@@ -84,10 +85,13 @@ def make_table(elements, rows, title):
 
 
 def make_pdf_report(db, point_id):
-
+    header_height = 1.5*inch
     data = make_json_data(db, point_id)
 
     elements = []
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                     'newmexicobureauofgeologyandmineralresources.jpeg')
+    elements.append(Image(p, width=header_height*0.9*1.25, height=header_height-15))
     # Initialise the simple document template
     path = f"report.{point_id}.pdf"
     doc = SimpleDocTemplate(
@@ -99,9 +103,6 @@ def make_pdf_report(db, point_id):
         leftMargin=0.8 * inch,
     )
 
-    # set the font style
-    # styles = getSampleStyleSheet()
-    # styleN = styles['Normal']
     style = ParagraphStyle(name="Normal", fontSize=14)
     pp = Paragraph(f"<strong>PointID: {point_id}</strong>", style=style)
     elements.append(pp)
@@ -114,18 +115,38 @@ def make_pdf_report(db, point_id):
         ("County", loc["county"]),
     ]
     make_table(elements, rows, "Location")
+
     rows = [(k, v) for k, v in data["well"].items() if k != "well_construction"]
     make_table(elements, rows, "Well")
     make_table(elements, data["well_construction"].items(), "Well Construction")
+    # elements.append(Spacer(1,inch*3))
 
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                     'fnewmexicobureauofgeologyandmineralresources.jpeg')
+    if os.path.isfile(p):
+        elements.append(Image(p, width=inch*3, height=inch*2))
+    else:
+        elements.append(XBox(width=inch*3, height=inch*2))
+
+    column_height = letter[1]-header_height-0.4*inch
+    y = doc.height-column_height-header_height+0.4*inch
+
+    hf = Frame(doc.leftMargin, doc.height-header_height+0.4*inch,
+               inch*3, header_height, id='header')
+
+    lf = Frame(doc.leftMargin, y,
+               doc.width/2, column_height, id='col1', showBoundary=1)
+    rf = Frame(doc.width/2+doc.leftMargin, y,
+               doc.width/2, column_height, id='col2', showBoundary=1)
+
+    template = PageTemplate(id='twoColumn', frames=[hf, lf, rf])
+    doc.addPageTemplates([template])
     # build PDF using the data
     doc.build(elements)
 
     return path
 
 
-def make_json_report(db, pointid):
-    pass
 
 
 # ============= EOF =============================================
