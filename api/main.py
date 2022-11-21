@@ -32,7 +32,7 @@ from api.session import waterdbengine
 from api.routes.wl import router as wl_router
 from api.routes.wq import router as wq_router
 from api.routes.report import router as report_router
-from api.setup_db import setup_db_default, copy_db
+from api.setup_db import setup_db_default, copy_db, copy_water_chemistry
 
 tags_metadata = [
     {"name": "Locations", "description": ""},
@@ -98,11 +98,10 @@ async def copy_nm_aquifer():
     return True
 
 
-@app.get("/copy_nm_aquifer", dependencies=[Depends(get_user)])
-async def copy_nm_aquifer():
-    t = Thread(target=copy_db)
+@app.get("/copy_nm_aquifer_chemistry", dependencies=[Depends(get_user)])
+async def copy_nm_aquifer_chemistry():
+    t = Thread(target=copy_water_chemistry)
     t.start()
     return True
-
 
 # ============= EOF =============================================
