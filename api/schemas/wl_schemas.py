@@ -33,6 +33,7 @@ class Location(ORMBase):
     point_id: str
     latitude: float
     longitude: float
+    county: Optional[str]
 
 
 class WellConstruction(ORMBase):
