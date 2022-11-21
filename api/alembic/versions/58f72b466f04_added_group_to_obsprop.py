@@ -10,14 +10,14 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '58f72b466f04'
-down_revision = 'a3c23fdd2520'
+revision = "58f72b466f04"
+down_revision = "a3c23fdd2520"
 branch_labels = None
 depends_on = None
 
 
 def upgrade() -> None:
-    op.add_column("ObservedProperty", sa.Column('group', sa.String))
+    op.add_column("ObservedProperty", sa.Column("group", sa.String))
 
 
 def downgrade() -> None:
