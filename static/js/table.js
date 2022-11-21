@@ -270,6 +270,18 @@ function show_location_table(evt, location, base_api_url){
         ]).draw()
     })
 
+    myChart.update()
+    $('#chartprogress').show()
+
+
+    let div = document.getElementById("chartoverlay")
+    console.log(evt.originalEvent.clientY, evt.originalEvent.clientY+20+'px')
+    div.style.top = evt.originalEvent.clientY+20+'px'
+    div.style.left = evt.originalEvent.clientX+20+'px'
+    div.style.display = "block"
+    // div.classList.add('show')
+    // div.classList.add('spinner')
+
     url = base_api_url+'waterlevels?location_id='+location.id
     retrieveItems(url, 1000, (measurements)=>{
         console.log('baa', measurements)
@@ -299,11 +311,14 @@ function show_location_table(evt, location, base_api_url){
             // datasets.push(ndata)
             myChart.data.datasets=ndata
             myChart.update()
-            let div = document.getElementById("chartoverlay")
-            div.style.display="block"
-            console.log(evt.originalEvent.clientY, evt.originalEvent.clientY+20+'px')
-            div.style.top = evt.originalEvent.clientY+20+'px'
-            div.style.left = evt.originalEvent.clientX+20+'px'
+            // div.classList.remove('spinner')
+            // let div = document.getElementById("chartoverlay")
+            // div.style.display="block"
+            // console.log(evt.originalEvent.clientY, evt.originalEvent.clientY+20+'px')
+            // div.style.top = evt.originalEvent.clientY+20+'px'
+            // div.style.left = evt.originalEvent.clientX+20+'px'
+
+            $('#chartprogress').hide()
 
 
     })

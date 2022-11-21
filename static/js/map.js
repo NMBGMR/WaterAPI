@@ -121,7 +121,7 @@ let MAP_CFG;
 function mapInit(cfg){
     MAP_CFG = cfg;
     map.setView([cfg.center_lat, cfg.center_lon], cfg.zoom);
-
+    map.on('click', handleClick);
 
     // loadLayer()
     // $.ajaxSetup({
@@ -217,7 +217,13 @@ locationLayer.on('click', function(e){
 
 }
 
+function handleClick(evt){
+    console.log('asdfasddf click', evt)
+    chartoff()
+}
+
 function chartoff(){
+    console.log('chart off')
     document.getElementById("chartoverlay").style.display="none"
 }
 

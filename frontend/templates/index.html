@@ -66,7 +66,7 @@
              <div class="form-group">
                 <label for="pointid_entry">PointID</label>
                 <input class="form-control" id="pointid_entry"
-                       placeholder="Enter PointID" value="">
+                       placeholder="Enter PointID" value="JR-00%">
                 <small id="pointid_entry_help"
                        class="form-text text-muted">Enter a full (e.g. MG-030) PointID. For partial search use
                     the % character(s) (e.g MG-% for all PointIDs that startwith "MG-" or %-030 for all PointIDs
@@ -86,8 +86,13 @@
               </div>
         </div>
         <div class="col-lg-6 rounded">
-            <div id="map" onclick="chartoff()"></div>
+            <div id="map"></div>
             <div id="chartoverlay" class="bordered">
+                <div id="chartprogress">
+                    <div class="w-flex h-flex justify-content-center align-items-center">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
                 <canvas id="chartdiv"></canvas>
             </div>
         </div>
