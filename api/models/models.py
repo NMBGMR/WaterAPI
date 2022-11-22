@@ -92,7 +92,6 @@ class Location(Base):
         return to_shape(self.point).x
 
 
-
 class Thing(Base):
     location_id = Column(Integer, ForeignKey("Location.id"))
     location = relationship("Location")
@@ -197,7 +196,6 @@ class Measurement(Base):
 
     thing = relationship("Thing")
     observed_property = relationship("ObservedProperty")
-
 
 
 class Sensor(Base):

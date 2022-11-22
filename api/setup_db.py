@@ -34,7 +34,8 @@ from api.models.models import (
     LU_Status,
     LU_CurrentUse,
     LU_AquiferType,
-    LU_AquiferClass, Thing,
+    LU_AquiferClass,
+    Thing,
 )
 from api.nm_aquifer_connector import (
     get_associated_projects,
@@ -169,7 +170,6 @@ def copy_gw_location(projection, cursor, dest, obsprop_bgs, l):
             measuring_point=wd["MeasuringPoint"],
         )
         wkw = dict(
-
             aquifer_class_id=get_lookup_by_name(dest, LU_AquiferClass, wd["AqClass"]),
             aquifer_type_id=get_lookup_by_name(dest, LU_AquiferType, wd["AquiferType"]),
             formation=wd["FormationZone"],
@@ -180,9 +180,9 @@ def copy_gw_location(projection, cursor, dest, obsprop_bgs, l):
     dbthing = Thing(location=dbloc, **wkw)
     dest.add(dbthing)
 
-    dbwell = Well(thing=dbthing,
-                  ose_well_id=wd["OSEWellID"],
-                  ose_well_tag_id=wd["OSEWelltagID"])
+    dbwell = Well(
+        thing=dbthing, ose_well_id=wd["OSEWellID"], ose_well_tag_id=wd["OSEWelltagID"]
+    )
 
     dest.add(dbwell)
     dbscreens = [
