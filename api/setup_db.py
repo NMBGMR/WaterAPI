@@ -343,10 +343,10 @@ def copy_nm_aquifer_waterlevels(dest):
     print(f"public location failures. {pfailures}")
 
     # copy non public locations
-    npfailures = copy_gw_locations(
-        cursor, dest, obsprop_bgs, get_gw_locations(cursor, public_release="false")
-    )
-    print(f"public non location failures. {npfailures}")
+    # npfailures = copy_gw_locations(
+    #     cursor, dest, obsprop_bgs, get_gw_locations(cursor, public_release="false")
+    # )
+    # print(f"public non location failures. {npfailures}")
 
     dest.commit()
     src.close()
