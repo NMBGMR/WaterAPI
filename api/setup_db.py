@@ -276,12 +276,12 @@ def copy_nm_aquifer_waterchem(dest):
     src = pymssql.connect(*settings.NM_AQUIFER_ARGS)
     cursor = src.cursor(as_dict=True)
 
-    for location in dest.query(Location).all():
-        wc = get_major_chemistry(cursor, location.point_id)
+    for well in dest.query(Well).all():
+        wc = get_major_chemistry(cursor, well.location.point_id)
         for wi in wc:
             obsprop = copy_obsprop(dest, wi)
 
-            m = WellMeasurement(well=location.well, observed_property=obsprop)
+            m = WellMeasurement(well=well, observed_property=obsprop)
             dest.add(m)
 
         dest.commit()
