@@ -260,11 +260,22 @@ def copy_obsprop(dest, record, group="water_chemistry"):
         dest.query(ObservedProperty).filter(ObservedProperty.name == analyte).first()
     )
     if obsprop is None:
-        obsprop = ObservedProperty(name=analyte, group=group)
+        obsprop = ObservedProperty(name=analyte, units=record['Units'], group=group)
         dest.add(obsprop)
         dest.commit()
 
     return obsprop
+
+
+def copy_method(dest, record):
+    m = record['AnalysisMethod']
+    method = dest.query(LU_MeasurementMethod).filter(LU_MeasurementMethod.name==m).first()
+    if method is None:
+        method  = LU_MeasurementMethod(name=m)
+        dest.add(method)
+        dest.commit()
+
+    return method
 
 
 def copy_nm_aquifer(dest):
@@ -281,9 +292,15 @@ def copy_nm_aquifer_waterchem(dest):
         for wi in wc:
             obsprop = copy_obsprop(dest, wi)
 
-            m = WellMeasurement(well=well, observed_property=obsprop)
+            method = copy_method(dest, wi)
+            m = WellMeasurement(well=well,
+                                value=wi['SampleValue'],
+                                method_id=method.id,
+                                timestamp=wi['AnalysisDate'],
+                                observed_property=obsprop)
             dest.add(m)
 
+        print(f'Copy chemistry for {well.location.point_id}')
         dest.commit()
 
 
