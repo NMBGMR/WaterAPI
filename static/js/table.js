@@ -238,36 +238,13 @@ $(document).ready(function (){
 
 function show_location_table(evt, location, base_api_url){
     console.log('location selected', location)
-    console.log('event', evt)
-    // let url = 'http://flask2.nmbgmr.nmt.edu/api/v1/locations'
     let url = base_api_url+'wells?location_id='+location.id
-    console.log(url)
 
     fetch(url).then(resp=>resp.json()).then((data)=>{
-        console.log('thiasdf', data)
+        console.log('location data', data)
         let well =data.items[0]
+        populate_selection_table(well, location.point_id, '#selectiontable')
 
-        var table = $('#selectiontable').DataTable()
-        table.clear()
-        table.rows.add([{key: "PointID", value: location.point_id },
-            {key: "Hole Depth (ft)", value: well.well_construction.hole_depth},
-            {key: "Well Depth (ft)", value: well.well_construction.well_depth},
-            {key: "Casing Depth", value: well.well_construction.casing_depth},
-            {key: "Casing Diameter", value: well.well_construction.casing_diameter},
-            {key: "Casing Description", value: well.well_construction.casing_description},
-            {key: "Measuring Point", value: well.well_construction.measuring_point},
-            {key: "Measuring Point Height", value: well.well_construction.measuring_point_height},
-
-            {key: "OSE Well ID", value: well.ose_well_id},
-            {key: "OSE Well Tag ID", value: well.ose_well_tag_id},
-
-            {key: "Aquifer Class", value: well.thing.aquifer_class},
-            {key: "Aquifer Type", value: well.thing.aquifer_type},
-            {key: "Formation", value: well.thing.formation},
-            {key: "Status", value: well.thing.status},
-            {key: "CurrentUse", value: well.thing.current_use}
-
-        ]).draw()
     })
 
     myChart.update()
@@ -279,13 +256,9 @@ function show_location_table(evt, location, base_api_url){
     div.style.top = evt.originalEvent.clientY+20+'px'
     div.style.left = evt.originalEvent.clientX+20+'px'
     div.style.display = "block"
-    // div.classList.add('show')
-    // div.classList.add('spinner')
 
     url = base_api_url+'waterlevels?location_id='+location.id
-    retrieveItems(url, 1000, (measurements)=>{
-        console.log('baa', measurements)
-
+    retrieveItems(url, 10000, (measurements)=>{
         // let datasets = myChart.data.datasets
         let color = 'black'
          let ndata = [{

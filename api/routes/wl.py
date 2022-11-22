@@ -207,6 +207,7 @@ def read_wells(
     joins = []
     filters = []
     if point_id:
+        joins.append(Thing)
         joins.append(Location)
         filters.append(fuzzy_search(Location.point_id, point_id))
     elif location_id:

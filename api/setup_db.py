@@ -55,8 +55,8 @@ from api.session import waterdbengine, WATERDB, NM_Aquifer
 
 def setup_db_default():
     if int(os.environ["DATABASE_DEV"]):
-        # Base.metadata.drop_all(bind=waterdbengine)
-        # Base.metadata.create_all(bind=waterdbengine)
+        Base.metadata.drop_all(bind=waterdbengine)
+        Base.metadata.create_all(bind=waterdbengine)
 
         db = WATERDB()
         db.add(Project(name="foo"))
@@ -78,8 +78,8 @@ def setup_db_default():
         w2 = Well(thing_id=2)
         db.add(w1)
         db.add(w2)
-        db.add(WellConstruction(well=w1))
-        db.add(WellConstruction(well=w2))
+        db.add(WellConstruction(well=w1, casing_diameter=123.23123123))
+        db.add(WellConstruction(well=w2, casing_diameter=345.313422))
         db.add(ObservedProperty(name="DepthToWaterBGS"))
         db.add(ObservedProperty(name="WellTemperature"))
         db.add(ObservedProperty(name="Na", group="water_chemistry"))

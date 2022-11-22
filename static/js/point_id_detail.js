@@ -29,8 +29,42 @@ const obsdtt =  $('#obstable').DataTable(
                                              {'data': 'timestamp'},
                                             {'data': 'value',
                                                 'render': $.fn.dataTable.render.number('', '.', 2, '')}]})
+$('#pointidtable').DataTable({select: {style: 'multi'},
+                            paging: false,
+                            ordering: false,
+                            info: false,
+                            searching: false,
+                            columns: [
+                                      {data: "key"},
+                                      {data: "value"},
+                                      // {data: "name"},
+                                      // {data: "description"},
+                                      // {data: "thingname"},
+                                      // {data: "source"}
+                            ]})
+
+
 
 function chartInit(config, point_id){
+    const map = L.map('map_detail', {
+        preferCanvas: true,
+        updateWhenZooming: false,
+        updateWhenIdle: true,
+        layers: [osm]
+    }
+)
+    layerControl.addTo(map);
+    fetch(config.base_api_url+'locations?point_id='+point_id).then(resp=>resp.json()).then((data)=>{
+        let location =data.items[0]
+        let latlng =[location.latitude, location.longitude]
+        map.setView(latlng, 8);
+        let marker = L.circleMarker(latlng,{radius: 5})
+        marker.addTo(map)
+    })
+    fetch(config.base_api_url+'wells?point_id='+point_id).then(resp=>resp.json()).then((data)=>{
+        console.log('ddd', data)
+        populate_selection_table(data.items[0], point_id, '#pointidtable')
+    })
 
     let url =config.base_api_url+'waterlevels?point_id='+point_id
     $('#chartprogress').show()
