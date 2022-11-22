@@ -25,7 +25,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_pagination import add_pagination
 
-from api.models.wl_models import Base
+from api.models.models import Base
 from api.session import waterdbengine
 
 # # from api.routes.wq import router as wq_router

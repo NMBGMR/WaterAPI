@@ -19,12 +19,12 @@ import pymssql
 import pyproj as pyproj
 from geoalchemy2 import Geometry
 from api.config import settings
-from api.models.wl_models import (
+from api.models.models import (
     Base,
     Location,
     Well,
     ObservedProperty,
-    WellMeasurement,
+    Measurement,
     WellConstruction,
     ScreenInterval,
     Project,
@@ -34,7 +34,7 @@ from api.models.wl_models import (
     LU_Status,
     LU_CurrentUse,
     LU_AquiferType,
-    LU_AquiferClass,
+    LU_AquiferClass, Thing,
 )
 from api.nm_aquifer_connector import (
     get_associated_projects,
@@ -68,8 +68,13 @@ def setup_db_default():
         db.add(ProjectLocation(project_id=1, location_id=1))
         db.add(ProjectLocation(project_id=2, location_id=2))
 
-        w1 = Well(location_id=1)
-        w2 = Well(location_id=2)
+        t1 = Thing(location_id=1)
+        t2 = Thing(location_id=2)
+        db.add(t1)
+        db.add(t2)
+
+        w1 = Well(thing_id=1)
+        w2 = Well(thing_id=2)
         db.add(w1)
         db.add(w2)
         db.add(WellConstruction(well=w1))
@@ -80,11 +85,11 @@ def setup_db_default():
         db.add(ObservedProperty(name="Ca", group="water_chemistry"))
         db.add(ObservedProperty(name="Mg", group="water_chemistry"))
         db.commit()
-        db.add(WellMeasurement(well_id=1, value=10, observed_property_id=1))
-        db.add(WellMeasurement(well_id=2, value=131, observed_property_id=1))
+        db.add(Measurement(thing_id=1, value=10, observed_property_id=1))
+        db.add(Measurement(thing_id=2, value=131, observed_property_id=1))
 
-        db.add(WellMeasurement(well_id=1, value=103, observed_property_id=2))
-        db.add(WellMeasurement(well_id=1, value=1.123, observed_property_id=3))
+        db.add(Measurement(thing_id=1, value=103, observed_property_id=2))
+        db.add(Measurement(thing_id=1, value=1.123, observed_property_id=3))
 
         db.commit()
         db.close()
@@ -164,8 +169,7 @@ def copy_gw_location(projection, cursor, dest, obsprop_bgs, l):
             measuring_point=wd["MeasuringPoint"],
         )
         wkw = dict(
-            ose_well_id=wd["OSEWellID"],
-            ose_well_tag_id=wd["OSEWelltagID"],
+
             aquifer_class_id=get_lookup_by_name(dest, LU_AquiferClass, wd["AqClass"]),
             aquifer_type_id=get_lookup_by_name(dest, LU_AquiferType, wd["AquiferType"]),
             formation=wd["FormationZone"],
@@ -173,7 +177,13 @@ def copy_gw_location(projection, cursor, dest, obsprop_bgs, l):
             status_id=get_lookup_by_name(dest, LU_Status, wd["Status"]),
         )
 
-    dbwell = Well(location=dbloc, **wkw)
+    dbthing = Thing(location=dbloc, **wkw)
+    dest.add(dbthing)
+
+    dbwell = Well(thing=dbthing,
+                  ose_well_id=wd["OSEWellID"],
+                  ose_well_tag_id=wd["OSEWelltagID"])
+
     dest.add(dbwell)
     dbscreens = [
         ScreenInterval(
@@ -186,17 +196,13 @@ def copy_gw_location(projection, cursor, dest, obsprop_bgs, l):
     dbwc = WellConstruction(well=dbwell, screens=dbscreens, **wckw)
     dest.add(dbwc)
 
-    # copy chemistry
-    for chem in get_major_chemistry(cursor, l["PointID"]):
-        pass
-
     # copy waterlevels
     for wl in get_manual_water_levels(cursor, l["PointID"]):
         dsid = get_lookup_by_name(dest, LU_DataSource, wl["DataSource"])
         mmid = get_lookup_by_name(dest, LU_MeasurementMethod, wl["MeasurementMethod"])
         dest.add(
-            WellMeasurement(
-                well=dbwell,
+            Measurement(
+                thing=dbthing,
                 value=wl["DepthToWaterBGS"],
                 timestamp=wl["DateTimeMeasured"],
                 public_release=wl["PublicRelease"],
@@ -224,8 +230,8 @@ def copy_gw_location(projection, cursor, dest, obsprop_bgs, l):
     ):
         for wl in func(cursor, l["PointID"]):
             dest.add(
-                WellMeasurement(
-                    well=dbwell,
+                Measurement(
+                    thing=dbthing,
                     value=wl["DepthToWaterBGS"],
                     timestamp=wl["DateMeasured"],
                     method_id=mmid,
@@ -289,14 +295,14 @@ def copy_nm_aquifer_waterchem(dest):
     src = pymssql.connect(*settings.NM_AQUIFER_ARGS)
     cursor = src.cursor(as_dict=True)
 
-    for well in dest.query(Well).all():
-        wc = get_major_chemistry(cursor, well.location.point_id)
+    for thing in dest.query(Thing).all():
+        wc = get_major_chemistry(cursor, thing.location.point_id)
         for wi in wc:
             obsprop = copy_obsprop(dest, wi)
 
             method = copy_method(dest, wi)
-            m = WellMeasurement(
-                well=well,
+            m = Measurement(
+                thing=thing,
                 value=wi["SampleValue"],
                 method_id=method.id,
                 timestamp=wi["AnalysisDate"],
@@ -304,7 +310,7 @@ def copy_nm_aquifer_waterchem(dest):
             )
             dest.add(m)
 
-        print(f"Copy chemistry for {well.location.point_id}")
+        print(f"Copy chemistry for {thing.location.point_id}")
         dest.commit()
 
 

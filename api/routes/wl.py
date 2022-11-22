@@ -24,8 +24,8 @@ from sqlalchemy.orm import Session
 #     WaterLevelsContinuous_Acoustic,
 #     Location,
 # )
-from api.models.wl_models import (
-    WellMeasurement,
+from api.models.models import (
+    Measurement,
     Well,
     Location,
     ObservedProperty,
@@ -62,10 +62,10 @@ def read_waterlevels(
     return paginate(
         _read(
             db,
-            WellMeasurement,
+            Measurement,
             joins=js,
             filters=fs,
-            orderby=WellMeasurement.timestamp,
+            orderby=Measurement.timestamp,
         ),
         params,
     )
@@ -88,10 +88,10 @@ def read_temperatures(
 
     vs = _read(
         db,
-        WellMeasurement,
+        Measurement,
         joins=js,
         filters=fs,
-        orderby=WellMeasurement.timestamp,
+        orderby=Measurement.timestamp,
     )
 
     return paginate(vs, params)

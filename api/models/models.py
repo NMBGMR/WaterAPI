@@ -92,25 +92,20 @@ class Location(Base):
         return to_shape(self.point).x
 
 
-class Well(Base):
+
+class Thing(Base):
     location_id = Column(Integer, ForeignKey("Location.id"))
     location = relationship("Location")
     public_release = Column(Boolean, default=False)
 
     formation = Column(String)
 
-    ose_well_id = Column(String)
-    ose_well_tag_id = Column(String)
-
     aquifer_class_id = Column(Integer, ForeignKey("LU_AquiferClass.id"))
     aquifer_type_id = Column(Integer, ForeignKey("LU_AquiferType.id"))
     status_id = Column(Integer, ForeignKey("LU_Status.id"))
     current_use_id = Column(Integer, ForeignKey("LU_CurrentUse.id"))
 
-    well_construction = relationship(
-        "WellConstruction", back_populates="well", uselist=False
-    )
-    files = relationship("WellFile", back_populates="well")
+    files = relationship("ThingFile", back_populates="thing")
 
     aquifer_class_ = relationship("LU_AquiferClass")
     aquifer_type_ = relationship("LU_AquiferType")
@@ -134,6 +129,19 @@ class Well(Base):
         return self.status_.meaning
 
 
+class Well(Base):
+    well_construction = relationship(
+        "WellConstruction", back_populates="well", uselist=False
+    )
+    thing_id = Column(Integer, ForeignKey("Thing.id"))
+    ose_well_id = Column(String)
+    ose_well_tag_id = Column(String)
+
+
+class Surface(Base):
+    thing_id = Column(Integer, ForeignKey("Thing.id"))
+
+
 class WellConstruction(Base):
     measuring_point = Column(String)
     measuring_point_height = Column(Float)
@@ -152,10 +160,10 @@ class WellConstruction(Base):
     screens = relationship("ScreenInterval")
 
 
-class WellFile(Base):
+class ThingFile(Base):
     path = Column(String)
-    well_id = Column(Integer, ForeignKey("Well.id"))
-    well = relationship("Well", back_populates="files")
+    thing_id = Column(Integer, ForeignKey("Thing.id"))
+    thing = relationship("Thing", back_populates="files")
 
 
 class ScreenInterval(Base):
@@ -172,10 +180,10 @@ class ObservedProperty(Base):
     group = Column(String)
 
 
-class WellMeasurement(Base):
+class Measurement(Base):
     value = Column(Float)
     timestamp = Column(DateTime, default=func.now())
-    well_id = Column(Integer, ForeignKey("Well.id"))
+    thing_id = Column(Integer, ForeignKey("Thing.id"))
     method_id = Column(Integer, ForeignKey("LU_MeasurementMethod.id"))
     observed_property_id = Column(Integer, ForeignKey("ObservedProperty.id"))
     sensor_id = Column(Integer, ForeignKey("Sensor.id"))
@@ -187,8 +195,9 @@ class WellMeasurement(Base):
     measuring_agency = Column(String)
     measured_by = Column(String)
 
-    well = relationship("Well")
+    thing = relationship("Thing")
     observed_property = relationship("ObservedProperty")
+
 
 
 class Sensor(Base):

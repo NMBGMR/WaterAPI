@@ -32,7 +32,7 @@ from reportlab.platypus import (
 )
 from reportlab.lib.units import inch
 
-from api.models.wl_models import Location, Well
+from api.models.models import Location, Well
 from api.schemas import wl_schemas
 
 

@@ -28,7 +28,7 @@ from api.models.nm_water_quality_models import (
     WQ_TDS,
     WQ_Uranium,
 )
-from api.models.wl_models import Location, WellMeasurement, Well, ObservedProperty
+from api.models.models import Location, Measurement, Well, ObservedProperty
 from api.schemas import wq_schemas
 from api.routes import _read, get_waterdb
 from fastapi import APIRouter, Depends
@@ -46,7 +46,7 @@ def read_chemistry(point_id: str, db: Session = Depends(get_waterdb)):
     js = [Well, Location, ObservedProperty]
     fs = [Location.point_id == point_id, ObservedProperty.group == "water_chemistry"]
 
-    return _read(db, WellMeasurement, filters=fs, joins=js)
+    return _read(db, Measurement, filters=fs, joins=js)
 
 
 # @router.get(
