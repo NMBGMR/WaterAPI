@@ -133,6 +133,7 @@ class Well(Base):
         "WellConstruction", back_populates="well", uselist=False
     )
     thing_id = Column(Integer, ForeignKey("Thing.id"))
+    thing = relationship("Thing", uselist=False)
     ose_well_id = Column(String)
     ose_well_tag_id = Column(String)
 
