@@ -20,26 +20,26 @@ from geojson_pydantic.geometries import Point
 
 from pydantic.main import BaseModel
 
-from api.schemas.wl_schemas import WellMeasurement
+from api.schemas.wl_schemas import Measurement
 
 
-class ORMBase(BaseModel):
-    id: int
-
-    class Config:
-        orm_mode = True
-        allow_population_by_field_name = True
-
-
-class ObservedProperty(ORMBase):
-    name: str
-    group: Optional[str]
-    units: Optional[str]
-    definition: Optional[str]
-
-
-class MajorChemistry(WellMeasurement):
-    observed_property: ObservedProperty
+# class ORMBase(BaseModel):
+#     id: int
+#
+#     class Config:
+#         orm_mode = True
+#         allow_population_by_field_name = True
+#
+#
+# class ObservedProperty(ORMBase):
+#     name: str
+#     group: Optional[str]
+#     units: Optional[str]
+#     definition: Optional[str]
+#
+#
+# class MajorChemistry(WellMeasurement):
+#     observed_property: ObservedProperty
 
 
 # ============= EOF =============================================

@@ -29,6 +29,8 @@ class ORMBase(BaseModel):
         allow_population_by_field_name = True
 
 
+
+
 class Location(ORMBase):
     point_id: str
     latitude: float
@@ -50,12 +52,8 @@ class WellConstruction(ORMBase):
     construction_notes: Optional[str]
 
 
-class Well(ORMBase):
+class Thing(ORMBase):
     public_release: bool
-    well_construction: WellConstruction
-    ose_well_id: Optional[str]
-    ose_well_tag_id: Optional[str]
-
     aquifer_class: Optional[str]
     aquifer_type: Optional[str]
     formation: Optional[str]
@@ -63,7 +61,14 @@ class Well(ORMBase):
     status: Optional[str]
 
 
-class WellMeasurement(ORMBase):
+class Well(ORMBase):
+    ose_well_id: Optional[str]
+    ose_well_tag_id: Optional[str]
+    well_construction: WellConstruction
+    thing: Thing
+
+
+class Measurement(ORMBase):
     value: float
     timestamp: datetime
     # well: Well

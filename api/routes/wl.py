@@ -30,7 +30,7 @@ from api.models.models import (
     Location,
     ObservedProperty,
     ProjectLocation,
-    Project,
+    Project, Thing,
 )
 
 from api.routes import _read, get_waterdb, Params
@@ -41,7 +41,7 @@ router = APIRouter()
 
 @router.get(
     "/waterlevels",
-    response_model=Page[wl_schemas.WellMeasurement],
+    response_model=Page[wl_schemas.Measurement],
     tags=["Groundwater Levels"],
 )
 def read_waterlevels(
@@ -53,10 +53,10 @@ def read_waterlevels(
     fs = [ObservedProperty.name == "DepthToWaterBGS"]
     js = [ObservedProperty]
     if point_id:
-        js.extend([Well, Location])
+        js.extend([Thing, Location])
         fs.append(Location.point_id == point_id)
     elif location_id:
-        js.extend([Well, Location])
+        js.extend([Thing, Location])
         fs.append(Location.id == location_id)
 
     return paginate(
@@ -74,7 +74,7 @@ def read_waterlevels(
 
 @router.get(
     "/welltemperatures",
-    response_model=Page[wl_schemas.WellMeasurement],
+    response_model=Page[wl_schemas.Measurement],
     tags=["Groundwater Temperatures"],
 )
 def read_temperatures(
@@ -83,7 +83,7 @@ def read_temperatures(
     fs = [ObservedProperty.name == "WellTemperature"]
     js = [ObservedProperty]
     if point_id:
-        js.extend([Well, Location])
+        js.extend([Thing, Location])
         fs.append(Location.point_id == point_id)
 
     vs = _read(
@@ -122,6 +122,48 @@ def read_temperatures(
 #     return _read(db, WaterLevelsContinuous_Acoustic, limit)
 #
 #
+def write_user():
+    pass
+
+def add_item(db, item):
+    db.add_item(item)
+    db.commit()
+    db.refresh_item(item)
+    return item
+
+@router.post(
+    "/locations",
+    dependencies=[Depends(write_user)],
+    response_model=wl_schemas.Location,
+    tags=["Locations"],
+)
+def add_location(location: wl_schemas.Location, db: Session = Depends(get_waterdb)):
+    db_item = Location(**location.dict())
+    return add_item(db, db_item)
+
+
+@router.post(
+    "/things",
+    dependencies=[Depends(write_user)],
+    response_model=wl_schemas.Thing,
+    tags=["Things"],
+)
+def add_thing(thing: wl_schemas.Thing, db: Session = Depends(get_waterdb)):
+    db_item = Thing(**thing.dict())
+    return add_item(db, db_item)
+
+
+@router.post(
+    "/wells",
+    dependencies=[Depends(write_user)],
+    response_model=wl_schemas.Well,
+    tags=["Well"],
+)
+def add_well(well: wl_schemas.Well, db: Session = Depends(get_waterdb)):
+    db_item = Thing(**well.dict())
+    return add_item(db, db_item)
+
+
 @router.get("/locations", response_model=Page[wl_schemas.Location], tags=["Locations"])
 def read_locations(
     point_id: str = None,
@@ -165,7 +207,8 @@ def read_wells(
         joins.append(Location)
         filters.append(fuzzy_search(Location.point_id, point_id))
     elif location_id:
-        filters.append(Well.location_id == location_id)
+        joins.append(Thing)
+        filters.append(Thing.location_id == location_id)
 
     return paginate(_read(db, Well, joins=joins, filters=filters), params)
 

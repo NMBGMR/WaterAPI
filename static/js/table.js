@@ -261,11 +261,11 @@ function show_location_table(evt, location, base_api_url){
             {key: "OSE Well ID", value: well.ose_well_id},
             {key: "OSE Well Tag ID", value: well.ose_well_tag_id},
 
-            {key: "Aquifer Class", value: well.aquifer_class},
-            {key: "Aquifer Type", value: well.aquifer_type},
-            {key: "Formation", value: well.formation},
-            {key: "Status", value: well.status},
-            {key: "CurrentUse", value: well.current_use}
+            {key: "Aquifer Class", value: well.thing.aquifer_class},
+            {key: "Aquifer Type", value: well.thing.aquifer_type},
+            {key: "Formation", value: well.thing.formation},
+            {key: "Status", value: well.thing.status},
+            {key: "CurrentUse", value: well.thing.current_use}
 
         ]).draw()
     })
