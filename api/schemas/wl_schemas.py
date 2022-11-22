@@ -29,8 +29,6 @@ class ORMBase(BaseModel):
         allow_population_by_field_name = True
 
 
-
-
 class Location(ORMBase):
     point_id: str
     latitude: float

@@ -30,7 +30,8 @@ from api.models.models import (
     Location,
     ObservedProperty,
     ProjectLocation,
-    Project, Thing,
+    Project,
+    Thing,
 )
 
 from api.routes import _read, get_waterdb, Params
@@ -125,11 +126,13 @@ def read_temperatures(
 def write_user():
     pass
 
+
 def add_item(db, item):
     db.add_item(item)
     db.commit()
     db.refresh_item(item)
     return item
+
 
 @router.post(
     "/locations",
