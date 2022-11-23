@@ -251,6 +251,12 @@ def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
     locations = list(locations)
     total = len(locations)
     for i, l in enumerate(locations):
+
+        if i>4000:
+            print('only copying 4000 locations from NM_Aquifer. This all is for testing. No mission critical '
+                  'components yet')
+            break
+
         if l["SiteType"] != "GW":
             continue
         try:
