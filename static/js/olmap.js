@@ -31,6 +31,13 @@ select.getFeatures().on("remove", (evt)=>{
     document.getElementById("chartoverlay").style.display="none"
 })
 
+const vectorSource = new ol.source.Vector();
+
+const vectorLayer = new ol.layer.Vector({
+      source: vectorSource,
+    });
+
+map.addLayer(vectorLayer)
 
 
 let CONFIG;
@@ -87,9 +94,16 @@ function clear_locations_from_map(){
     // }
 }
 
-function add_locations_to_map(locations, use_gwl_trends){
-    console.log('adding locations', locations)
 
+
+function add_locations_to_map(locations, use_gwl_trends){
+
+    console.log('adding locations', locations)
+    let nochange = new ol.style.Circle({
+                    radius:10,
+                    fill: new ol.style.Fill({color: 'blue'}),
+                    stroke: new ol.style.Stroke({color: 'blue', width: 1})
+                })
     let increase = new ol.style.RegularShape({
                     radius:10,
                     points: 3,
@@ -110,19 +124,23 @@ function add_locations_to_map(locations, use_gwl_trends){
             })
         if (use_gwl_trends){
             fetch('/api/v1/gwtrend/'+loc.point_id).then(resp=>resp.json()).then((data)=>{
-                // let color = data.trend<0? increase:decrease
-                let style = new ol.style.Style({image: data.trend<0? increase:decrease})
+                let image;
+                if (data.trend==0){
+                    image =  nochange
+                }else if (data.trend<0){
+                    image = increase
+                }else{
+                    image = decrease
+                }
+                let style = new ol.style.Style({image: image})
                 f.setStyle(style)
             })
         }
         return f
     })
-    const vectorSource = new ol.source.Vector(
-        {features: features}
-    );
 
-    const vectorLayer = new ol.layer.Vector({
-      source: vectorSource,
-    });
-    map.addLayer(vectorLayer)
+    vectorSource.clear()
+    vectorSource.addFeatures(features)
+
+
 }
