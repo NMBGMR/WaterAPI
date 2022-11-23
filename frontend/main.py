@@ -13,6 +13,7 @@ app = Flask(__name__)
 def index():
     return redirect("/api/v1/docs")
 
+
 @app.route("/olmap")
 def olmap():
     map_cfg = {

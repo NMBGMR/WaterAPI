@@ -86,10 +86,10 @@ def setup_db_default():
         db.add(ObservedProperty(name="Ca", group="water_chemistry"))
         db.add(ObservedProperty(name="Mg", group="water_chemistry"))
         db.commit()
-        for i in range(1,11):
-            db.add(Measurement(thing_id=1, value=100+i, observed_property_id=1))
+        for i in range(1, 11):
+            db.add(Measurement(thing_id=1, value=100 + i, observed_property_id=1))
             db.commit()
-            db.add(Measurement(thing_id=2, value=100-i, observed_property_id=1))
+            db.add(Measurement(thing_id=2, value=100 - i, observed_property_id=1))
             db.commit()
 
         db.add(Measurement(thing_id=1, value=103, observed_property_id=2))
