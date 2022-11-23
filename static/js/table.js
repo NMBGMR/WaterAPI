@@ -252,9 +252,12 @@ function show_location_table(evt, location, base_api_url){
 
 
     let div = document.getElementById("chartoverlay")
-    console.log(evt.originalEvent.clientY, evt.originalEvent.clientY+20+'px')
-    div.style.top = evt.originalEvent.clientY+20+'px'
-    div.style.left = evt.originalEvent.clientX+20+'px'
+    console.log(evt)
+    // console.log(evt.originalEvent.clientY, evt.originalEvent.clientY+20+'px')
+    // div.style.top = evt.originalEvent.clientY+20+'px'
+    // div.style.left = evt.originalEvent.clientX+20+'px'
+    div.style.top = '200px'
+    div.style.left = '200px'
     div.style.display = "block"
 
     url = base_api_url+'waterlevels?location_id='+location.id

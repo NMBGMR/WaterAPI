@@ -13,6 +13,17 @@ app = Flask(__name__)
 def index():
     return redirect("/api/v1/docs")
 
+@app.route("/olmap")
+def olmap():
+    map_cfg = {
+        "center_lat": 33.5,
+        "center_lon": -104.5,
+        "zoom": 7,
+        "base_api_url": os.environ.get("BASE_API_URL", "http://localhost/api/v1/"),
+    }
+
+    return render_template("olmap.html", disclaimer=WL_DISCLAIMER, map_cfg=map_cfg)
+
 
 @app.route("/map")
 def map():

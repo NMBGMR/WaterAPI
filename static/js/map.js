@@ -11,6 +11,32 @@ const PROJECT = 'NMBGMR Water Webmap'
 //     ]
 //========================================================================================
 
+const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+})
+
+const macrostrat = L.tileLayer('http://tiles.macrostrat.org/carto/{z}/{x}/{y}.png', {
+attribution: '&copy; <a href="https://macrostrat.org">MacroStrat</a> contributors'
+})
+
+const opentopo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)\''
+})
+
+
+const esri_wi = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    {attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'})
+
+const usgs = L.tileLayer('https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/tile/{z}/{y}/{x}',
+    {attribution: 'Tiles courtesy of the <a href="https://usgs.gov/">U.S. Geological Survey</a>'})
+
+let layerControl = L.control.layers({"OpenStreetMap": osm,
+    'MacroStrat': macrostrat,
+    'OpenTopo': opentopo,
+    "ESRI World Imagery": esri_wi,
+    'USGS National Basemap': usgs
+    }, null)
+
 const map = L.map('map', {
         preferCanvas: true,
         updateWhenZooming: false,
@@ -168,29 +194,50 @@ function clear_locations_from_map(){
         map.removeLayer(locationLayer)
     }
 }
-function add_locations_to_map(locations){
+function add_locations_to_map(locations, use_gwl_trends){
     console.log('adding locations', locations)
     let markers = locations.map((loc)=>{
-    let marker = L.circleMarker([loc.latitude, loc.longitude],
-        {radius: 5})
-    marker.location = loc
-    marker.bindPopup(loc['point_id'])
-    marker.on('mouseover', function(e) {
-        marker.openPopup();
-    } )
-    marker.on('mouseout', function(e) {
-        map.closePopup();
-    } )
-    return marker
+        let latlng = [loc.latitude, loc.longitude]
+        let marker
+        if (use_gwl_trends){
+            marker = L.circleMarker(latlng)
+            fetch('/api/v1/gwtrend/'+loc.point_id).then(resp=>resp.json()).then((data)=>{
+                let color = data.trend<0? "green":"red"
+                marker.setStyle({fillColor: color,
+                        fillOpacity: 1,
+                        color: color,
+                radius: 5*Math.log10(Math.abs(data.trend))})
+                setup_marker(marker, loc)
+            })
+        }else{
+            marker = L.circleMarker(latlng, {radius: 5})
+            setup_marker(marker, loc)
+        }
+
+        return marker
 })
+
+console.log(markers)
 locationLayer = new L.featureGroup(markers)
 map.addLayer(locationLayer)
+
 locationLayer.on('click', function(e){
     selectedLocation = e.layer.location
     show_location_table(e, e.layer.location, MAP_CFG.base_api_url)
 })
 
 }
+function setup_marker(marker, loc){
+    marker.location = loc
+    let popup = loc['point_id']
+    marker.bindPopup(popup)
+    marker.on('mouseover', function(e) {
+        marker.openPopup();
+    } )
+    marker.on('mouseout', function(e) {
+        map.closePopup();
+    } )
+    }
 
 function handleClick(evt){
     console.log('asdfasddf click', evt)
@@ -203,11 +250,21 @@ function chartoff(){
 }
 
 function make_point_id_report(){
-    window.location.href = '/frontend/point_id_report/'+selectedLocation.point_id
+    if (selectedLocation){
+        window.location.href = '/frontend/point_id_report/'+selectedLocation.point_id
+    }
+}
+
+function goto_detail(){
+    if (selectedLocation){
+        window.location.href = '/frontend/point_id_detail/'+selectedLocation.point_id
+    }
 }
 
 
 function location_search(){
+    // let use_gwl_trends = document.querySelector("#use_gwl_trends").value
+    let use_gwl_trends = true
 
     let project = document.querySelector("#project_entry").value;
     let pointid = document.querySelector("#pointid_entry").value;
@@ -226,7 +283,7 @@ function location_search(){
         console.log('search', pointid, project, url)
         retrieveItems(url, 20000, (locations)=>{
             clear_locations_from_map()
-            add_locations_to_map(locations)
+            add_locations_to_map(locations, use_gwl_trends)
         })
     }else{
         alert('Please enter a search term')
@@ -376,6 +433,5 @@ function location_search(){
 //         map.addLayer(cluster)
 //         layerControl.addOverlay(cluster, 'OSE PODS')
 // })
-
 
 

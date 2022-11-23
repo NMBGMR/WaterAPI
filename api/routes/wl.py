@@ -17,6 +17,7 @@ from typing import List
 from fastapi_pagination import add_pagination, Page, paginate
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from numpy import polyfit
 
 # from api.models.nm_aquifer_models import (
 #     WaterLevels,
@@ -215,6 +216,23 @@ def read_wells(
         filters.append(Thing.location_id == location_id)
 
     return paginate(_read(db, Well, joins=joins, filters=filters), params)
+
+def calculate_trend(obs):
+    x = [i.timestamp.timestamp() for i in obs]
+    y = [i.value for i in obs]
+    coeffs = polyfit(x,y, 1)
+    return coeffs[0]
+
+
+@router.get('/gwtrend/{point_id}', tags='Trends')
+def read_trend(point_id: str, db: Session=Depends(get_waterdb)):
+    q = db.query(Measurement)
+    q = q.join(ObservedProperty, Thing, Location)
+    q = q.filter(Location.point_id==point_id)
+    ms = q.filter(ObservedProperty.name=='DepthToWaterBGS').order_by(
+        Measurement.timestamp.desc()).limit(10).all()
+    trend = calculate_trend(ms)
+    return {'trend': trend}
 
 
 # ============= EOF =============================================
