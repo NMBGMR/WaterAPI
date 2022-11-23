@@ -59,7 +59,7 @@ origins = [
     "https://localhost",
     "http://flask2.nmbgmr.nmt.edu",
     "http://host.docker.internal",
-    "http://flask2.nmbgmr.nmt.edu",
+    "http://amp.nmbgmr.nmt.edu",
     "https://localhost:8000",
 ]
 
