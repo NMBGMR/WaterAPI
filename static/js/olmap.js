@@ -100,7 +100,7 @@ function add_locations_to_map(locations, use_gwl_trends){
 
     console.log('adding locations', locations)
     let nochange = new ol.style.Circle({
-                    radius:10,
+                    radius:5,
                     fill: new ol.style.Fill({color: 'blue'}),
                     stroke: new ol.style.Stroke({color: 'blue', width: 1})
                 })
