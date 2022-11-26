@@ -36,7 +36,7 @@ from api.session import waterdbengine
 from api.routes.wl import router as wl_router
 from api.routes.wq import router as wq_router
 from api.routes.report import router as report_router
-from api.setup_db import setup_db_default, copy_db, copy_water_chemistry
+from api.setup_db import setup_db_default
 from api.celery_app import copy_nm_aquifer_task
 
 tags_metadata = [

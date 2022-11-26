@@ -15,8 +15,7 @@ pyproj
 python-dotenv
 reportlab
 numpy
-celery
-redis
+
 
 # dev
 pytest>=7.1.0,<7.2.0
