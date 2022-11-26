@@ -17,13 +17,16 @@ from celery import Celery
 
 from api.setup_db import copy_nm_aquifer
 
-veg = Celery('worker',
-             broker_url='redis://redis:6379',
-             result_backend='redis://redis:6379', )
+veg = Celery(
+    "worker",
+    broker_url="redis://redis:6379",
+    result_backend="redis://redis:6379",
+)
 
 
 @veg.task()
 def copy_nm_aquifer_task(request):
     copy_nm_aquifer()
+
 
 # ============= EOF =============================================

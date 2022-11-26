@@ -25,6 +25,7 @@ from threading import Thread
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_pagination import add_pagination
+
 # from flask import Flask, request, jsonify, url_for, redirect
 from starlette.responses import RedirectResponse
 
@@ -96,26 +97,23 @@ def get_user():
 @app.get("/copy_nm_aquifer", dependencies=[Depends(get_user)])
 async def copy_nm_aquifer():
     task = copy_nm_aquifer_task.delay(1)
-    return RedirectResponse(f'/api/v1/status/{task.id}')
+    return RedirectResponse(f"/api/v1/status/{task.id}")
 
 
-@app.get('/status/{task_id}')
+@app.get("/status/{task_id}")
 async def status(task_id: str):
     task = copy_nm_aquifer_task.AsyncResult(task_id)
-    if task.state == 'PENDING':
+    if task.state == "PENDING":
         # time.sleep(.SERVER_SLEEP)
         time.sleep(1)
         response = {
-            'queue_state': task.state,
-            'status': 'Process is ongoing...',
-            'status_update': f'/api/v1/status/{task.id}'
+            "queue_state": task.state,
+            "status": "Process is ongoing...",
+            "status_update": f"/api/v1/status/{task.id}"
             # 'status_update': app.url_path_for('status', task_id=task.id)
         }
     else:
-        response = {
-            'queue_state': task.state,
-            'result': task.wait()
-        }
+        response = {"queue_state": task.state, "result": task.wait()}
     return response
 
 
@@ -124,4 +122,6 @@ async def copy_nm_aquifer_chemistry():
     # t = Thread(target=copy_water_chemistry)
     # t.start()
     return True
+
+
 # ============= EOF =============================================

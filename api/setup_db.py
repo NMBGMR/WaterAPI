@@ -107,6 +107,8 @@ def copy_nm_aquifer():
 
     db.commit()
     db.close()
+
+
 #
 #
 # def copy_water_chemistry():
