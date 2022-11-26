@@ -26,7 +26,7 @@ services:
     volumes:
       - ./frontend:/frontend
     env_file:
-      - ./api/.env.development
+      - .env.development
     depends_on:
       - traefik
       - static-files
@@ -47,7 +47,7 @@ services:
     command: bash -c "
       while !</dev/tcp/db/5432; do sleep 1; done;
       alembic -c /api/alembic.ini upgrade head;
-      uvicorn api.main:app
+      uvicorn api.wsgi:app
       --workers 2
       --host 0.0.0.0
       --reload --root-path /api/v1
@@ -60,7 +60,7 @@ services:
       - db
       - traefik
     env_file:
-      - ./api/.env.development
+      - .env.development
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.api.rule=Host(`host.docker.internal`) && PathPrefix(`/api/v1`)"
@@ -89,7 +89,7 @@ services:
 
   db:
     env_file:
-      - ./api/.env.development
+      - .env.development
     image: postgis/postgis
     volumes:
       - postgis-data:/var/lib/postgresql
@@ -116,7 +116,7 @@ services:
     depends_on:
       - db
     env_file:
-      - ./api/.env.development
+      - .env.development
     environment:
       - POSTGRES_EXTRA_OPTS=-Z6 --schema=public --blobs
       - SCHEDULE=@daily
@@ -133,6 +133,57 @@ services:
 #      PGADMIN_DEFAULT_PASSWORD: root
 #    ports:
 #      - "5050:80"
+
+  redis:
+    image: redis:6-alpine
+
+  worker:
+    build:
+      context: ./api
+    hostname: worker
+#    command: celery -A worker celery_app.veg
+    entrypoint: celery
+    command: -A api.celery_app.veg worker --loglevel=info
+    volumes:
+      - ./api:/api
+    links:
+      - redis
+    depends_on:
+      - redis
+
+#  celery_beat:
+#    build:
+#      context: ./beat
+##      dockerfile: ./compose/local/flask/Dockerfile
+##    image: flask_celery_example_celery_beat
+#    command: /start-celerybeat
+#    volumes:
+#      - .:/app
+#    env_file:
+#      - .env.development
+#    environment:
+#      - FLASK_APP=app
+#    depends_on:
+#      - redis
+#      - db
+#
+#  flower:
+#    build:
+#      context: ./flower
+##      dockerfile: ./compose/local/flask/Dockerfile
+##    image: flask_celery_example_celery_flower
+#    command: /start-flower
+#    volumes:
+#      - .:/app
+#    env_file:
+#      - .env.development
+#    environment:
+#      - FLASK_APP=app
+#    ports:
+#      - 5557:5555
+#    depends_on:
+#      - redis
+#      - db
 
 volumes:
   postgis-data:

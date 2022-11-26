@@ -99,22 +99,23 @@ def setup_db_default():
         db.close()
 
 
-def copy_db():
+def copy_nm_aquifer():
     db = WATERDB()
 
-    copy_nm_aquifer(db)
-
-    db.commit()
-    db.close()
-
-
-def copy_water_chemistry():
-    db = WATERDB()
-
+    copy_nm_aquifer_waterlevels(db)
     copy_nm_aquifer_waterchem(db)
 
     db.commit()
     db.close()
+#
+#
+# def copy_water_chemistry():
+#     db = WATERDB()
+#
+#     copy_nm_aquifer_waterchem(db)
+#
+#     db.commit()
+#     db.close()
 
 
 def copy_lu(cursor, dest, table, tag=None):
@@ -298,9 +299,9 @@ def copy_method(dest, record):
     return method
 
 
-def copy_nm_aquifer(dest):
-    copy_nm_aquifer_waterlevels(dest)
-    copy_nm_aquifer_waterchem(dest)
+# def copy_nm_aquifer(dest):
+#     copy_nm_aquifer_waterlevels(dest)
+#     copy_nm_aquifer_waterchem(dest)
 
 
 def copy_nm_aquifer_waterchem(dest):
