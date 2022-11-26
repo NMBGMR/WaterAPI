@@ -140,6 +140,7 @@ services:
   worker:
     build:
       context: ./api
+      dockerfile: Dockerfile_celery
     hostname: worker
 #    command: celery -A worker celery_app.veg
     entrypoint: celery
