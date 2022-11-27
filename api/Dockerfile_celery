@@ -7,6 +7,7 @@ RUN apk add build-base
 RUN #apt-get install libsqlite3-mod-spatialite -y
 RUN apk add unixodbc-dev
 RUN apk add freetds-dev
+RUN apk add postgresql-dev python3-dev musl-dev
 COPY ./celery_requirements.txt /api/
 
 ENV PYTHONDONTWRITEBYTECODE 1
