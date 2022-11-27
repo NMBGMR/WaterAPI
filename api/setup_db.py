@@ -17,7 +17,6 @@ import os
 
 import pymssql
 import pyproj as pyproj
-from geoalchemy2 import Geometry
 from api.config import settings
 from api.models.models import (
     Base,

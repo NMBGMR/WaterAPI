@@ -12,7 +12,7 @@ COPY ./celery_requirements.txt /api/
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-RUN pip install --no-cache-dir --upgrade -r /api/celery_requirements.txt
+RUN pip3 install --no-cache-dir --upgrade -r /api/celery_requirements.txt
 
 #
 COPY . /api/
