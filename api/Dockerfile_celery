@@ -4,8 +4,8 @@ FROM python:3.7-alpine
 
 RUN apk update
 RUN #apt-get install libsqlite3-mod-spatialite -y
-RUN apk install unixodbc-dev
-RUN apk install freetds-dev
+RUN apk add unixodbc-dev
+RUN apk add freetds-dev
 COPY ./celery_requirements.txt /api/
 
 ENV PYTHONDONTWRITEBYTECODE 1
