@@ -1,11 +1,11 @@
 #
-FROM python:3.9
+FROM python:3.7-alpine
 
 
 RUN #apt update
 RUN #apt-get install libsqlite3-mod-spatialite -y
-RUN #apt install unixodbc-dev -y
-RUN #apt install freetds-dev -y
+RUN apt install unixodbc-dev -y
+RUN apt install freetds-dev -y
 COPY ./celery_requirements.txt /api/
 
 ENV PYTHONDONTWRITEBYTECODE 1
