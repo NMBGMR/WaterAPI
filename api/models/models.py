@@ -188,6 +188,7 @@ class ObservedProperty(Base):
 
 class Measurement(Base):
     value = Column(Float)
+    error = Column(Float)
     timestamp = Column(DateTime, default=func.now())
     thing_id = Column(Integer, ForeignKey("Thing.id"))
     method_id = Column(Integer, ForeignKey("LU_MeasurementMethod.id"))

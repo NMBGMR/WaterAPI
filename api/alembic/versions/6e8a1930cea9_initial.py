@@ -198,6 +198,7 @@ def upgrade() -> None:
         "Measurement",
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
         sa.Column("value", sa.Float(), nullable=True),
+        sa.Column("error", sa.Float(), nullable=True),
         sa.Column("timestamp", sa.DateTime(), nullable=True),
         sa.Column("thing_id", sa.Integer(), nullable=True),
         sa.Column("method_id", sa.Integer(), nullable=True),
