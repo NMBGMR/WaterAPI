@@ -256,7 +256,16 @@ def copy_nm_aquifer_waterchem(dest):
 
 
 def copy_nm_aquifer_waterlevels(dest):
-    src = pymssql.connect(*settings.NM_AQUIFER_ARGS)
+    db_user = os.getenv("NM_AQUIFER_USER")
+    db_password = os.getenv("NM_AQUIFER_PASSWORD")
+    db_host = os.getenv("NM_AQUIFER_HOST", "localhost")
+    # DB_PORT = os.getenv(
+    #     "NM_AQUIFER_PORT", 5432
+    # )  # default postgres port is 5432
+    db_name = os.getenv("NM_AQUIFER_NAME", "NM_Aquifer")
+    # db_driver = os.getenv("NM_AQUIFER_DRIVER", "mssql+pymssql")
+
+    src = pymssql.connect(db_host, db_user, db_password, db_name)
     cursor = src.cursor(as_dict=True)
 
     # copy projects
