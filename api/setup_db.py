@@ -206,8 +206,8 @@ def copy_gw_location(projection, cursor, dest, obsprop_bgs, l):
         return dict(public_release=r["PublicRelease"])
 
     for (mmid, func, payload) in (
-            (ptid, get_pressure_water_levels, pressure_payload),
-            (aid, get_acoustic_water_levels, acoustic_payload),
+        (ptid, get_pressure_water_levels, pressure_payload),
+        (aid, get_acoustic_water_levels, acoustic_payload),
     ):
         for wl in func(cursor, l["PointID"]):
             dest.add(
@@ -317,6 +317,7 @@ def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
 
     return failures
 
+
 def copy_obsprop(dest, record, group="water_chemistry"):
     analyte = record["Analyte"]
     obsprop = (
@@ -354,5 +355,6 @@ def copy_lu(cursor, dest, table, tag=None):
         dest.add(d)
     dest.commit()
     dest.flush()
+
 
 # ============= EOF =============================================
