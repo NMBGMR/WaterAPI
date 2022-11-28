@@ -2,10 +2,10 @@
 FROM python:3.9
 
 
-RUN apt-get update
+RUN apt update
 RUN #apt-get install libsqlite3-mod-spatialite -y
-RUN apt-get install unixodbc-dev -y
-RUN apt-get install freetds-dev -y
+RUN apt install unixodbc-dev -y
+RUN apt install freetds-dev -y
 COPY ./requirements.txt /api/
 
 ENV PYTHONDONTWRITEBYTECODE 1

@@ -49,7 +49,7 @@ from api.nm_aquifer_connector import (
     LOCATION_CHUNK,
     get_major_chemistry,
 )
-from api.session import waterdbengine, WATERDB, NM_Aquifer
+from api.session import waterdbengine, WATERDB
 
 
 def setup_db_default():
@@ -106,30 +106,6 @@ def copy_nm_aquifer():
 
     db.commit()
     db.close()
-
-
-#
-#
-# def copy_water_chemistry():
-#     db = WATERDB()
-#
-#     copy_nm_aquifer_waterchem(db)
-#
-#     db.commit()
-#     db.close()
-
-
-def copy_lu(cursor, dest, table, tag=None):
-    if tag is None:
-        tag = table.__tablename__
-
-    sql = f"select * from dbo.{tag}"
-    cursor.execute(sql)
-    for li in cursor.fetchall():
-        d = table(name=li["CODE"], meaning=li["MEANING"])
-        dest.add(d)
-    dest.commit()
-    dest.flush()
 
 
 def copy_gw_location(projection, cursor, dest, obsprop_bgs, l):
@@ -230,8 +206,8 @@ def copy_gw_location(projection, cursor, dest, obsprop_bgs, l):
         return dict(public_release=r["PublicRelease"])
 
     for (mmid, func, payload) in (
-        (ptid, get_pressure_water_levels, pressure_payload),
-        (aid, get_acoustic_water_levels, acoustic_payload),
+            (ptid, get_pressure_water_levels, pressure_payload),
+            (aid, get_acoustic_water_levels, acoustic_payload),
     ):
         for wl in func(cursor, l["PointID"]):
             dest.add(
@@ -245,64 +221,6 @@ def copy_gw_location(projection, cursor, dest, obsprop_bgs, l):
                 )
             )
         dest.commit()
-
-
-def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
-    projection = pyproj.Proj(proj="utm", zone=int(13), ellps="WGS84")
-    failures = []
-    locations = list(locations)
-    total = len(locations)
-    for i, l in enumerate(locations):
-
-        if i > 4000:
-            print(
-                "only copying 4000 locations from NM_Aquifer. This all is for testing. No mission critical "
-                "components yet"
-            )
-            break
-
-        if l["SiteType"] != "GW":
-            continue
-        try:
-            copy_gw_location(projection, cursor, dest, obsprop_bgs, l)
-        except BaseException as e:
-            print(e)
-            failures.append(l)
-        print(l["PointID"], i, total)
-        # printProgressBar(i, total, prefix=f'Sync PointID={l["PointID"]}', suffix='Complete')
-
-    return failures
-
-
-def copy_obsprop(dest, record, group="water_chemistry"):
-    analyte = record["Analyte"]
-    obsprop = (
-        dest.query(ObservedProperty).filter(ObservedProperty.name == analyte).first()
-    )
-    if obsprop is None:
-        obsprop = ObservedProperty(name=analyte, units=record["Units"], group=group)
-        dest.add(obsprop)
-        dest.commit()
-
-    return obsprop
-
-
-def copy_method(dest, record):
-    m = record["AnalysisMethod"]
-    method = (
-        dest.query(LU_MeasurementMethod).filter(LU_MeasurementMethod.name == m).first()
-    )
-    if method is None:
-        method = LU_MeasurementMethod(name=m)
-        dest.add(method)
-        dest.commit()
-
-    return method
-
-
-# def copy_nm_aquifer(dest):
-#     copy_nm_aquifer_waterlevels(dest)
-#     copy_nm_aquifer_waterchem(dest)
 
 
 def copy_nm_aquifer_waterchem(dest):
@@ -372,36 +290,69 @@ def copy_nm_aquifer_waterlevels(dest):
     src.close()
 
 
-# Print iterations progress
-def printProgressBar(
-    iteration,
-    total,
-    prefix="",
-    suffix="",
-    decimals=1,
-    length=100,
-    fill="█",
-    printEnd="\r",
-):
-    """
-    Call in a loop to create terminal progress bar
-    @params:
-        iteration   - Required  : current iteration (Int)
-        total       - Required  : total iterations (Int)
-        prefix      - Optional  : prefix string (Str)
-        suffix      - Optional  : suffix string (Str)
-        decimals    - Optional  : positive number of decimals in percent complete (Int)
-        length      - Optional  : character length of bar (Int)
-        fill        - Optional  : bar fill character (Str)
-        printEnd    - Optional  : end character (e.g. "\r", "\r\n") (Str)
-    """
-    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
-    filledLength = int(length * iteration // total)
-    bar = fill * filledLength + "-" * (length - filledLength)
-    print(f"\r{prefix} |{bar}| {percent}% {suffix}", end=printEnd)
-    # Print New Line on Complete
-    if iteration == total:
-        print()
+# helpers
+def copy_gw_locations(cursor, dest, obsprop_bgs, locations):
+    projection = pyproj.Proj(proj="utm", zone=int(13), ellps="WGS84")
+    failures = []
+    locations = list(locations)
+    total = len(locations)
+    for i, l in enumerate(locations):
 
+        if i > 4000:
+            print(
+                "only copying 4000 locations from NM_Aquifer. This all is for testing. No mission critical "
+                "components yet"
+            )
+            break
+
+        if l["SiteType"] != "GW":
+            continue
+        try:
+            copy_gw_location(projection, cursor, dest, obsprop_bgs, l)
+        except BaseException as e:
+            print(e)
+            failures.append(l)
+        print(l["PointID"], i, total)
+        # printProgressBar(i, total, prefix=f'Sync PointID={l["PointID"]}', suffix='Complete')
+
+    return failures
+
+def copy_obsprop(dest, record, group="water_chemistry"):
+    analyte = record["Analyte"]
+    obsprop = (
+        dest.query(ObservedProperty).filter(ObservedProperty.name == analyte).first()
+    )
+    if obsprop is None:
+        obsprop = ObservedProperty(name=analyte, units=record["Units"], group=group)
+        dest.add(obsprop)
+        dest.commit()
+
+    return obsprop
+
+
+def copy_method(dest, record):
+    m = record["AnalysisMethod"]
+    method = (
+        dest.query(LU_MeasurementMethod).filter(LU_MeasurementMethod.name == m).first()
+    )
+    if method is None:
+        method = LU_MeasurementMethod(name=m)
+        dest.add(method)
+        dest.commit()
+
+    return method
+
+
+def copy_lu(cursor, dest, table, tag=None):
+    if tag is None:
+        tag = table.__tablename__
+
+    sql = f"select * from dbo.{tag}"
+    cursor.execute(sql)
+    for li in cursor.fetchall():
+        d = table(name=li["CODE"], meaning=li["MEANING"])
+        dest.add(d)
+    dest.commit()
+    dest.flush()
 
 # ============= EOF =============================================
