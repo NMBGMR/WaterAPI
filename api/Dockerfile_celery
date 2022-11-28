@@ -2,7 +2,7 @@
 FROM python:3.9
 
 
-RUN apt update
+RUN apt-get update
 RUN #apk add build-base
 RUN #apt-get install libsqlite3-mod-spatialite -y
 RUN #apt install unixodbc-dev
@@ -10,8 +10,8 @@ RUN #apt install freetds-dev
 RUN #apt install postgresql-dev python3-dev musl-dev
 RUN #apt install proj-dev proj
 
-RUN apt install unixodbc-dev -y
-RUN apt install freetds-dev -y
+RUN apt-get install unixodbc-dev -y
+RUN apt-get install freetds-dev -y
 
 COPY ./celery_requirements.txt /api/
 

@@ -15,6 +15,7 @@ pyproj
 python-dotenv
 reportlab
 numpy
+celery
 
 
 # dev
