@@ -151,7 +151,8 @@ services:
       - redis
     depends_on:
       - redis
-
+    env_file:
+      - .env.development
 #  celery_beat:
 #    build:
 #      context: ./beat
