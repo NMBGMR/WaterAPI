@@ -225,7 +225,7 @@ def calculate_trend(obs):
     return coeffs[0]
 
 
-@router.get("/gwtrend/{point_id}", tags="Trends")
+@router.get("/gwtrend/{point_id}", tags=["Trends"])
 def read_trend(point_id: str, db: Session = Depends(get_waterdb)):
     q = db.query(Measurement)
     q = q.join(ObservedProperty, Thing, Location)
