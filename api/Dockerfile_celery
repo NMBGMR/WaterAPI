@@ -5,15 +5,19 @@ FROM python:3.9
 RUN apt update
 RUN #apk add build-base
 RUN #apt-get install libsqlite3-mod-spatialite -y
-RUN apt add unixodbc-dev
-RUN apt add freetds-dev
-RUN apt add postgresql-dev python3-dev musl-dev
-RUN apt add proj-dev proj
+RUN #apt install unixodbc-dev
+RUN #apt install freetds-dev
+RUN #apt install postgresql-dev python3-dev musl-dev
+RUN #apt install proj-dev proj
+
+RUN apt install unixodbc-dev -y
+RUN apt install freetds-dev -y
+
 COPY ./celery_requirements.txt /api/
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-RUN pip3 install --no-cache-dir --upgrade -r /api/celery_requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /api/celery_requirements.txt
 
 #
 COPY . /api/
