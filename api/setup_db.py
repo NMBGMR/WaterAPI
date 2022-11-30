@@ -34,7 +34,8 @@ from api.models.models import (
     LU_CurrentUse,
     LU_AquiferType,
     LU_AquiferClass,
-    Thing, LU_Formation,
+    Thing,
+    LU_Formation,
 )
 from api.nm_aquifer_connector import (
     get_associated_projects,
