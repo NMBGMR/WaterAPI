@@ -53,6 +53,7 @@ class Base:
 class Project(Base):
     name = Column(String)
     point_id_prefix = Column(String)
+    note = Column(String)
 
 
 class ProjectLocation(Base):
@@ -67,6 +68,16 @@ class EquivalentLocation(Base):
     location_id = Column(Integer, ForeignKey("Location.id"))
     equivalent_id = Column(String)
     agency = Column(String)
+
+
+class Tag(Base):
+    name = Column(String)
+    description = Column(String)
+
+
+class LocationTag(Base):
+    location_id = Column(Integer, ForeignKey("Location.id"))
+    tag_id = Column(Integer, ForeignKey("Tag.id"))
 
 
 class Location(Base):
@@ -103,8 +114,7 @@ class Thing(Base):
     location = relationship("Location")
     public_release = Column(Boolean, default=False)
 
-    formation = Column(String)
-
+    formation_id = Column(Integer, ForeignKey("LU_Formation.id"))
     aquifer_class_id = Column(Integer, ForeignKey("LU_AquiferClass.id"))
     aquifer_type_id = Column(Integer, ForeignKey("LU_AquiferType.id"))
     status_id = Column(Integer, ForeignKey("LU_Status.id"))
@@ -257,12 +267,10 @@ class LU_Status(Base, LU):
     pass
 
 
-#
-#
-# class LU_DataQuality(Base, LU):
-#     pass
-#
-#
+class LU_Formation(Base, LU):
+    pass
+
+
 class LU_DataSource(Base, LU):
     pass
 

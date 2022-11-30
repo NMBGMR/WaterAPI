@@ -34,7 +34,7 @@ from api.models.models import (
     LU_CurrentUse,
     LU_AquiferType,
     LU_AquiferClass,
-    Thing,
+    Thing, LU_Formation,
 )
 from api.nm_aquifer_connector import (
     get_associated_projects,
@@ -153,7 +153,7 @@ def copy_gw_location(projection, cursor, dest, obsprop_bgs, l):
         wkw = dict(
             aquifer_class_id=get_lookup_by_name(dest, LU_AquiferClass, wd["AqClass"]),
             aquifer_type_id=get_lookup_by_name(dest, LU_AquiferType, wd["AquiferType"]),
-            formation=wd["FormationZone"],
+            formation_id=get_lookup_by_name(dest, LU_Formation, wd["FormationZone"]),
             current_use_id=get_lookup_by_name(dest, LU_CurrentUse, wd["CurrentUse"]),
             status_id=get_lookup_by_name(dest, LU_Status, wd["Status"]),
         )
@@ -290,6 +290,7 @@ def copy_nm_aquifer_waterlevels(dest):
     copy_lu(cursor, dest, LU_CurrentUse)
     copy_lu(cursor, dest, LU_AquiferType)
     copy_lu(cursor, dest, LU_AquiferClass)
+    copy_lu(cursor, dest, LU_Formation)
 
     # copy  public locations
     pfailures = copy_gw_locations(

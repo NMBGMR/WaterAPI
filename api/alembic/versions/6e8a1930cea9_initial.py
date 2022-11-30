@@ -47,6 +47,14 @@ def upgrade() -> None:
     )
     op.create_index(op.f("ix_LU_CurrentUse_id"), "LU_CurrentUse", ["id"], unique=False)
     op.create_table(
+        "LU_Formation",
+        sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column("name", sa.String(), nullable=True),
+        sa.Column("meaning", sa.String(), nullable=True),
+        sa.PrimaryKeyConstraint("id"),
+    )
+    op.create_index(op.f("ix_LU_Formation_id"), "LU_Formation", ["id"], unique=False)
+    op.create_table(
         "LU_DataSource",
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
         sa.Column("name", sa.String(), nullable=True),
